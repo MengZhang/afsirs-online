@@ -19,7 +19,7 @@
             <!-- Wrapper for slides -->
             <div class="carousel-inner" role="listbox">
                 <div class="item active">
-                    <img src="1-1-S.jpg" alt="field" width="1200" height="500">
+                    <img src="1-1-S.jpg" alt="field" width="1200" height="521">
                     <div class="carousel-caption ">
                         <h3>AFSIRS Online Prototype</h3>
                         <p>Simulate the water usage</p>
@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="item">
-                    <img src="1-2-S.jpg" alt="field" width="1200" height="500">
+                    <img src="1-2-S.jpg" alt="field" width="1200" height="521">
                     <div class="carousel-caption">
                         <h3>AFSIRS Online Prototype</h3>
                         <p>Collect site information</p>
@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="item">
-                    <img src="1-3-S.jpg" alt="field" width="1200" height="500">
+                    <img src="1-3-S.jpg" alt="field" width="1200" height="521">
                     <div class="carousel-caption">
                         <h3>AFSIRS Online  Prototype</h3>
                         <p>Manage soil and water use data</p>
