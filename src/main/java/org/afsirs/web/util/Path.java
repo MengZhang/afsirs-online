@@ -41,5 +41,9 @@ public class Path {
             public static final String SOILMAP = PACKAGE + "/soilmap.ftl";
         }
     }
+    
+    public static class Folder {
+        public final static String WORKING = "working";
+    }
 
 }

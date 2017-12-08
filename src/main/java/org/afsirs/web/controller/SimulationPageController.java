@@ -2,6 +2,7 @@ package org.afsirs.web.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.afsirs.module.UserInput;
 import static org.afsirs.web.Main.LOG;
 import org.afsirs.web.util.Path;
 import static org.afsirs.web.view.SimulationViewUtil.getAfsirsPage;
@@ -30,6 +31,9 @@ public class SimulationPageController {
     public static Route handleAfsirsPost = (Request request, Response response) -> {
         LOG.info("Handle AFSIRS Post");
         Map<String, Object> attributes = new HashMap<>();
+        UserInput input = new UserInput();
+//        input.setPlantedAcres(request.queryParams("plantedArea"));
+        attributes.put("user_input", input);
         return getAfsirsResultPage(request, attributes);
     };
     
