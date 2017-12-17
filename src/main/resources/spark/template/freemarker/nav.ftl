@@ -8,15 +8,17 @@
                 <a href="/"><span class="glyphicon glyphicon-home"></span> Home</a>
             </li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-grain"></span> Simulation <span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-tint"></span> Water Use <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="/simulation/afsirs"><span class="glyphicon glyphicon-file"></span> AFSIRS</a></li>
+                    <li><a href="/simulation/afsirs"><span class="glyphicon glyphicon-file"></span> Create Permit </a></li>
+                    <li><a href="/simulation/afsirs"><span class="glyphicon glyphicon-list-alt"></span> Permit List </a></li>
+                    <li><a href="/simulation/afsirs"><span class="glyphicon glyphicon-search"></span> Find Permit </a></li>
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-tasks"></span> Data <span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-briefcase"></span> Data Tools <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="/data/soilmap"><span class="glyphicon glyphicon-file"></span> Soil Map</a></li>
+                    <li><a href="/data/soilmap"><span class="glyphicon glyphicon-globe"></span> Soil Map</a></li>
                 </ul>
             </li>
         </ul>
