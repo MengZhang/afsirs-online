@@ -494,7 +494,7 @@
                     </div>
 
                     <div class="jumbotron text-center">
-                        <div class="btn btn-success text-right>
+                        <div class="btn btn-success text-right">
                              <button type="submit"  onclick="window.location.href='http://localhost:8080/RESTfulExample/page4.html'">Submit</button><br>
                         </div>
                     </div>
