@@ -1,0 +1,595 @@
+MyakkaValue : 0.0
+Value : 0.0
+Value : 0.4776816193618707
+Value : 1.3454354810208091
+Value : 1.9973878696817984
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.27689461545819993
+Value : -99.0
+PomelloValue : 0.0
+Value : 0.0
+Value : 0.38399485878173745
+Value : 1.2794727483901882
+Value : 2.013726521448672
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : -99.0
+ImmokaleeValue : -99.0
+Value : 0.0
+Value : 0.5112936835763989
+Value : 1.39133572753516
+Value : 2.070548072285235
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.519342903622638
+Value : -99.0
+WavelandValue : -99.0
+Value : 0.0
+Value : 0.5737353578094437
+Value : 1.2794736001219633
+Value : 1.915176201325395
+Value : 0.03150374114889809
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.5281912105380393
+Value : -99.0
+FeldaValue : 0.0
+Value : -99.0
+Value : 0.38244746616768577
+Value : 1.1853655270816386
+Value : 1.8784315574938792
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : 0.0
+Value : 0.0
+ChobeeValue : 0.0
+Value : -99.0
+Value : 0.0
+Value : 1.0463169888474146
+Value : 1.6814823210765142
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : 0.0
+Value : 0.0
+KaligaValue : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.8215090676906313
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.0
+FloridanaValue : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : 1.615926795797404
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : 0.0
+Value : -99.0
+NittawValue : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : 1.701063182669295
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : 0.0
+Value : 0.0
+ManateeValue : 0.0
+Value : 0.0
+Value : 0.0
+Value : 1.1017992460553285
+Value : 1.7286819987343864
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+BradentonValue : 0.0
+Value : 0.0
+Value : 0.3157854013330707
+Value : 0.9051320539389307
+Value : 1.5003136783062498
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.0
+CandlerValue : -99.0
+Value : 0.0
+Value : 0.7029447951946334
+Value : 1.4720218738039188
+Value : 2.1295847072588616
+Value : 0.18221951112873602
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.3622203724333546
+Value : 0.4991089797986017
+Value : 0.0
+AstatulaValue : 0.07327839973316633
+Value : 0.28362741176942396
+Value : 0.8683323724311868
+Value : 1.7700591388746145
+Value : 2.252218687666337
+Value : 0.3876097145733504
+Value : 0.07822786918780834
+Value : 0.0
+Value : 0.0
+Value : 0.4805026155413604
+Value : 0.5871328905705632
+Value : 0.2690221561706134
+Urban landValue : 0.44316556064204804
+Value : 0.6084677671485889
+Value : 1.5877653191114383
+Value : 2.8268651812363994
+Value : 3.260120797685406
+Value : 0.9666764807424547
+Value : 0.4868486868454367
+Value : 0.510893690801344
+Value : 0.4856844540719047
+Value : 1.1063931178985746
+Value : 1.1544902545465172
+Value : 0.5844034077950467
+CandlerValue : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.9959135035627117
+Value : 1.2064360919772017
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+TavaresValue : 0.10076109617657088
+Value : 0.3131693643516505
+Value : 0.8380112254270808
+Value : 1.7619255644980738
+Value : 2.2927439498891866
+Value : 0.3545698055708006
+Value : 0.0629836160935466
+Value : 0.0
+Value : 0.0
+Value : 0.4544930550220379
+Value : 0.5609675848428742
+Value : 0.18896039808644813
+ZolfoValue : -99.0
+Value : 0.0
+Value : 0.5819356853556916
+Value : 1.393633318680798
+Value : 2.06299843918416
+Value : 0.13352540686561637
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.544961655259992
+Value : 0.0
+TavaresValue : 0.10076109617657088
+Value : 0.3131693643516505
+Value : 0.8380112254270808
+Value : 1.7619255644980738
+Value : 2.2927439498891866
+Value : 0.3545698055708006
+Value : 0.0629836160935466
+Value : 0.0
+Value : 0.0
+Value : 0.4544930550220379
+Value : 0.5609675848428742
+Value : 0.18896039808644813
+SatelliteValue : 0.0
+Value : 0.0
+Value : 0.38399485878173745
+Value : 1.2794727483901882
+Value : 2.013726521448672
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : -99.0
+AdamsvilleValue : 0.0
+Value : 0.0
+Value : 0.6636382646352662
+Value : 1.4693651530454586
+Value : 2.188227987058843
+Value : 0.27613991866961823
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.35662618074213354
+Value : 0.5168157111245595
+Value : 0.0
+ArchboldValue : -99.0
+Value : 0.0
+Value : 0.6135736218279236
+Value : 1.3851730386641457
+Value : 2.108648345978498
+Value : 0.09458825556816865
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.5289484997147891
+Value : -99.0
+SparrValue : -99.0
+Value : 0.1556542457787311
+Value : 0.639638008954392
+Value : 1.456982601654043
+Value : 1.9809000802169927
+Value : 0.3762647356018925
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.37590419774584694
+Value : 0.5632790814154229
+Value : -99.0
+==================================================================
+KaligaValue : 0.0
+Value : 0.0
+Value : 0.4776816193618707
+Value : 1.3454354810208091
+Value : 1.9973878696817984
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.27689461545819993
+Value : -99.0
+===========================================
+Kaliga
+val 4.097399585522679
+FloridanaValue : 0.0
+Value : 0.0
+Value : 0.38399485878173745
+Value : 1.2794727483901882
+Value : 2.013726521448672
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : -99.0
+===========================================
+Floridana
+val 3.677194128620598
+NittawValue : -99.0
+Value : 0.0
+Value : 0.5112936835763989
+Value : 1.39133572753516
+Value : 2.070548072285235
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.519342903622638
+Value : -99.0
+===========================================
+Nittaw
+val 4.492520387019432
+CandlerValue : -99.0
+Value : 0.0
+Value : 0.5737353578094437
+Value : 1.2794736001219633
+Value : 1.915176201325395
+Value : 0.03150374114889809
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.5281912105380393
+Value : -99.0
+===========================================
+Candler
+val 4.3280801109437395
+BradentonValue : 0.0
+Value : -99.0
+Value : 0.38244746616768577
+Value : 1.1853655270816386
+Value : 1.8784315574938792
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : 0.0
+Value : 0.0
+===========================================
+Bradenton
+val 3.4462445507432036
+ChobeeValue : 0.0
+Value : -99.0
+Value : 0.0
+Value : 1.0463169888474146
+Value : 1.6814823210765142
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : 0.0
+Value : 0.0
+===========================================
+Chobee
+val 2.727799309923929
+ManateeValue : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.8215090676906313
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.0
+===========================================
+Manatee
+val 0.8215090676906313
+FeldaValue : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : 1.615926795797404
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : 0.0
+Value : -99.0
+===========================================
+Felda
+val 1.615926795797404
+PomelloValue : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : 1.701063182669295
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : 0.0
+Value : 0.0
+===========================================
+Pomello
+val 1.701063182669295
+SatelliteValue : 0.0
+Value : 0.0
+Value : 0.0
+Value : 1.1017992460553285
+Value : 1.7286819987343864
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+===========================================
+Satellite
+val 2.830481244789715
+MyakkaValue : 0.0
+Value : 0.0
+Value : 0.3157854013330707
+Value : 0.9051320539389307
+Value : 1.5003136783062498
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.0
+===========================================
+Myakka
+val 2.721231133578251
+WavelandValue : -99.0
+Value : 0.0
+Value : 0.7029447951946334
+Value : 1.4720218738039188
+Value : 2.1295847072588616
+Value : 0.18221951112873602
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.3622203724333546
+Value : 0.4991089797986017
+Value : 0.0
+===========================================
+Waveland
+val 5.348100239618106
+ImmokaleeValue : 0.07327839973316633
+Value : 0.28362741176942396
+Value : 0.8683323724311868
+Value : 1.7700591388746145
+Value : 2.252218687666337
+Value : 0.3876097145733504
+Value : 0.07822786918780834
+Value : 0.0
+Value : 0.0
+Value : 0.4805026155413604
+Value : 0.5871328905705632
+Value : 0.2690221561706134
+===========================================
+Immokalee
+val 7.050011256518424
+ZolfoValue : 0.44316556064204804
+Value : 0.6084677671485889
+Value : 1.5877653191114383
+Value : 2.8268651812363994
+Value : 3.260120797685406
+Value : 0.9666764807424547
+Value : 0.4868486868454367
+Value : 0.510893690801344
+Value : 0.4856844540719047
+Value : 1.1063931178985746
+Value : 1.1544902545465172
+Value : 0.5844034077950467
+===========================================
+Zolfo
+val 14.021774718525162
+ArchboldValue : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.9959135035627117
+Value : 1.2064360919772017
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+===========================================
+Archbold
+val 2.2023495955399133
+CandlerValue : 0.10076109617657088
+Value : 0.3131693643516505
+Value : 0.8380112254270808
+Value : 1.7619255644980738
+Value : 2.2927439498891866
+Value : 0.3545698055708006
+Value : 0.0629836160935466
+Value : 0.0
+Value : 0.0
+Value : 0.4544930550220379
+Value : 0.5609675848428742
+Value : 0.18896039808644813
+===========================================
+Candler
+val 6.92858565995827
+AdamsvilleValue : -99.0
+Value : 0.0
+Value : 0.5819356853556916
+Value : 1.393633318680798
+Value : 2.06299843918416
+Value : 0.13352540686561637
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.544961655259992
+Value : 0.0
+===========================================
+Adamsville
+val 4.717054505346258
+SparrValue : 0.10076109617657088
+Value : 0.3131693643516505
+Value : 0.8380112254270808
+Value : 1.7619255644980738
+Value : 2.2927439498891866
+Value : 0.3545698055708006
+Value : 0.0629836160935466
+Value : 0.0
+Value : 0.0
+Value : 0.4544930550220379
+Value : 0.5609675848428742
+Value : 0.18896039808644813
+===========================================
+Sparr
+val 6.92858565995827
+TavaresValue : 0.0
+Value : 0.0
+Value : 0.38399485878173745
+Value : 1.2794727483901882
+Value : 2.013726521448672
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : -99.0
+Value : -99.0
+===========================================
+Tavares
+val 3.677194128620598
+TavaresValue : 0.0
+Value : 0.0
+Value : 0.6636382646352662
+Value : 1.4693651530454586
+Value : 2.188227987058843
+Value : 0.27613991866961823
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.35662618074213354
+Value : 0.5168157111245595
+Value : 0.0
+===========================================
+Tavares
+val 5.470813215275879
+AstatulaValue : -99.0
+Value : 0.0
+Value : 0.6135736218279236
+Value : 1.3851730386641457
+Value : 2.108648345978498
+Value : 0.09458825556816865
+Value : 0.0
+Value : 0.0
+Value : -99.0
+Value : 0.0
+Value : 0.5289484997147891
+Value : -99.0
+===========================================
+Astatula
+val 4.730931761753524
+Urban landValue : -99.0
+Value : 0.1556542457787311
+Value : 0.639638008954392
+Value : 1.456982601654043
+Value : 1.9809000802169927
+Value : 0.3762647356018925
+Value : 0.0
+Value : 0.0
+Value : 0.0
+Value : 0.37590419774584694
+Value : 0.5632790814154229
+Value : -99.0
+===========================================
+Urban land
+val 5.548622951367321
