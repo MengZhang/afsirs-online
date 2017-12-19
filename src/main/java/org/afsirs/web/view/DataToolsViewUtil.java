@@ -11,11 +11,11 @@ import spark.template.freemarker.FreeMarkerEngine;
  *
  * @author Meng Zhang
  */
-public class DataViewUtil {
+public class DataToolsViewUtil {
     
     public static String getSoilMapPage(Request request, Map<String, Object> attributes) {
         setCommonParam(request, attributes);
-        return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.Data.SOILMAP));
+        return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.DataTools.SOILMAP));
     }
     
 }
