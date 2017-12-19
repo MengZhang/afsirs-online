@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.afsirs.module.Irrigation;
 import static org.afsirs.web.Main.LOG;
 
 /**
@@ -21,6 +22,8 @@ public class DataUtil {
 
     private final static ArrayList<String> CROP_LIST_ANNUAL = readCropList("ANNUAL");
     private final static ArrayList<String> CROP_LIST_PERENNIAL = readCropList("PERENNIAL");
+    private final static ArrayList<Irrigation> IR_LIST = new ArrayList();
+    private final static ArrayList<String> IR_SYS_LIST = readIrrigationList();
 
     public static ArrayList<String> getCropList(String type) {
         if (type != null) {
@@ -35,6 +38,14 @@ public class DataUtil {
         } else {
             return new ArrayList();
         }
+    }
+    
+    public static ArrayList<Irrigation> getIRList() {
+        return IR_LIST;
+    }
+    
+    public static ArrayList<String> getIRSysList() {
+        return IR_SYS_LIST;
     }
 
     private static ArrayList<String> readCropList(String type) {
@@ -72,9 +83,46 @@ public class DataUtil {
         }
         return ret;
     }
+    
+    private static ArrayList<String> readIrrigationList() {
+        ArrayList<String> ret = new ArrayList();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(new File("./Data/ir.dat")));
+            String line = br.readLine();
+            String[] parts = line.split(" ");
+            int i = 0;
+            while (i < parts.length) {
+                if (parts[i].length() > 0) {
+                    break;
+                }
+                i++;
+            }
+            int n = Integer.parseInt(parts[i].trim());
+
+            br.readLine();
+            i = 0;
+            while (i < n) {
+                line = br.readLine();
+                parts = line.split("  ");
+                Irrigation irr = new Irrigation();
+                irr.setCode(Integer.parseInt(parts[1].trim()));
+                irr.setEff(Double.parseDouble(parts[2]));
+                irr.setArea(Double.parseDouble(parts[3]));
+                irr.setEx(Double.parseDouble(parts[4]));
+                irr.setSys(parts[5]);
+                IR_LIST.add(irr);
+
+                ret.add(irr.getSys());
+                i++;
+            }
+
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace(System.err);
+        }
+        return ret;
+    }
 
     // save uploaded file to new location
-
     public static void writeToFile(InputStream uploadedInputStream,
             String uploadedFileLocation) {
 
@@ -91,7 +139,7 @@ public class DataUtil {
             out.flush();
             LOG.info("File was wrote to {} done!", dir.getAbsolutePath());
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
 
     }
