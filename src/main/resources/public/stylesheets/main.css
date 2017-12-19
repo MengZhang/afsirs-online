@@ -40,7 +40,10 @@ h3, h4 {
     color: #111;
 }
 .container {
-    padding: 80px 120px;
+    padding: 80px 10px;
+}
+.subcontainer {
+    padding: 40px 40px;
 }
 .carousel-inner img {
     width: 100%; /* Set width to 100% */
