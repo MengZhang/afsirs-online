@@ -16,6 +16,10 @@ public class JSONObject extends org.json.simple.JSONObject {
         super(m);
     }
     
+    public String getOrBlank(String key) {
+        return (String) super.getOrDefault(key, "");
+    }
+    
     public String getOrDefault(String key, String def) {
         return (String) super.getOrDefault(key, def);
     }
