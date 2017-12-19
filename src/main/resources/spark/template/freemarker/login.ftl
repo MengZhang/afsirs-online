@@ -2,14 +2,13 @@
 <html>
     <head>
         <#include "header.ftl">
+        <style>
+            th, td {
+                padding: 5px;
+                text-align: left;
+            }
+        </style>
     </head>
-    <style>
-        th, td {
-            padding: 5px;
-            text-align: left;
-        }
-    </style>
-
     <body>
 
         <#include "nav.ftl">
