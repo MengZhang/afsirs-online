@@ -98,4 +98,8 @@ public class ViewUtil {
     public static String getSessionVar(Request request, String varName) {
         return getSessionVar(request, varName, null);
     }
+    
+    public static String getUserID(Request request) {
+        return getSessionVar(request, "currentUser", "");
+    }
 }
