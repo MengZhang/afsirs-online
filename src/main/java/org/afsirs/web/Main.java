@@ -6,9 +6,10 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.afsirs.web.controller.DataPageController;
+import org.afsirs.web.controller.DataToolsPageController;
 import org.afsirs.web.controller.PageController;
 import org.afsirs.web.controller.SimulationPageController;
+import org.afsirs.web.controller.WaterUsePageController;
 import org.afsirs.web.util.Filters;
 import org.afsirs.web.util.Path;
 import org.slf4j.LoggerFactory;
@@ -64,7 +65,12 @@ public class Main {
         get(Path.Web.Simulation.AFSIRS,             SimulationPageController.serveAfsirsPage);
         post(Path.Web.Simulation.AFSIRS,          SimulationPageController.handleAfsirsPost);
         
-        get(Path.Web.Data.SOILMAP,             DataPageController.serveSoilMapPage);
+        get(Path.Web.WaterUse.LIST,             WaterUsePageController.serveListPage);
+        get(Path.Web.WaterUse.CREATE,           WaterUsePageController.serveCreatePage);
+        post(Path.Web.WaterUse.CREATE,          WaterUsePageController.handleCreatePost);
+        get(Path.Web.WaterUse.FIND,             WaterUsePageController.serveDetailPage);
+        
+        get(Path.Web.DataTools.SOILMAP,             DataToolsPageController.serveSoilMapPage);
         
         get("*",                     PageController.serveNotFoundPage, new FreeMarkerEngine());
 
