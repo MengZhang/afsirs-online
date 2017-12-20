@@ -125,7 +125,7 @@
                     var option = document.createElement('option');
                     option.innerHTML = i;
                     option.value = i;
-                    select.append(option)
+                    select.append(option);
                 }
             }
         </script>
@@ -145,15 +145,20 @@
                     <legend>Create New Permit</legend>
 
                     <div class="tab">
-                        <button class="tablinks active" onclick="openTab('SiteInfo')" id= "SiteInfoTab">Site Information</button>
-                        <button class="tablinks" onclick="openTab('SoilWater')" id = "SoilWaterTab">Soil Water</button>
-                        <button class="tablinks" onclick="openTab('Decoef')" id = "DecoefTab">Coefficient</button>
+                        <button type="button" class="tablinks active" onclick="openTab('SiteInfo')" id= "SiteInfoTab">General</button>
+                        <button type="button" class="tablinks" onclick="openTab('Irrigation')" id = "IrrigationTab">Irrigation</button>
+                        <button type="button" class="tablinks" onclick="openTab('SoilWater')" id = "SoilWaterTab">Soil</button>
+                        <button type="button" class="tablinks" onclick="openTab('Decoef')" id = "DecoefTab">Coefficient</button>
                     </div>
-
 
                     <div id="SiteInfo" class="tabcontent">
                         <center>
                             <#include "create_sub_siteInfo.ftl">
+                        </center>   
+                    </div>
+                    <div id="Irrigation" class="tabcontent">
+                        <center>
+                            <#include "create_sub_irrigation.ftl">
                         </center>   
                     </div>
                     <div id="SoilWater" class="tabcontent">
@@ -169,25 +174,19 @@
                     <br><br>
                     <div class="text-center">
                         <div id="SiteInfoBtn" class="switchBtns">
-                            <div  class="btn btn-primary text-right">
-                                <button type="button" onclick="openTab('SoilWater')">Next</button><br>
-                            </div>
+                            <button type="button" class="btn btn-primary text-right" onclick="openTab('SoilWater')">Next</button>
+                        </div>
+                        <div id="IrrigationBtn" class="switchBtns">
+                            <button type="button" class="btn btn-primary text-left" onclick="openTab('SiteInfo')">Back</button>&nbsp;&nbsp;&nbsp;
+                            <button type="button" class="btn btn-primary text-right" onclick="openTab('SoilWater')">Next</button>
                         </div>
                         <div id="SoilWaterBtn" class="switchBtns">
-                            <div  class="btn btn-primary text-right">
-                                <button type="button" onclick="openTab('SiteInfo')">Back</button><br>
-                            </div>
-                            <div  class="btn btn-primary text-right">
-                                <button type="button" onclick="openTab('Decoef')">Next</button><br>
-                            </div>
+                            <button type="button" class="btn btn-primary text-left" onclick="openTab('Irrigation')">Back</button>&nbsp;&nbsp;&nbsp;
+                            <button type="button" class="btn btn-primary text-right" onclick="openTab('Decoef')">Next</button>
                         </div>
                         <div id="DecoefBtn" class="switchBtns">
-                            <div  class="btn btn-primary text-right">
-                                <button type="button" onclick="openTab('SoilWater')">Back</button><br>
-                            </div>
-                            <div class="btn btn-primary text-right">
-                                <button type="submit" value="Submit">Save</button><br>
-                            </div>
+                            <button type="button" class="btn btn-primary text-left" onclick="openTab('SoilWater')">Back</button>&nbsp;&nbsp;&nbsp;
+                            <button type="submit" class="btn btn-primary text-right" value="Submit">Save</button>
                         </div>
                     </div>
                 </fieldset>
@@ -198,7 +197,6 @@
             $(document).ready(function () {
                 init();
             });
-
         </script>
 
         <#include "../../footer.ftl">
