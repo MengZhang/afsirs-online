@@ -222,3 +222,6 @@ pip-log.txt
 .mr.developer.cfg
 nb-configuration.xml
 *.xlsx
+/Maps/
+/Permit/
+/customs.json
