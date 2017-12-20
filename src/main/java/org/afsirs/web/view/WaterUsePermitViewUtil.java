@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import org.afsirs.web.dao.WaterUsePermitDAO;
 import org.afsirs.web.dao.bean.WaterUsePermit;
+import org.afsirs.web.util.DataUtil;
 import static org.afsirs.web.util.DataUtil.getCropList;
 import org.afsirs.web.util.Path;
 import static org.afsirs.web.view.ViewUtil.setCommonParam;
@@ -29,6 +30,7 @@ public class WaterUsePermitViewUtil {
         attributes.put("permit", new WaterUsePermit());
         attributes.put("cropListAnnual", getCropList("ANNUAL"));
         attributes.put("cropListPerennial", getCropList("PERENNIAL"));
+        attributes.put("irSysList", DataUtil.getIRSysList());
         
         return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.WaterUse.CREATE));
     }
