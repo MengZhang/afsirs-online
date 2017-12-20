@@ -59,9 +59,9 @@
                 openTab('SiteInfo');
                 hideComp("cropNameSB");
                 if (document.getElementById("crop_type_annual").checked) {
-                    switchComp('cropNameAnnualSB', 'cropNameSB');
+                    switchCropType('annual');
                 } else if (document.getElementById("crop_type_perennial").checked) {
-                    switchComp('cropNamePerennialSB', 'cropNameSB');
+                    switchCropType('perennial');
                 }
             }
 
@@ -91,9 +91,21 @@
                 }
             }
 
-            function switchComp(compName, switchClass) {
-                hideComp(switchClass);
-                document.getElementById(compName).style.display = "block";
+            function switchCropType(cropType) {
+                hideComp("cropNameSB");
+                if (cropType === "annual") {
+                    document.getElementById("cropNameAnnualSB").style.display = "block";
+                    document.getElementById("startMonthSB").disabled = false;
+                    document.getElementById("startDaySB").disabled = false;
+                    document.getElementById("endMonthSB").disabled = false;
+                    document.getElementById("endDaySB").disabled = false;
+                } else if (cropType === "perennial") {
+                    document.getElementById("cropNamePerennialSB").style.display = "block";
+                    document.getElementById("startMonthSB").disabled = true;
+                    document.getElementById("startDaySB").disabled = true;
+                    document.getElementById("endMonthSB").disabled = true;
+                    document.getElementById("endDaySB").disabled = true;
+                }
             }
 
             function switchMonthDayList(monthSBID, daySBID) {
@@ -140,7 +152,7 @@
             <p>${error_message!"Permit Already Exist"}</p>
             </#if>
 
-            <form id="createPermitForm" class="form-horizontal" method="post">
+            <form id="createPermitForm" action="/wateruse/permit/create" class="form-horizontal" method="post">
                 <fieldset>
                     <legend>Create New Permit</legend>
 

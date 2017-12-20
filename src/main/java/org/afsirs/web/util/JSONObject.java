@@ -17,10 +17,15 @@ public class JSONObject extends org.json.simple.JSONObject {
     }
     
     public String getOrBlank(String key) {
-        return (String) super.getOrDefault(key, "");
+        return (String) getOrDefault(key, "");
     }
     
     public String getOrDefault(String key, String def) {
-        return (String) super.getOrDefault(key, def);
+        Object val = super.getOrDefault(key, def);
+        if (val == null) {
+            return def;
+        } else {
+            return val.toString();
+        }
     }
 }

@@ -27,7 +27,9 @@ public class WaterUsePermitViewUtil {
     public static String getCreatePage(Request request, Map<String, Object> attributes) {
         setCommonParam(request, attributes);
         setWaterUsePermitCommonParam(request, attributes);
-        attributes.put("permit", new WaterUsePermit());
+        if (!attributes.containsKey("permit")) {
+            attributes.put("permit", new WaterUsePermit());
+        }
         attributes.put("cropListAnnual", getCropList("ANNUAL"));
         attributes.put("cropListPerennial", getCropList("PERENNIAL"));
         attributes.put("irSysList", DataUtil.getIRSysList());

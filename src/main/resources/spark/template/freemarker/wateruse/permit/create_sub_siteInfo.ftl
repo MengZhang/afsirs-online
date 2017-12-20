@@ -4,7 +4,7 @@
             <label class="control-label col-sm-2" for="permit_id">Permit ID :</label>
             <div class="col-sm-6">
                 <#if permit['permit_id']??>
-                <label class="control-label">${permit['permit_id']!}</label>
+                <input type="text" name="permit_id" class="form-control" value="${permit['permit_id']!}" placeholder="Enter Permit ID" data-toggle="tooltip" title="This field accepts alphanumeric characters without spaces" disabled>
                 <input type="hidden" name="permit_id" value="${permit['permit_id']!}" >
                 <#else>
                 <input type="text" name="permit_id" class="form-control" value="${permit['permit_id']!}" placeholder="Enter Permit ID" data-toggle="tooltip" title="This field accepts alphanumeric characters without spaces">
@@ -21,10 +21,10 @@
             <label class="control-label col-sm-2" for="crop_type">Crop :</label>
             <div class="row col-md-6">
                 <div class="col-md-6">
-                    <label><input type="radio" name="crop_type" id="crop_type_annual" class="form-control" value="annual" onclick="switchComp('cropNameAnnualSB', 'cropNameSB')" <#if permit['crop_type']?? && permit['crop_type'] == "annual">checked</#if>>Annual</label>
+                    <label><input type="radio" name="crop_type" id="crop_type_annual" class="form-control" value="annual" onclick="switchCropType('annual')" <#if permit['crop_type']?? && permit['crop_type'] == "annual">checked</#if>>Annual</label>
                 </div>
                 <div class="col-md-6">
-                    <label><input type="radio" name="crop_type" id="crop_type_perennial" class="form-control" value="perennial" onclick="switchComp('cropNamePerennialSB', 'cropNameSB')" <#if permit['crop_type']?? && permit['crop_type'] == "perennial">checked</#if>>Perennial</label>
+                    <label><input type="radio" name="crop_type" id="crop_type_perennial" class="form-control" value="perennial" onclick="switchCropType('perennial')" <#if permit['crop_type']?? && permit['crop_type'] == "perennial">checked</#if>>Perennial</label>
                 </div>
             </div>
         </div>
@@ -48,22 +48,22 @@
                 </select>
             </div>
         </div>
-        <div class="form-group">
+        <div id="startDateSB" class="form-group">
             <label class="control-label col-sm-2" for="beg_date_month">Start Date :</label>
             <div class="row col-md-6">
                 <div class="col-md-4">
-                    <select name="beg_date_month" id="beg_date_month" class="form-control" onchange="switchMonthDayList('beg_date_month', 'beg_date_day')">
+                    <select id="startMonthSB"  name="beg_date_month" id="beg_date_month" class="form-control" onchange="switchMonthDayList('beg_date_month', 'beg_date_day')">
                         <option value="0" >Month</option>
                         <#list ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as x>
-                        <option value="${x?counter}" <#if permit['beg_date_month']?? && permit['beg_date_month'] == x?counter>selected</#if>>${x!}</option>
+                        <option value="${x?counter}" <#if permit['beg_date_month']?? && permit['beg_date_month']?number == x?counter>selected</#if>>${x!}</option>
                         </#list>
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <select name="beg_date_day" id="beg_date_day" class="form-control">
+                    <select id="startDaySB" name="beg_date_day" id="beg_date_day" class="form-control">
                         <option value="0" >Day</option>
                         <#list 1..31 as x>
-                        <option value="${x?counter}" <#if permit['beg_date_day']?? && permit['beg_date_day'] == x?counter>selected</#if>>${x!}</option>
+                        <option value="${x?counter}" <#if permit['beg_date_day']?? && permit['beg_date_day']?number == x?counter>selected</#if>>${x!}</option>
                         </#list>
                     </select>
                 </div>
@@ -73,18 +73,18 @@
             <label class="control-label col-sm-2" for="end_date_month">End Date :</label>
             <div class="row col-md-6">
                 <div class="col-md-4">
-                    <select name="end_date_month" class="form-control">
+                    <select id="endMonthSB" name="end_date_month" class="form-control">
                         <option value="0" >Month</option>
                         <#list ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as x>
-                        <option value="${x?counter}" <#if permit['end_date_month']?? && permit['end_date_month'] == x?counter>selected</#if>>${x!}</option>
+                        <option value="${x?counter}" <#if permit['end_date_month']?? && permit['end_date_month']?number == x?counter>selected</#if>>${x!}</option>
                         </#list>
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <select name="end_date_day" class="form-control">
+                    <select id="endDaySB" name="end_date_day" class="form-control">
                         <option value="0" >Day</option>
                         <#list 1..31 as x>
-                        <option value="${x?counter}" <#if permit['end_date_day']?? && permit['end_date_day'] == x?counter>selected</#if>>${x!}</option>
+                        <option value="${x?counter}" <#if permit['end_date_day']?? && permit['end_date_day']?number == x?counter>selected</#if>>${x!}</option>
                         </#list>
                     </select>
                 </div>
