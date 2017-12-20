@@ -57,7 +57,7 @@ public class WaterUsePermit {
         ret.setIrr_option(request.queryParams("irr_option"));
         ret.setIrr_depth_type(request.queryParams("irr_depth_type"));
         ret.setIrr_depth(request.queryParams("irr_depth"));
-        ret.setIr_dat(request.queryParams("irr_dat"));
+        ret.setIr_dat(request.queryParams("ir_dat"));
         ret.setIrr_efficiency(request.queryParams("irr_efficiency"));
         ret.setSoil_surface_irr(request.queryParams("soil_surface_irr"));
         ret.setEt_extracted(request.queryParams("et_extracted"));
@@ -71,6 +71,7 @@ public class WaterUsePermit {
         ret.setPermit_id(data.getOrDefault("permit_id", ""));
         ret.setOwner_name(data.getOrDefault("owner_name", data.getOrBlank("output_name")));
         ret.setCrop_type(readCropType(data));
+        ret.setCrop_name(data.getOrDefault("crop_name", ""));
         ret.setBeg_date_month(data.getOrBlank("beg_date_month"));
         ret.setBeg_date_day(data.getOrBlank("beg_date_day"));
         ret.setEnd_date_month(data.getOrBlank("end_date_month"));
@@ -110,6 +111,7 @@ public class WaterUsePermit {
         input.setIDCODE(irr_depth_type, irr_depth);
         input.setIrrigationSystem(irr_type, soil_surface_irr, et_extracted, irr_efficiency,
                 DataUtil.getIRSysList().get(Integer.parseInt(irr_type)));
+        input.setIVERS(ir_dat);
         return input;
     }
 
