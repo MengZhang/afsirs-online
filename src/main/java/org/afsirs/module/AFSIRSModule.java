@@ -4425,7 +4425,7 @@ public class AFSIRSModule {
         JSONObject obj = new JSONObject();
         //page 1
         obj.put("permit_id", input.getSITE());
-        obj.put("output_name", input.getOWNER());
+        obj.put("owner_name", input.getOWNER());
         obj.put("et_loc", input.getCLIMATESTATION());
         obj.put("rain_loc", input.getRAINFALLSTATION());
         obj.put("planted_area", input.getPlantedAcres());

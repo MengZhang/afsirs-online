@@ -155,6 +155,9 @@ public class UserInput {
     }
 
     public void setIDCODE(String code, String value) {
+        if (value == null || value.equals("")) {
+            value = "0";
+        }
         setIDCODE(
                 Integer.parseInt(code),
                 Double.parseDouble(value));
