@@ -68,7 +68,7 @@ public class Main {
         get(Path.Web.WaterUse.LIST,             WaterUsePageController.serveListPage);
         get(Path.Web.WaterUse.CREATE,           WaterUsePageController.serveCreatePage);
         post(Path.Web.WaterUse.CREATE,          WaterUsePageController.handleCreatePost);
-        get(Path.Web.WaterUse.FIND,             WaterUsePageController.serveDetailPage);
+        get(Path.Web.WaterUse.FIND,             WaterUsePageController.serveEditPage);
         
         get(Path.Web.DataTools.SOILMAP,             DataToolsPageController.serveSoilMapPage);
         

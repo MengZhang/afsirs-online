@@ -25,7 +25,7 @@ public class WaterUsePermit {
     private String end_date_month;
     private String end_date_day;
     private String description;
-    
+
     // Irrigation
     private String irr_type;
     private String irr_option;
@@ -35,8 +35,7 @@ public class WaterUsePermit {
     private String irr_efficiency;
     private String soil_surface_irr;
     private String et_extracted;
-            
-    
+
     public static WaterUsePermit readFromRequest(Request request) {
         WaterUsePermit ret = new WaterUsePermit();
         ret.setPermit_id(request.queryParams("permit_id"));
@@ -53,7 +52,7 @@ public class WaterUsePermit {
         ret.setEnd_date_month(request.queryParams("end_date_month"));
         ret.setEnd_date_day(request.queryParams("end_date_day"));
         ret.setEnd_date_day(request.queryParams("end_date_day"));
-        
+
         ret.setIrr_type(request.queryParams("irr_type"));
         ret.setIrr_option(request.queryParams("irr_option"));
         ret.setIrr_depth_type(request.queryParams("irr_depth_type"));
@@ -62,7 +61,7 @@ public class WaterUsePermit {
         ret.setIrr_efficiency(request.queryParams("irr_efficiency"));
         ret.setSoil_surface_irr(request.queryParams("soil_surface_irr"));
         ret.setEt_extracted(request.queryParams("et_extracted"));
-        
+
         return ret;
     }
 
@@ -70,14 +69,14 @@ public class WaterUsePermit {
         WaterUsePermit ret = new WaterUsePermit();
         JSONObject data = JsonUtil.parseFrom(jsonFile);
         ret.setPermit_id(data.getOrDefault("permit_id", ""));
-        ret.setOwner_name(data.getOrBlank("owner_name"));
+        ret.setOwner_name(data.getOrDefault("owner_name", data.getOrBlank("output_name")));
         ret.setCrop_type(readCropType(data));
         ret.setBeg_date_month(data.getOrBlank("beg_date_month"));
         ret.setBeg_date_day(data.getOrBlank("beg_date_day"));
         ret.setEnd_date_month(data.getOrBlank("end_date_month"));
         ret.setEnd_date_day(data.getOrBlank("end_date_day"));
         ret.setDescription(data.getOrBlank("description"));
-        
+
         ret.setIrr_type(data.getOrBlank("irr_type"));
         ret.setIrr_option(data.getOrBlank("irr_option"));
         String irrDepthType = data.getOrBlank("irr_depth_type");
@@ -91,19 +90,22 @@ public class WaterUsePermit {
         ret.setIrr_efficiency(data.getOrBlank("irr_efficiency"));
         ret.setSoil_surface_irr(data.getOrBlank("soil_surface_irr"));
         ret.setEt_extracted(data.getOrBlank("et_extracted"));
-        
-        
+
         return ret;
     }
-    
+
     public UserInput toAFSIRSInputData() {
         UserInput input = new UserInput();
         input.setSITE(permit_id);
         input.setOWNER(owner_name);
         input.setCropType(crop_type);
         input.setCropName(crop_name);
-        input.setIrrigationSeason(beg_date_month, beg_date_day, end_date_month, end_date_day);
-        
+        if (crop_type.equals("annual")) {
+            input.setIrrigationSeason(beg_date_month, beg_date_day, end_date_month, end_date_day);
+        } else {
+            input.setIrrigationSeason(1, 1, 12, 31);
+        }
+
         input.setIrrOption(irr_option);
         input.setIDCODE(irr_depth_type, irr_depth);
         input.setIrrigationSystem(irr_type, soil_surface_irr, et_extracted, irr_efficiency,

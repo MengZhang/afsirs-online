@@ -21,7 +21,7 @@ import spark.Route;
 public class WaterUsePageController {
 
     public static Route serveCreatePage = (Request request, Response response) -> {
-        LOG.info("Serve Create Project Page");
+        LOG.info("Serve Create Water Use Permit Page");
         Map<String, Object> attributes = new HashMap<>();
         if (!ViewUtil.isLogined(request)) {
             response.redirect(Path.Web.LOGIN);
@@ -31,7 +31,7 @@ public class WaterUsePageController {
     };
 
     public static Route serveListPage = (Request request, Response response) -> {
-        LOG.info("Serve List Project Page");
+        LOG.info("Serve List Water Use Permit Page");
         Map<String, Object> attributes = new HashMap<>();
         if (!ViewUtil.isLogined(request)) {
             response.redirect(Path.Web.LOGIN);
@@ -41,7 +41,7 @@ public class WaterUsePageController {
     };
 
     public static Route handleCreatePost = (Request request, Response response) -> {
-        LOG.info("Handle Create Project Post");
+        LOG.info("Handle Create Water Use Permit Post");
         Map<String, Object> attributes = new HashMap<>();
         if (!ViewUtil.isLogined(request)) {
             response.redirect(Path.Web.LOGIN);
@@ -57,8 +57,22 @@ public class WaterUsePageController {
         }
     };
 
+    public static Route serveEditPage = (Request request, Response response) -> {
+        LOG.info("Serve Water Use Permit Edit Page");
+        Map<String, Object> attributes = new HashMap<>();
+        
+        String permit_id = request.queryParams("permit_id");
+        WaterUsePermit ret = WaterUsePermitDAO.find(permit_id, ViewUtil.getUserID(request));
+        if (ret == null) {
+            attributes.put("operation_result", "Failed");
+        } else {
+            attributes.put("permit", ret);
+        }
+        return getCreatePage(request, attributes);
+    };
+
     public static Route serveDetailPage = (Request request, Response response) -> {
-        LOG.info("Serve Project Detail Page");
+        LOG.info("Serve Water Use Permit Detail Page");
         Map<String, Object> attributes = new HashMap<>();
         
         String id = request.queryParams("id");

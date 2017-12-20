@@ -5,7 +5,7 @@
             <div class="col-md-6">
                 <select name="irr_type" class="form-control">
                     <#list irSysList as x>
-                    <option value="${x?counter}" <#if permit['irr_type']?? && permit['irr_type'] == x?counter>selected</#if>>${x!}</option>
+                    <option value="${x?counter}" <#if permit['irr_type']?? && permit['irr_type']?number == x?counter>selected</#if>>${x!}</option>
                     </#list>
                 </select>
             </div>
@@ -22,11 +22,11 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-2" for="irr_depth_type">Irrigation water depths definition:</label>
+            <label class="control-label col-md-2" for="irr_depth_type">Irrigation water depths definition :</label>
             <div class="col-md-6">
                 <select name="irr_depth_type" class="form-control">
                     <#list ['Irrigate to field capacity','Apply a fixed depth per application(>0.1)','Deficit Irrigation application','None'] as x>
-                    <option value="${x?counter}" <#if permit['irr_depth_type']?? && permit['irr_depth_type'] == x?counter>selected</#if>>${x!}</option>
+                    <option value="${x?counter}" <#if permit['irr_depth_type']?? && permit['irr_depth_type']?number == x?counter>selected</#if>>${x!}</option>
                     </#list>
                 </select>
             </div>
@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="irr_efficiency">Irrigation Efficiency :</label>
+            <label class="control-label col-sm-2" for="irr_efficiency">Efficiency :</label>
             <div class="col-sm-6">
                 <input type="text" name="irr_efficiency" class="form-control" value="${permit['irr_efficiency']!}" placeholder="Irrigation Application Efficiency" data-toggle="tooltip" title="">
             </div>

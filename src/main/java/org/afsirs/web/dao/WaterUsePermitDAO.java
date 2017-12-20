@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileFilter;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -85,6 +86,18 @@ public class WaterUsePermitDAO {
 //        return Arrays.asList(projectNames.toArray(new String[]{}));
 //    }
     
+    public static WaterUsePermit find(String id, String userId) {
+        if (id == null || id.isEmpty()) {
+            return null;
+        }
+        File permitDir = getUserWaterUsePermitDir(userId);
+        File permitFile = Paths.get(permitDir.getPath(), id + ".json").toFile();
+        if (permitFile.isFile()) {
+            return WaterUsePermit.readFromJson(permitFile);
+        } else {
+            return null;
+        }
+    }
 //    public static HashMap find(String id) {
 //        if (id == null || id.isEmpty()) {
 //            return new HashMap();
