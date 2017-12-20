@@ -174,7 +174,7 @@
                     <br><br>
                     <div class="text-center">
                         <div id="SiteInfoBtn" class="switchBtns">
-                            <button type="button" class="btn btn-primary text-right" onclick="openTab('SoilWater')">Next</button>
+                            <button type="button" class="btn btn-primary text-right" onclick="openTab('Irrigation')">Next</button>
                         </div>
                         <div id="IrrigationBtn" class="switchBtns">
                             <button type="button" class="btn btn-primary text-left" onclick="openTab('SiteInfo')">Back</button>&nbsp;&nbsp;&nbsp;
