@@ -7,12 +7,12 @@
             <li class="active">
                 <a href="/"><span class="glyphicon glyphicon-home"></span> Home</a>
             </li>
-            <li class="dropdown">
+<!--            <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-grain"></span> Simulation <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="/simulation/afsirs"><span class="glyphicon glyphicon-file"></span> AFSIRS</a></li>
                 </ul>
-            </li>
+            </li>-->
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-tint"></span> Water Use <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
