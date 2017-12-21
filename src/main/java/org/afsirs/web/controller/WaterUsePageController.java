@@ -9,7 +9,7 @@ import org.afsirs.web.util.Path;
 import static org.afsirs.web.view.WaterUsePermitViewUtil.getCreatePage;
 import static org.afsirs.web.view.WaterUsePermitViewUtil.getDetailPage;
 import static org.afsirs.web.view.WaterUsePermitViewUtil.getListPage;
-import org.afsirs.web.view.ViewUtil;;
+import org.afsirs.web.view.ViewUtil;
 import spark.Request;
 import spark.Response;
 import spark.Route;
