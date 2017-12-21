@@ -56,4 +56,9 @@
             </div>
         </div>
     </div>
-</div>
+    <div class="text-center">
+        <div>
+            <button type="button" class="btn btn-primary text-left" onclick="openTab('SiteInfo')">Back</button>&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btn btn-primary text-right" onclick="openTab('SoilWater')">Next</button>
+        </div>
+    </div>
