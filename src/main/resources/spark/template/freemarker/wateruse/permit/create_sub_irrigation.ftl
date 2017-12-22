@@ -1,3 +1,24 @@
+<script>
+    
+    function changeIrrDepDefinition() {
+        var irrDepType = document.getElementById("irr_depth_type");
+        var irrDep = document.getElementById("irr_depth");
+        if (irrDepType.value === "1") {
+            irrDep.disabled = false;
+            irrDep.placeholder = "inches, Depth of water to apply per irrigation (>= 0.1)";
+            irrDep.title = "inches, Depth of water to apply per irrigation (>= 0.1)";
+        } else if (irrDepType.value === "2") {
+            irrDep.disabled = false;
+            irrDep.placeholder = "%, of field capacity for deficit irrigation (50-100)";
+            irrDep.title = "%, of field capacity for deficit irrigation (50-100)";
+        } else {
+            irrDep.disabled = true;
+            irrDep.placeholder = "";
+            irrDep.title = "";
+        }
+    }
+</script>
+
 <div class="subcontainer">
     <div class="row">
         <div class="form-group">
@@ -32,6 +53,20 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="control-label col-md-2" for="irr_depth"></label>
+            <div class="col-md-6">
+                <#if permit['irr_depth_type']??>
+                  <#if permit['irr_depth_type']?number == 1>
+                <input type="text" id="irr_depth" name="irr_depth" class="form-control" value="${permit['irr_depth']!}" placeholder="inches, Depth of water to apply per irrigation (>= 0.1)" data-toggle="tooltip" title="inches, Depth of water to apply per irrigation (>= 0.1)">
+                  <#elseif permit['irr_depth_type']?number == 2>
+                <input type="text" id="irr_depth" name="irr_depth" class="form-control" value="" placeholder="%, of field capacity for deficit irrigation (50-100)" data-toggle="tooltip" title="%, of field capacity for deficit irrigation (50-100)" disabled>
+                  <#else>
+                <input type="text" id="irr_depth" name="irr_depth" class="form-control" value="" placeholder="" data-toggle="tooltip" title="" disabled>
+                  </#if>
+                <#else>
+                <input type="text" id="irr_depth" name="irr_depth" class="form-control" value="" placeholder="" data-toggle="tooltip" title="" disabled>  
+                </#if>
+            </div>
         </div>
 <!--        <div class="form-group">
             <label class="control-label col-md-1" for="ir_dat"></label>
