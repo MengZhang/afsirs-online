@@ -29,19 +29,30 @@
     function changeIrrDepDefinition() {
         var irrDepType = document.getElementById("irr_depth_type");
         var irrDep = document.getElementById("irr_depth");
+        var irrDepInput = document.getElementById("irr_depth_input");
         if (irrDepType.value === "1") {
-            irrDep.disabled = false;
-            irrDep.placeholder = "inches, Depth of water to apply per irrigation (>= 0.1)";
-            irrDep.title = "inches, Depth of water to apply per irrigation (>= 0.1)";
+            var str = "inches, Depth of water to apply per irrigation (>= 0.1)";
+            setStatus(irrDep, false, 300, 0.1, 0.1, 30, str);
+            setStatus(irrDepInput, false, 300, 0.1, 10, 30, str);
         } else if (irrDepType.value === "2") {
-            irrDep.disabled = false;
-            irrDep.placeholder = "%, of field capacity for deficit irrigation (50-100)";
-            irrDep.title = "%, of field capacity for deficit irrigation (50-100)";
+            var str = "%, of field capacity for deficit irrigation (50-100)";
+            setStatus(irrDep, false, 100, 50, 0.1, 75, str);
+            setStatus(irrDepInput, false, 100, 50, 5, 75, str);
         } else {
-            irrDep.disabled = true;
-            irrDep.placeholder = "";
-            irrDep.title = "";
+            var str = "";
+            setStatus(irrDep, true, 100, 50, 0.1, "", str);
+            setStatus(irrDepInput, true, 100, 50, 5, "", str);
         }
+    }
+    
+    function setStatus(comp, disabled, max, min, step, value, msg) {
+        comp.disabled = disabled;
+        comp.max = max;
+        comp.min = min;
+        comp.step = step;
+        comp.value = value;
+        comp.placeholder = msg;
+        comp.title = msg;
     }
 </script>
 
@@ -81,19 +92,37 @@
         </div>
         <div class="form-group">
             <label class="control-label col-md-2" for="irr_depth"></label>
-            <div class="col-md-6">
-                <#if permit['irr_depth_type']??>
-                  <#if permit['irr_depth_type']?number == 1>
-                <input type="text" id="irr_depth" name="irr_depth" class="form-control" value="${permit['irr_depth']!}" placeholder="inches, Depth of water to apply per irrigation (>= 0.1)" data-toggle="tooltip" title="inches, Depth of water to apply per irrigation (>= 0.1)">
-                  <#elseif permit['irr_depth_type']?number == 2>
-                <input type="text" id="irr_depth" name="irr_depth" class="form-control" value="" placeholder="%, of field capacity for deficit irrigation (50-100)" data-toggle="tooltip" title="%, of field capacity for deficit irrigation (50-100)" disabled>
-                  <#else>
-                <input type="text" id="irr_depth" name="irr_depth" class="form-control" value="" placeholder="" data-toggle="tooltip" title="" disabled>
-                  </#if>
-                <#else>
-                <input type="text" id="irr_depth" name="irr_depth" class="form-control" value="" placeholder="" data-toggle="tooltip" title="" disabled>  
-                </#if>
+        <#if permit['irr_depth_type']??>
+          <#if permit['irr_depth_type']?number == 1>
+            <div class="col-sm-4">
+                <input type="range" id="irr_depth" name="irr_depth" step="0.1" max="300" min="0.1" class="form-control" value="${permit['irr_depth']!}" placeholder="inches, Depth of water to apply per irrigation (>= 0.1)" data-toggle="tooltip" title="inches, Depth of water to apply per irrigation (>= 0.1)" onchange="showValue('irr_depth')" disabled>
             </div>
+            <div class="col-sm-2">
+                <input type="number" id="irr_depth_input" name="irr_depth_input" step="10" max="300" min="0.1" class="form-control" value="${permit['irr_depth']!}" placeholder="inches, Depth of water to apply per irrigation (>= 0.1)" data-toggle="tooltip" title="inches, Depth of water to apply per irrigation (>= 0.1)" onchange="showRange('irr_depth')" disabled>
+            </div>
+          <#elseif permit['irr_depth_type']?number == 2>
+            <div class="col-sm-4">
+                <input type="range" id="irr_depth" name="irr_depth" step="0.1" max="100" min="50" class="form-control" value="${permit['irr_depth']!}" placeholder="%, of field capacity for deficit irrigation (50-100)" data-toggle="tooltip" title="%, of field capacity for deficit irrigation (50-100)" onchange="showValue('irr_depth')" disabled>
+            </div>
+            <div class="col-sm-2">
+                <input type="number" id="irr_depth_input" name="irr_depth_input" step="5" max="100" min="50" class="form-control" value="${permit['irr_depth']!}" placeholder="%, of field capacity for deficit irrigation (50-100)" data-toggle="tooltip" title="%, of field capacity for deficit irrigation (50-100)" onchange="showRange('irr_depth')" disabled>
+            </div>
+          <#else>
+            <div class="col-sm-4">
+                <input type="range" id="irr_depth" name="irr_depth" class="form-control" value="${permit['irr_depth']!}" placeholder="" data-toggle="tooltip" title="" onchange="showValue('irr_depth')" disabled>
+            </div>
+            <div class="col-sm-2">
+                <input type="number" id="irr_depth_input" name="irr_depth_input" class="form-control" value="${permit['irr_depth']!}" placeholder="" data-toggle="tooltip" title="" onchange="showRange('irr_depth')" disabled>
+            </div>
+          </#if>
+          <#else>
+            <div class="col-sm-4">
+                <input type="range" id="irr_depth" name="irr_depth" class="form-control" value="${permit['irr_depth']!}" placeholder="" data-toggle="tooltip" title="" onchange="showValue('irr_depth')" disabled>
+            </div>
+            <div class="col-sm-2">
+                <input type="number" id="irr_depth_input" name="irr_depth_input" class="form-control" value="${permit['irr_depth']!}" placeholder="" data-toggle="tooltip" title="" onchange="showRange('irr_depth')" disabled>
+            </div>
+          </#if>
         </div>
 <!--        <div class="form-group">
             <label class="control-label col-md-1" for="ir_dat"></label>
@@ -107,7 +136,7 @@
                 <input type="range" id="irr_efficiency" name="irr_efficiency" step="0.01" max="1.0" min="0.01" class="form-control" value="${permit['irr_efficiency']!'1.0'}" placeholder="Irrigation Application Efficiency" data-toggle="tooltip" title="" onchange="showValue('irr_efficiency')">
             </div>
             <div class="col-sm-2">
-                <input type="number" id="irr_efficiency_input" name="irr_efficiency_input" step="0.01" max="1.0" min="0.01" class="form-control" value="${permit['irr_efficiency']!'1.0'}" placeholder="Irrigation Application Efficiency" data-toggle="tooltip" title="" onchange="showRange('irr_efficiency')">
+                <input type="number" id="irr_efficiency_input" name="irr_efficiency_input" step="0.05" max="1.0" min="0.01" class="form-control" value="${permit['irr_efficiency']!'1.0'}" placeholder="Irrigation Application Efficiency" data-toggle="tooltip" title="" onchange="showRange('irr_efficiency')">
             </div>
         </div>
         <div class="form-group">
@@ -116,7 +145,7 @@
                 <input type="range" id="soil_surface_irr" name="soil_surface_irr" step="0.01" max="1.0" min="0.01" class="form-control" value="${permit['soil_surface_irr']!'1.0'}" placeholder="Fraction of soil surface irrigated" data-toggle="tooltip" title="" onchange="showValue('soil_surface_irr')">
             </div>
             <div class="col-sm-2">
-                <input type="number" id="soil_surface_irr_input" name="soil_surface_irr_input" step="0.01" max="1.0" min="0.01" class="form-control" value="${permit['soil_surface_irr']!'1.0'}" placeholder="Fraction of soil surface irrigated" data-toggle="tooltip" title="" onchange="showRange('soil_surface_irr')">
+                <input type="number" id="soil_surface_irr_input" name="soil_surface_irr_input" step="0.05" max="1.0" min="0.01" class="form-control" value="${permit['soil_surface_irr']!'1.0'}" placeholder="Fraction of soil surface irrigated" data-toggle="tooltip" title="" onchange="showRange('soil_surface_irr')">
             </div>
         </div>
         <div class="form-group">
@@ -125,7 +154,7 @@
                 <input type="range" id="et_extracted" name="et_extracted" step="0.01" max="1.0" min="0.01" class="form-control" value="${permit['et_extracted']!'1.0'}" placeholder="Fraction of ET extracted from the irrigated zone" data-toggle="tooltip" title="" onchange="showValue('et_extracted')">
             </div>
             <div class="col-sm-2">
-                <input type="number" id="et_extracted_input" name="et_extracted_input" step="0.01" max="1.0" min="0.01" class="form-control" value="${permit['et_extracted']!'1.0'}" placeholder="Fraction of ET extracted from the irrigated zone" data-toggle="tooltip" title="" onchange="showRange('et_extracted')">
+                <input type="number" id="et_extracted_input" name="et_extracted_input" step="0.05" max="1.0" min="0.01" class="form-control" value="${permit['et_extracted']!'1.0'}" placeholder="Fraction of ET extracted from the irrigated zone" data-toggle="tooltip" title="" onchange="showRange('et_extracted')">
             </div>
         </div>
         <div class="form-group">
@@ -134,7 +163,7 @@
                 <input type="range" id="water_table_depth" name="water_table_depth" step="0.1" max="200" min="0.1" class="form-control" value="${permit['water_table_depth']!'1.0'}" placeholder="Enter Depth of Water Table" data-toggle="tooltip" title="This field accepts numeric values only" onchange="showValue('water_table_depth')">
             </div>
             <div class="col-sm-2">
-                <input type="number" id="water_table_depth_input" name="water_table_depth_input" step="0.1" max="200" min="0.1" class="form-control" value="${permit['water_table_depth']!'1.0'}" placeholder="Enter Depth of Water Table" data-toggle="tooltip" title="This field accepts numeric values only" onchange="showRange('water_table_depth')">
+                <input type="number" id="water_table_depth_input" name="water_table_depth_input" step="10" max="200" min="0.1" class="form-control" value="${permit['water_table_depth']!'1.0'}" placeholder="Enter Depth of Water Table" data-toggle="tooltip" title="This field accepts numeric values only" onchange="showRange('water_table_depth')">
             </div>
         </div>
     </div>
