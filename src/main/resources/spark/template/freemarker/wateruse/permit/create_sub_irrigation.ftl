@@ -57,6 +57,12 @@
                 <input type="text" name="et_extracted" class="form-control" value="${permit['et_extracted']!}" placeholder="Fraction of ET extracted from the irrigated zone" data-toggle="tooltip" title="">
             </div>
         </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="water_table_depth">Water Table Depth:</label>
+            <div class="col-sm-6">
+                <input type="text" id="water_table_depth" name="water_table_depth" class="form-control" value="${permit['water_table_depth']!}" placeholder="Enter Depth of Water Table" data-toggle="tooltip" title="This field accepts numeric values only">
+            </div>
+        </div>
     </div>
     <div class="text-center">
         <div>

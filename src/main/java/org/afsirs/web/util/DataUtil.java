@@ -22,8 +22,8 @@ public class DataUtil {
 
     private final static ArrayList<String> CROP_LIST_ANNUAL = readCropList("ANNUAL");
     private final static ArrayList<String> CROP_LIST_PERENNIAL = readCropList("PERENNIAL");
-    private final static ArrayList<Irrigation> IR_LIST = new ArrayList();
-    private final static ArrayList<String> IR_SYS_LIST = readIrrigationList();
+    private final static ArrayList<Irrigation> IR_SYS_LIST = new ArrayList();
+    private final static ArrayList<String> IR_NAME_LIST = readIrrigationList();
 
     public static ArrayList<String> getCropList(String type) {
         if (type != null) {
@@ -40,11 +40,11 @@ public class DataUtil {
         }
     }
     
-    public static ArrayList<Irrigation> getIRList() {
-        return IR_LIST;
+    public static ArrayList<String> getIRSysNameList() {
+        return IR_NAME_LIST;
     }
     
-    public static ArrayList<String> getIRSysList() {
+    public static ArrayList<Irrigation> getIRSysList() {
         return IR_SYS_LIST;
     }
 
@@ -109,8 +109,9 @@ public class DataUtil {
                 irr.setEff(Double.parseDouble(parts[2]));
                 irr.setArea(Double.parseDouble(parts[3]));
                 irr.setEx(Double.parseDouble(parts[4]));
-                irr.setSys(parts[5]);
-                IR_LIST.add(irr);
+                irr.setDwt(Double.parseDouble(parts[5]));
+                irr.setSys(parts[6]);
+                IR_SYS_LIST.add(irr);
 
                 ret.add(irr.getSys());
                 i++;

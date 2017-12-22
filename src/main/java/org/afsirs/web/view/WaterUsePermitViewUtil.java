@@ -32,6 +32,7 @@ public class WaterUsePermitViewUtil {
         }
         attributes.put("cropListAnnual", getCropList("ANNUAL"));
         attributes.put("cropListPerennial", getCropList("PERENNIAL"));
+        attributes.put("irSysNameList", DataUtil.getIRSysNameList());
         attributes.put("irSysList", DataUtil.getIRSysList());
         
         return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.WaterUse.CREATE));

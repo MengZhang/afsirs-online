@@ -62,6 +62,7 @@ public class WaterUsePermit {
         ret.setIrr_efficiency(request.queryParams("irr_efficiency"));
         ret.setSoil_surface_irr(request.queryParams("soil_surface_irr"));
         ret.setEt_extracted(request.queryParams("et_extracted"));
+        ret.setWater_table_depth(request.queryParams("water_table_depth"));
 
         return ret;
     }
@@ -114,6 +115,7 @@ public class WaterUsePermit {
         input.setIrrigationSystem(irr_type, soil_surface_irr, et_extracted, irr_efficiency,
                 DataUtil.getIRSysNameList().get(Integer.parseInt(irr_type) - 1));
 //        input.setIVERS(ir_dat);
+        input.setDWT(Double.parseDouble(water_table_depth));
         return input;
     }
 
