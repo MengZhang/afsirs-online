@@ -7,12 +7,14 @@
             document.getElementById("startDaySB").disabled = false;
             document.getElementById("endMonthSB").disabled = false;
             document.getElementById("endDaySB").disabled = false;
+            changeIrrSysListByCrop("crop_name_annual");
         } else if (cropType === "perennial") {
             document.getElementById("cropNamePerennialSB").style.display = "block";
             document.getElementById("startMonthSB").disabled = true;
             document.getElementById("startDaySB").disabled = true;
             document.getElementById("endMonthSB").disabled = true;
             document.getElementById("endDaySB").disabled = true;
+            changeIrrSysListByCrop("crop_name_perennial");
         }
     }
 
@@ -46,6 +48,25 @@
             option.innerHTML = i;
             option.value = i;
             select.append(option);
+        }
+    }
+
+    function changeIrrSysListByCrop(cropTypeSBId) {
+        var crop = document.getElementById(cropTypeSBId).value;
+        var irrType = document.getElementById("irr_type");
+        irrType.options[4].disabled = crop !== "NURSERY,CNTR.";
+        irrType.options[7].disabled = crop !== "CITRUS";
+        irrType.options[8].disabled = crop !== "RICE";
+        
+        if (crop !== "NURSERY,CNTR." && irrType.selectedIndex === 4) {
+            irrType.selectedIndex = 0;
+            setDefIrrParams();
+        } else if (crop !== "CITRUS" && irrType.selectedIndex === 7) {
+            irrType.selectedIndex = 0;
+            setDefIrrParams();
+        } else if (crop !== "RICE" && irrType.selectedIndex === 8) {
+            irrType.selectedIndex = 0;
+            setDefIrrParams();
         }
     }
 </script>
@@ -82,7 +103,7 @@
         <div id="cropNameAnnualSB" class="form-group cropNameSB">
             <label class="control-label col-sm-2" for="crop_name_annual"></label>
             <div class="col-md-6">
-                <select name="crop_name_annual" class="form-control">
+                <select id="crop_name_annual" name="crop_name_annual" class="form-control" onchange="changeIrrSysListByCrop('crop_name_annual')">
                     <#list cropListAnnual as cropName>
                     <option value="${cropName!}" <#if permit['crop_name']?? && permit['crop_name'] == cropName>selected</#if>>${cropName!}</option>
                     </#list>
@@ -92,7 +113,7 @@
         <div id="cropNamePerennialSB" class="form-group cropNameSB">
             <label class="control-label col-sm-2" for="crop_name_perennial"></label>
             <div class="col-md-6">
-                <select name="crop_name_perennial" class="form-control">
+                <select id="crop_name_perennial" name="crop_name_perennial" class="form-control" onchange="changeIrrSysListByCrop('crop_name_perennial')">
                     <#list cropListPerennial as cropName>
                     <option value="${cropName!}" <#if permit['crop_name']?? && permit['crop_name'] == cropName>selected</#if>>${cropName!}</option>
                     </#list>
@@ -124,8 +145,8 @@
             <label class="control-label col-sm-2" for="end_date_month">End Date :</label>
             <div class="row col-md-6">
                 <div class="col-md-4">
-                    <select id="endMonthSB" name="end_date_month" class="form-control" onchange="switchMonthDayList('endMonthSB', 'endDaySB')>
-                        <option value="0" >Month</option>
+                    <select id="endMonthSB" name="end_date_month" class="form-control" onchange="switchMonthDayList('endMonthSB', 'endDaySB') >
+                                    < option value ="0" >Month</option>
                         <#list ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as x>
                         <option value="${x?counter}" <#if permit['end_date_month']?? && permit['end_date_month']?number == x?counter>selected</#if>>${x!}</option>
                         </#list>
