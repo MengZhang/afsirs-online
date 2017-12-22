@@ -42,10 +42,10 @@
                 border: 1px solid #ccc;
                 border-top: none;
             }
-            switchBtns {
+            cropNameSB {
                 display: none;
             }
-            cropNameSB {
+            soilTypeSB {
                 display: none;
             }
             cell {
@@ -70,7 +70,7 @@
             }
 
             function openTab(tabName) {
-                var i, tabcontent, tablinks, switchBtns;
+                var i, tabcontent, tablinks;
                 tabcontent = document.getElementsByClassName("tabcontent");
                 for (i = 0; i < tabcontent.length; i++) {
                     tabcontent[i].style.display = "none";
@@ -79,12 +79,7 @@
                 for (i = 0; i < tablinks.length; i++) {
                     tablinks[i].className = tablinks[i].className.replace(" active", "");
                 }
-//                switchBtns = document.getElementsByClassName("switchBtns");
-//                for (i = 0; i < tabcontent.length; i++) {
-//                    switchBtns[i].style.display = "none";
-//                }
                 document.getElementById(tabName).style.display = "block";
-//                document.getElementById(tabName + "Btn").style.display = "block";
                 document.getElementById(tabName + "Tab").className += " active";
             }
 
