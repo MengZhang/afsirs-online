@@ -59,7 +59,7 @@
 <div class="subcontainer">
     <div class="row">
         <div class="form-group">
-            <label class="control-label col-sm-2" for="irr_type">Irrigation Type :</label>
+            <label class="control-label col-sm-3" for="irr_type">Irrigation Type :</label>
             <div class="col-md-6">
                 <select id="irr_type" name="irr_type" class="form-control" onchange="setDefIrrParams()" title="Select Irrigation System">
                     <#list irSysNameList as x>
@@ -69,7 +69,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="irr_option">Calculation Type :</label>
+            <label class="control-label col-sm-3" for="irr_option">Calculation Type :</label>
             <div class="col-md-6">
                 <div class="col-md-6">
                     <label><input type="radio" name="irr_option" id="irr_option_net" class="form-control" value="NET" onclick="setDefIrrParams()" <#if permit['irr_option']?? && permit['irr_option'] == "NET">checked</#if>>&nbsp;Net&nbsp;</label>
@@ -80,7 +80,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-2" for="irr_depth_type">Irrigation water depths definition :</label>
+            <label class="control-label col-md-3" for="irr_depth_type">Irrigation water depths definition :</label>
             <div class="col-md-6">
                 <select id="irr_depth_type" name="irr_depth_type" class="form-control" onchange="changeIrrDepDefinition();" title="Define Irrigation Water depths per application">
                     <#list ['Irrigate to field capacity','Apply a fixed depth per application(>0.1)','Deficit Irrigation application'] as x>
@@ -91,7 +91,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-2" for="irr_depth"></label>
+            <label class="control-label col-md-3" for="irr_depth"></label>
         <#if permit['irr_depth_type']??>
           <#if permit['irr_depth_type']?number == 1>
             <div class="col-sm-4">
@@ -131,7 +131,7 @@
             </div>
         </div>-->
         <div class="form-group">
-            <label class="control-label col-sm-2" for="irr_efficiency">Efficiency :</label>
+            <label class="control-label col-sm-3" for="irr_efficiency">Efficiency :</label>
             <div class="col-sm-4">
                 <input type="range" id="irr_efficiency" name="irr_efficiency" step="0.01" max="1.0" min="0.01" class="form-control" value="${permit['irr_efficiency']!'1.0'}" placeholder="Irrigation Application Efficiency" data-toggle="tooltip" title="" onchange="showValue('irr_efficiency')">
             </div>
@@ -140,7 +140,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="soil_surface_irr">Surface fraction :</label>
+            <label class="control-label col-sm-3" for="soil_surface_irr">Surface fraction :</label>
             <div class="col-sm-4">
                 <input type="range" id="soil_surface_irr" name="soil_surface_irr" step="0.01" max="1.0" min="0.01" class="form-control" value="${permit['soil_surface_irr']!'1.0'}" placeholder="Fraction of soil surface irrigated" data-toggle="tooltip" title="" onchange="showValue('soil_surface_irr')">
             </div>
@@ -149,7 +149,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="et_extracted">ET fraction :</label>
+            <label class="control-label col-sm-3" for="et_extracted">ET fraction :</label>
             <div class="col-sm-4">
                 <input type="range" id="et_extracted" name="et_extracted" step="0.01" max="1.0" min="0.01" class="form-control" value="${permit['et_extracted']!'1.0'}" placeholder="Fraction of ET extracted from the irrigated zone" data-toggle="tooltip" title="" onchange="showValue('et_extracted')">
             </div>
@@ -158,7 +158,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="water_table_depth">Water Table Depth :</label>
+            <label class="control-label col-sm-3" for="water_table_depth">Water Table Depth :</label>
             <div class="col-sm-4">
                 <input type="range" id="water_table_depth" name="water_table_depth" step="0.1" max="200" min="0.1" class="form-control" value="${permit['water_table_depth']!'1.0'}" placeholder="Enter Depth of Water Table" data-toggle="tooltip" title="This field accepts numeric values only" onchange="showValue('water_table_depth')">
             </div>

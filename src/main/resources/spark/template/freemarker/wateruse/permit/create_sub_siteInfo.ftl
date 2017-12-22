@@ -73,7 +73,7 @@
 <div class="subcontainer">
     <div class="row">
         <div class="form-group">
-            <label class="control-label col-sm-2" for="permit_id">Permit ID :</label>
+            <label class="control-label col-sm-3" for="permit_id">Permit ID :</label>
             <div class="col-sm-6">
                 <#if permit['permit_id']??>
                 <input type="text" name="permit_id" class="form-control" value="${permit['permit_id']!}" placeholder="Enter Permit ID" data-toggle="tooltip" title="This field accepts alphanumeric characters without spaces" disabled>
@@ -84,13 +84,13 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="owner_name">Owner Name :</label>
+            <label class="control-label col-sm-3" for="owner_name">Owner Name :</label>
             <div class="col-sm-6">
                 <input type="text" name="owner_name" class="form-control" value="${permit['owner_name']!}" placeholder="Enter Owner Name" data-toggle="tooltip" title="This field accepts alphanumeric characters without spaces">
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="crop_type">Crop :</label>
+            <label class="control-label col-sm-3" for="crop_type">Crop :</label>
             <div class="row col-md-6">
                 <div class="col-md-6">
                     <label><input type="radio" name="crop_type" id="crop_type_annual" class="form-control" value="annual" onclick="switchCropType('annual')" <#if permit['crop_type']?? && permit['crop_type'] == "annual">checked</#if>>Annual</label>
@@ -101,7 +101,7 @@
             </div>
         </div>
         <div id="cropNameAnnualSB" class="form-group cropNameSB">
-            <label class="control-label col-sm-2" for="crop_name_annual"></label>
+            <label class="control-label col-sm-3" for="crop_name_annual"></label>
             <div class="col-md-6">
                 <select id="crop_name_annual" name="crop_name_annual" class="form-control" onchange="changeIrrSysListByCrop('crop_name_annual')">
                     <#list cropListAnnual as cropName>
@@ -111,7 +111,7 @@
             </div>
         </div>
         <div id="cropNamePerennialSB" class="form-group cropNameSB">
-            <label class="control-label col-sm-2" for="crop_name_perennial"></label>
+            <label class="control-label col-sm-3" for="crop_name_perennial"></label>
             <div class="col-md-6">
                 <select id="crop_name_perennial" name="crop_name_perennial" class="form-control" onchange="changeIrrSysListByCrop('crop_name_perennial')">
                     <#list cropListPerennial as cropName>
@@ -121,7 +121,7 @@
             </div>
         </div>
         <div id="startDateSB" class="form-group">
-            <label class="control-label col-sm-2" for="beg_date_month">Start Date :</label>
+            <label class="control-label col-sm-3" for="beg_date_month">Start Date :</label>
             <div class="row col-md-6">
                 <div class="col-md-4">
                     <select id="startMonthSB"  name="beg_date_month" id="beg_date_month" class="form-control" onchange="switchMonthDayList('startMonthSB', 'startDaySB')">
@@ -142,7 +142,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="end_date_month">End Date :</label>
+            <label class="control-label col-sm-3" for="end_date_month">End Date :</label>
             <div class="row col-md-6">
                 <div class="col-md-4">
                     <select id="endMonthSB" name="end_date_month" class="form-control" onchange="switchMonthDayList('endMonthSB', 'endDaySB') >
