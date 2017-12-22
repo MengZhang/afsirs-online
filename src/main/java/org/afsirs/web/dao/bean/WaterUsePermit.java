@@ -112,7 +112,7 @@ public class WaterUsePermit {
         input.setIrrOption(irr_option);
         input.setIDCODE(irr_depth_type, irr_depth);
         input.setIrrigationSystem(irr_type, soil_surface_irr, et_extracted, irr_efficiency,
-                DataUtil.getIRSysList().get(Integer.parseInt(irr_type)));
+                DataUtil.getIRSysNameList().get(Integer.parseInt(irr_type) - 1));
 //        input.setIVERS(ir_dat);
         return input;
     }
