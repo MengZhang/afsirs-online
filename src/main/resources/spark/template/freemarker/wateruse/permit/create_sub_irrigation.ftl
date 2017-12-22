@@ -4,8 +4,8 @@
             <label class="control-label col-sm-2" for="irr_type">Irrigation Type :</label>
             <div class="col-md-6">
                 <select name="irr_type" class="form-control">
-                    <#list irSysList as x>
-                    <option value="${x?counter}" <#if permit['irr_type']?? && permit['irr_type']?number == x?counter>selected</#if>>${x!}</option>
+                    <#list irSysNameList as x>
+                    <option value="${x?index}" <#if permit['irr_type']?? && permit['irr_type']?number == x?index>selected</#if>>${x!}</option>
                     </#list>
                 </select>
             </div>
