@@ -32,11 +32,13 @@
             </div>
         </div>
         <div class="form-group">
+        </div>
+<!--        <div class="form-group">
             <label class="control-label col-md-1" for="ir_dat"></label>
             <div class="col-md-6">
                 <label class="form-check-label"><input name="ir_dat" type="checkbox" value="true" id="isBlackListed" class="form-check-input" <#if permit['ir_dat']?? && permit['ir_dat'] == "true">checked</#if>>&nbsp; &nbsp; Check to use default values from IR.DAT</label>
             </div>
-        </div>
+        </div>-->
         <div class="form-group">
             <label class="control-label col-sm-2" for="irr_efficiency">Efficiency :</label>
             <div class="col-sm-6">

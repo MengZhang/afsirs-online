@@ -31,10 +31,11 @@ public class WaterUsePermit {
     private String irr_option;
     private String irr_depth_type;
     private String irr_depth;
-    private String ir_dat;
+//    private String ir_dat;
     private String irr_efficiency;
     private String soil_surface_irr;
     private String et_extracted;
+    private String water_table_depth;
 
     public static WaterUsePermit readFromRequest(Request request) {
         WaterUsePermit ret = new WaterUsePermit();
@@ -57,7 +58,7 @@ public class WaterUsePermit {
         ret.setIrr_option(request.queryParams("irr_option"));
         ret.setIrr_depth_type(request.queryParams("irr_depth_type"));
         ret.setIrr_depth(request.queryParams("irr_depth"));
-        ret.setIr_dat(request.queryParams("ir_dat"));
+//        ret.setIr_dat(request.queryParams("ir_dat"));
         ret.setIrr_efficiency(request.queryParams("irr_efficiency"));
         ret.setSoil_surface_irr(request.queryParams("soil_surface_irr"));
         ret.setEt_extracted(request.queryParams("et_extracted"));
@@ -87,10 +88,11 @@ public class WaterUsePermit {
             ret.setIrr_depth(data.getOrBlank("irr_depth"));
         }
         ret.setIrr_depth_type(irrDepthType);
-        ret.setIr_dat(readIrDat(data));
+//        ret.setIr_dat(readIrDat(data));
         ret.setIrr_efficiency(data.getOrBlank("irr_efficiency"));
         ret.setSoil_surface_irr(data.getOrBlank("soil_surface_irr"));
         ret.setEt_extracted(data.getOrBlank("et_extracted"));
+        ret.setWater_table_depth(data.getOrBlank("water_table_depth"));
 
         return ret;
     }
@@ -111,7 +113,7 @@ public class WaterUsePermit {
         input.setIDCODE(irr_depth_type, irr_depth);
         input.setIrrigationSystem(irr_type, soil_surface_irr, et_extracted, irr_efficiency,
                 DataUtil.getIRSysList().get(Integer.parseInt(irr_type)));
-        input.setIVERS(ir_dat);
+//        input.setIVERS(ir_dat);
         return input;
     }
 
