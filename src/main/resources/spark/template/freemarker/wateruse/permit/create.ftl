@@ -67,6 +67,16 @@
                 irrType.options[4].disabled = true;
                 irrType.options[7].disabled = true;
                 irrType.options[8].disabled = true;
+                hideComp("soilTypeSB");
+                if (document.getElementById("soil_source_db").checked) {
+                    switchSoilSource('DB');
+                } else if (document.getElementById("soil_source_map").checked) {
+                    switchSoilSource('MAP');
+                } else {
+                    document.getElementById("soil_source_map").checked = true;
+                    switchSoilSource('MAP');
+                    document.getElementById("water_hold_capacity").selectedIndex = 1;
+                }
             }
 
             function openTab(tabName) {
