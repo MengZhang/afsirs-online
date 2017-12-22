@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import org.afsirs.module.Irrigation;
 import static org.afsirs.web.Main.LOG;
 
@@ -24,6 +25,7 @@ public class DataUtil {
     private final static ArrayList<String> CROP_LIST_PERENNIAL = readCropList("PERENNIAL");
     private final static ArrayList<Irrigation> IR_SYS_LIST = new ArrayList();
     private final static ArrayList<String> IR_NAME_LIST = readIrrigationList();
+    private final static LinkedHashSet<String> SOILTYPE_DB_NAME_LIST = readSoilData();
 
     public static ArrayList<String> getCropList(String type) {
         if (type != null) {
@@ -39,13 +41,17 @@ public class DataUtil {
             return new ArrayList();
         }
     }
-    
+
     public static ArrayList<String> getIRSysNameList() {
         return IR_NAME_LIST;
     }
-    
+
     public static ArrayList<Irrigation> getIRSysList() {
         return IR_SYS_LIST;
+    }
+
+    public static LinkedHashSet<String> getSoilTypeDBNameList() {
+        return SOILTYPE_DB_NAME_LIST;
     }
 
     private static ArrayList<String> readCropList(String type) {
@@ -83,7 +89,7 @@ public class DataUtil {
         }
         return ret;
     }
-    
+
     private static ArrayList<String> readIrrigationList() {
         ArrayList<String> ret = new ArrayList();
         try {
@@ -116,6 +122,52 @@ public class DataUtil {
                 ret.add(irr.getSys());
                 i++;
             }
+
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace(System.err);
+        }
+        return ret;
+    }
+
+    private static LinkedHashSet<String> readSoilData() {
+        LinkedHashSet<String> ret = new LinkedHashSet();
+        try (BufferedReader br = new BufferedReader(new FileReader(new File("./Data/soil.dat")))) {
+            String line;
+            br.readLine(); //Ignore first line
+            line = br.readLine();
+            int start = 0;
+            while (line.charAt(start) == ' ') {
+                start++;
+            }
+            int end = start;
+            while (line.charAt(end) != ' ') {
+                end++;
+            }
+            br.readLine();//Ignore Line
+
+            int N = Integer.parseInt(line.substring(start, end));
+
+            for (int i = 0; i < N; i++) {
+                line = br.readLine();
+                String item = line.substring(4, 24).trim() + "    ";
+
+                String[] parts = line.substring(24).split(" ");
+                int k = 0;
+                for (String x : parts) {
+                    if (x.length() < 1) {
+                        continue;
+                    }
+                    k++;
+                    item += x + "    ";
+                }
+                if (ret.contains(item)) {
+                    LOG.warn("[{}] is repeated! Please check soil.dat file!", item);
+                } else {
+                    ret.add(item);
+                }
+                br.readLine();//Ignore next line
+            }
+            br.close();
 
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace(System.err);
