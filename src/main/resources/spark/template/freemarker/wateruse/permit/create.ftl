@@ -94,6 +94,14 @@
                     switchcontent[i].style.display = "none";
                 }
             }
+            
+            function showValue(compId) {
+                document.getElementById(compId+"_input").value = document.getElementById(compId).value;
+            }
+            
+            function showRange(compId) {
+                document.getElementById(compId).value = document.getElementById(compId+"_input").value;
+            }
         </script>
 
     </head>
