@@ -60,7 +60,10 @@ public class WaterUsePageController {
     public static Route serveEditPage = (Request request, Response response) -> {
         LOG.info("Serve Water Use Permit Edit Page");
         Map<String, Object> attributes = new HashMap<>();
-        
+        if (!ViewUtil.isLogined(request)) {
+            response.redirect(Path.Web.LOGIN);
+            return ViewUtil.getLoginPage(request, attributes);
+        }
         String permit_id = request.queryParams("permit_id");
         WaterUsePermit ret = WaterUsePermitDAO.find(permit_id, ViewUtil.getUserID(request));
         if (ret == null) {
@@ -74,7 +77,10 @@ public class WaterUsePageController {
     public static Route serveDetailPage = (Request request, Response response) -> {
         LOG.info("Serve Water Use Permit Detail Page");
         Map<String, Object> attributes = new HashMap<>();
-        
+        if (!ViewUtil.isLogined(request)) {
+            response.redirect(Path.Web.LOGIN);
+            return ViewUtil.getLoginPage(request, attributes);
+        }
         String id = request.queryParams("id");
 //        HashMap ret = ProjectDAO.find(id);
 //        if (ret.isEmpty()) {
