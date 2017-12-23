@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import org.afsirs.module.Irrigation;
 import static org.afsirs.web.Main.LOG;
@@ -26,6 +27,8 @@ public class DataUtil {
     private final static ArrayList<Irrigation> IR_SYS_LIST = new ArrayList();
     private final static ArrayList<String> IR_NAME_LIST = readIrrigationList();
     private final static LinkedHashSet<String> SOILTYPE_DB_NAME_LIST = readSoilData();
+    private final static LinkedHashMap<String, File> CLIMATE_FILE_LIST = readWeatherData("CLIMLIST.txt");
+    private final static LinkedHashMap<String, File> RAINFALL_FILE_LIST = readWeatherData("RAINLIST.txt");
 
     public static ArrayList<String> getCropList(String type) {
         if (type != null) {
@@ -52,6 +55,14 @@ public class DataUtil {
 
     public static LinkedHashSet<String> getSoilTypeDBNameList() {
         return SOILTYPE_DB_NAME_LIST;
+    }
+    
+    public static ArrayList<String> getClimateCityList() {
+        return new ArrayList(CLIMATE_FILE_LIST.keySet());
+    }
+    
+    public static ArrayList<String> getRainfallCityList() {
+        return new ArrayList(RAINFALL_FILE_LIST.keySet());
     }
 
     private static ArrayList<String> readCropList(String type) {
@@ -170,6 +181,22 @@ public class DataUtil {
             br.close();
 
         } catch (IOException | NumberFormatException e) {
+            e.printStackTrace(System.err);
+        }
+        return ret;
+    }
+    
+    private static LinkedHashMap<String, File> readWeatherData(String fileName) {
+        LinkedHashMap<String, File> ret = new LinkedHashMap<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(Path.Folder.getDataFile("CLIMLIST.txt")))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String city = line.split(" ")[0];
+                String file = line.split(" ")[1];
+                ret.put(city, Path.Folder.getDataFile(file));
+            }
+            br.close();
+        } catch (Exception e) {
             e.printStackTrace(System.err);
         }
         return ret;
