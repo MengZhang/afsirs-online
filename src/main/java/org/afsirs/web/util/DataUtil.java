@@ -68,7 +68,7 @@ public class DataUtil {
     private static ArrayList<String> readCropList(String type) {
         ArrayList<String> ret = new ArrayList();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(new File("./Data/crop.dat")));
+            BufferedReader br = new BufferedReader(new FileReader(Path.Folder.getDataFile("crop.dat")));
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.contains(type)) {
@@ -104,7 +104,7 @@ public class DataUtil {
     private static ArrayList<String> readIrrigationList() {
         ArrayList<String> ret = new ArrayList();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(new File("./Data/ir.dat")));
+            BufferedReader br = new BufferedReader(new FileReader(Path.Folder.getDataFile("ir.dat")));
             String line = br.readLine();
             String[] parts = line.split(" ");
             int i = 0;
@@ -142,7 +142,7 @@ public class DataUtil {
 
     private static LinkedHashSet<String> readSoilData() {
         LinkedHashSet<String> ret = new LinkedHashSet();
-        try (BufferedReader br = new BufferedReader(new FileReader(new File("./Data/soil.dat")))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(Path.Folder.getDataFile("soil.dat")))) {
             String line;
             br.readLine(); //Ignore first line
             line = br.readLine();
