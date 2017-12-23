@@ -127,6 +127,7 @@
                         <button type="button" class="tablinks active" onclick="openTab('SiteInfo')" id= "SiteInfoTab">General</button>
                         <button type="button" class="tablinks" onclick="openTab('Irrigation')" id = "IrrigationTab">Irrigation</button>
                         <button type="button" class="tablinks" onclick="openTab('SoilWater')" id = "SoilWaterTab">Soil</button>
+                        <button type="button" class="tablinks" onclick="openTab('Climate')" id = "ClimateTab">Climate</button>
                         <button type="button" class="tablinks" onclick="openTab('Decoef')" id = "DecoefTab">Coefficient</button>
                     </div>
 
@@ -143,6 +144,11 @@
                     <div id="SoilWater" class="tabcontent">
                         <center>
                             <#include "create_sub_soilWater.ftl">
+                        </center>   
+                    </div>
+                    <div id="Climate" class="tabcontent">
+                        <center>
+                            <#include "create_sub_climate.ftl">
                         </center>   
                     </div>
                     <div id="Decoef" class="tabcontent">

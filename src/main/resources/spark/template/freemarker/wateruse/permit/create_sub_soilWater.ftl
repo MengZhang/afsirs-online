@@ -6,6 +6,7 @@
             soilTypeSB[i].style.display = "none";
         }
         document.getElementById("soilTypeSB_" + soilSource).style.display = "block";
+        updateWthSB(soilSource);
     }
 
     function hideComp(switchClass) {
@@ -69,7 +70,7 @@
     <div class="text-center">
         <div>
             <button type="button" class="btn btn-primary text-left" onclick="openTab('Irrigation')">Back</button>&nbsp;&nbsp;&nbsp;
-            <button type="button" class="btn btn-primary text-right" onclick="openTab('Decoef')">Next</button>
+            <button type="button" class="btn btn-primary text-right" onclick="openTab('Climate')">Next</button>
         </div>
     </div>
 </div>
