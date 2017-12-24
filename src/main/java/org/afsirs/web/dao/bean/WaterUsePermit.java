@@ -136,20 +136,20 @@ public class WaterUsePermit {
         }
     }
 
-    private static String readIrDat(JSONObject data) {
-        Object isIrDat = data.get("ir_dat");
-        if (isIrDat == null) {
-            return "";
-        } else if (isIrDat instanceof Boolean) {
-            if ((Boolean) isIrDat) {
-                return "true";
-            } else {
-                return "";
-            }
-        } else if (isIrDat instanceof String) {
-            return (String) isIrDat;
-        } else {
-            return "";
-        }
-    }
+//    private static String readIrDat(JSONObject data) {
+//        Object isIrDat = data.get("ir_dat");
+//        if (isIrDat == null) {
+//            return "";
+//        } else if (isIrDat instanceof Boolean) {
+//            if ((Boolean) isIrDat) {
+//                return "true";
+//            } else {
+//                return "";
+//            }
+//        } else if (isIrDat instanceof String) {
+//            return (String) isIrDat;
+//        } else {
+//            return "";
+//        }
+//    }
 }
