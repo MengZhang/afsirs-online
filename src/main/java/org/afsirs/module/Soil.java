@@ -1,6 +1,7 @@
 package org.afsirs.module;
 
 import lombok.Data;
+import static org.afsirs.module.util.Util.round;
 
 /**
  *
@@ -9,7 +10,7 @@ import lombok.Data;
  */
 @Data
 public class Soil {
-        private int ID;
+//        private int ID;
         private String SNAME;
         private String SOILSERIESKEY;
 
@@ -35,7 +36,19 @@ public class Soil {
             COMPKEY = compKey;
 
             
-            ID = id;
+//            ID = id;
+            NL = nl;
+        }
+
+        public Soil(String soilCompName, String soilSeriesKey, String compKey, String seriesName, int nl){
+            
+            // SOil Series Name and the Soil Map Unit Code
+            SERIESNAME = seriesName;
+            SOILSERIESKEY = soilSeriesKey;
+
+            // Soil Name and the Soil Code
+            SNAME = soilCompName;
+            COMPKEY = compKey;
             NL = nl;
         }
 
@@ -45,6 +58,40 @@ public class Soil {
             WCU = wcu;
             DU = du;
             TXT = txt;
+        }
+        
+        public void setValues(String whc, double[] wcl, double[] wcu, double[] du, String[] txt){
+            WCL = wcl;
+            WCU = wcu;
+            DU = du;
+            TXT = txt;
+            setWHC(whc);
+        }
+        
+        public void setWHC(String whc) {
+            if (whc.equalsIgnoreCase("Average")) {
+                WC = average(WCL, WCU);
+            } else if (whc.equals("Maximum")) {
+                WC = roundArr(WCU, 3);
+            } else if (whc.equals("Minimum")) {
+                WC = roundArr(WCL, 3);
+            }
+        }
+        
+        private double[] average(double[] arr1, double[] arr2) {
+            double[] ret = new double[arr1.length];
+            for (int i = 0; i < arr1.length; i++) {
+                ret[i] = round((arr1[i] + arr2[i]) * 0.5, 3);
+            }
+            return ret;
+        }
+        
+        private double[] roundArr(double[] input, int digit) {
+            double[] ret = new double[input.length];
+            for (int i = 0; i < input.length; i++) {
+                ret[i] = round(input[i], digit);
+            }
+            return ret;
         }
 
 //        public String getName(){

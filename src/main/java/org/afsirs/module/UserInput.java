@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import lombok.Data;
@@ -19,15 +20,16 @@ public class UserInput {
 
     int IR, ISIM, J1REP, JNREP, J1SAVE, JNSAVE, ICODE, IPRT;
 
-    int NYR, J1, JN, ICROP, NDAYS, IDCODE = 0;
+    int J1, JN, ICROP, NDAYS, IDCODE = 0;
+//    int NYR, startYear, endYear;
     double ARZI, ARZN, FIX, FRIR, PIR, IEFF;
     double EXIR, EPS = 0.000001;
     double DRZIRR, DRZTOT;
     double DWT;
     double plantedAcres = 0.0;
     double mapArea = 0.0;
-    double[][] RAIN = new double[64][365];
-    double[][] ETP = new double[64][365];
+//    double[][] RAIN = new double[64][365];
+//    double[][] ETP = new double[64][365];
 
     double[] AKC = new double[12];
     double[] ALDP = new double[12];
@@ -38,14 +40,15 @@ public class UserInput {
     double[] ALD;
     double HGT;
 
-    int[] JDAY = new int[365];
-    int MONTH, IIDAY, IYEAR, startYear, endYear;
+//    int[] JDAY = new int[365];
+    int MONTH, IIDAY, IYEAR;
     int MO1, MON, DAY1, DAYN; //For Irrigation Season
 
 //    //Soil Data
 //    String SSERIESNAME;
 //    String SOILSMAPUNITCODE;
     String WATERHOLDINGCAPACITY;
+    String soilSource;
 //    String SNAME;
 //    String SOILCOMPCODE;
 //    
@@ -54,7 +57,9 @@ public class UserInput {
 //    int NL;
 
     String outFile, summaryFile, summaryFileExcel, calculationExcel;
-    String cropName, CLIMFIL, CLIMATELOC, RAINFALLLOC, IRNAME;
+    String cropName, IRNAME, CLIMFIL;
+//    String , CLIMATELOC, RAINFALLLOC;
+    Weather weather = new Weather();
     private String SITE, UNIT, OWNER; //Name changed in desktop to Permit ID, Map Name, Output file name
 
 //    private boolean perennial, IVERS, net = false;
@@ -77,7 +82,8 @@ public class UserInput {
 //    public LinkedHashSet<String> deviations = new LinkedHashSet();
     public LinkedHashMap deviation = new LinkedHashMap();
 
-    private SoilData soilData;
+//    private SoilData soilData;
+    private ArrayList<Soil> soils = new ArrayList();
     private String CLIMATESTATION;
     private String RAINFALLSTATION;
     private InputStreamReader climIR;
@@ -155,7 +161,7 @@ public class UserInput {
     }
 
     public void setIDCODE(String code, String value) {
-        if (value == null || value.equals("")) {
+        if (value == null || value.isEmpty()) {
             value = "0";
         }
         setIDCODE(
@@ -194,12 +200,101 @@ public class UserInput {
         return IR;
     }
 
+    public String getCLIMATELOC() {
+        return weather.getETLoc();
+    }
+
+    public double[][] getETP() {
+        return weather.getETP();
+    }
+
+    public String getRAINFALLLOC() {
+        return weather.getRainLoc();
+    }
+
+    public double[][] getRAIN() {
+        return weather.getRAIN();
+    }
+
+    public int getNYR() {
+        return weather.getNYR();
+    }
+
+    public int getStartYear() {
+        return weather.getStartYear();
+    }
+
+    public int getEndYear() {
+        return weather.getEndYear();
+    }
+
+    public int[] getJDAY() {
+        return weather.getJDAY();
+    }
+
+    public void setWeather(Weather weather) {
+        this.weather = weather;
+        this.RAINFALLSTATION = weather.getRainLoc();
+        this.CLIMATESTATION = weather.getETLoc();
+        updateDate(weather);
+    }
+
+    private void updateDate(Weather weather) {
+        int NYR = weather.getNYR();
+        int[] JDAY = weather.getJDAY();
+        double[][] ETP = weather.getETP();
+        double[][] RAIN = weather.getRAIN();
+        for (int k = 0; k < 365; k++) {
+            JDAY[k] = k + 1;
+        }
+
+        if (J1SAVE >= JNSAVE) {
+            NYR = NYR - 1; // Reduced no of year
+            for (int iy = 0; iy < NYR; iy++) {
+                int j = -1;
+                int iy1 = iy + 1;
+                for (int jd = J1SAVE - 1; jd < 365; jd++) {
+                    j = j + 1;
+                    JDAY[j] = jd + 1;
+                    ETP[iy][j] = ETP[iy][jd];
+                    RAIN[iy][j] = RAIN[iy][jd];
+                }
+                for (int jd = 0; jd < JNSAVE; jd++) {
+                    j = j + 1;
+                    JDAY[j] = jd + 1;
+
+                    ETP[iy][j] = ETP[iy1][jd];
+                    RAIN[iy][j] = RAIN[iy1][jd];
+                }
+            }
+            weather.setNYR(NYR);
+            weather.setJDAY(JDAY);
+        }
+    }
+    
+    public void setWATERHOLDINGCAPACITY(String WHC) {
+        for (Soil soil : soils) {
+            soil.setWHC(WHC);
+        }
+        this.WATERHOLDINGCAPACITY = WHC;
+    }
+    
+    public void setSoils(ArrayList<Soil> soils, String WHC) {
+        this.soils = soils;
+        setWATERHOLDINGCAPACITY(WATERHOLDINGCAPACITY);
+    }
+
     //read the file for climate data and set it to a array
     public void setClimateFile(InputStreamReader ir) {
         try {
             BufferedReader br = new BufferedReader(ir);
             String line = br.readLine();
-            CLIMATELOC = line.split(" ")[0];
+            weather.setETLoc(line.split(" ")[0]);
+            double[][] ETP = weather.getETP();
+            final int startYear = weather.getStartYear();
+            final int endYear = weather.getEndYear();
+            int NYR = weather.getNYR();
+            int[] JDAY = weather.getJDAY();
             line = br.readLine();
             int i = 0;
             while (line.charAt(i) == ' ') {
@@ -270,6 +365,8 @@ public class UserInput {
 //                }
 //            }
 
+            weather.setNYR(NYR);
+            weather.setJDAY(JDAY);
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace(System.err);
         }
@@ -281,7 +378,12 @@ public class UserInput {
         try {
             BufferedReader br = new BufferedReader(ir);
             String line = br.readLine();
-            RAINFALLLOC = line.split(" ")[0];
+            weather.setRainLoc(line.split(" ")[0]);
+            double[][] RAIN = weather.getRAIN();
+            final int startYear = weather.getStartYear();
+            final int endYear = weather.getEndYear();
+            int NYR = weather.getNYR();
+            int[] JDAY = weather.getJDAY();
             line = br.readLine();
             int i = 0;
             int cyear = 0;
@@ -344,6 +446,8 @@ public class UserInput {
                 }
             }
 
+            weather.setNYR(NYR);
+            weather.setJDAY(JDAY);
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace(System.err);
         }
@@ -368,6 +472,9 @@ public class UserInput {
     public void setStartEndYear(InputStreamReader irET, InputStreamReader irRF) throws IOException {
         BufferedReader brRF;
         BufferedReader brET;
+        int startYear = weather.getStartYear();
+        int endYear = weather.getEndYear();
+        int NYR = weather.getNYR();
         try {
             //getting start year and end year from ET data
 
@@ -375,7 +482,7 @@ public class UserInput {
 
             String lineET = brET.readLine();
             //brET.mark(10000);
-            CLIMATELOC = lineET.split(" ")[0];
+            weather.setETLoc(lineET.split(" ")[0]);
             lineET = brET.readLine();
             int i = 0;
             int year = 0;
@@ -409,7 +516,7 @@ public class UserInput {
             //getting start year and end year from Rainfall data
             brRF = new BufferedReader(irRF);
             String lineRF = brRF.readLine();
-            RAINFALLLOC = lineRF.split(" ")[0];
+            weather.setRainLoc(lineRF.split(" ")[0]);
             lineRF = brRF.readLine();
             i = 0;
             year = 0;
@@ -449,6 +556,10 @@ public class UserInput {
 
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace(System.err);
+        } finally {
+            weather.setStartYear(startYear);
+            weather.setEndYear(endYear);
+            weather.setNYR(NYR);
         }
 
     }
@@ -481,9 +592,13 @@ public class UserInput {
         ALD = ald;
     }
 
+//    public void setSoils(ArrayList soils, ) {
+//        
+//    }
     public void setSoilData(SoilData soilData) {
         //this.soil = soilData.getSoils().get(0);
-        this.soilData = soilData;
+//        this.soilData = soilData;
+        this.soils = soilData.getSoils();
 
         //SNAME = soil.getName();
         //TXT = soil.getTXT();

@@ -2746,7 +2746,7 @@ public class AFSIRSModule {
             ArrayList<SummaryReport> summaryList = ret.getSummaryList();
         
 
-            ArrayList<Soil> soils = input.getSoilData().getSoils();
+            ArrayList<Soil> soils = input.getSoils();
             ArrayList<Soil> soilsFS = soils;
             double[] soilFractions = new double[soils.size()];
             double[] soilArea = new double[soils.size()];
@@ -3969,7 +3969,7 @@ public class AFSIRSModule {
 
     private static SummaryReportExcelFormat buildCalculationExcel(UserInput input, SimResult ret, ArrayList<SummaryReport> summaryList) {
         SummaryReportExcelFormat excelCal = new SummaryReportExcelFormat(input.getCalculationExcel());
-        ArrayList<Soil> soils = input.getSoilData().getSoils();
+        ArrayList<Soil> soils = input.getSoils();
         excelCal.setRowNum(2);
         excelCal.insertDataWithStyle(Messages.DOC_HEADER_EXCEL, 2, true, true);
         excelCal.setColNum(1);
@@ -4447,6 +4447,9 @@ public class AFSIRSModule {
         obj.put("soil_surface_irr", input.getARZI());
         obj.put("et_extracted", input.getEXIR());
         obj.put("ir_dat", input.getIVERS());
+        obj.put("water_table_depth", input.getDWT());
+        obj.put("water_hold_capacity", input.getWATERHOLDINGCAPACITY());
+        obj.put("soil_source", input.getSoilSource());
 
         try (FileWriter file = new FileWriter(Paths.get(outputDir.getPath(),  input.getSITE() + ".json").toFile())) {
 

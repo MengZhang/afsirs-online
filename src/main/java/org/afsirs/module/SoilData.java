@@ -19,6 +19,7 @@ public class SoilData {
 
     private static String currentKey = "";
     public static SoilData soilData;
+    private static String WHC = "Minimum";
  
     public SoilData () {
         completeSoilData = new HashMap<String, ArrayList<Soil>>();
@@ -34,6 +35,17 @@ public class SoilData {
     
     public void setKey (String key) {
         currentKey = key;
+    }
+    
+    public void setWHC(String whc) {
+        WHC = whc;
+        updateCurrentSoilWC();
+    }
+    
+    private void updateCurrentSoilWC() {
+        for (Soil soil : getSoils()) {
+            soil.setWHC(WHC);
+        }
     }
    
     public void addSoil (String key, Soil soil) {
@@ -59,9 +71,11 @@ public class SoilData {
     }
     
     public ArrayList<Soil> getSoilsFromFile (String fileName) {
+        currentKey = fileName;
         ArrayList<Soil> list = null;
         if (completeSoilData.containsKey(fileName)) {
             list = completeSoilData.get(fileName);
+            updateCurrentSoilWC();
         }
         return list;
     }
