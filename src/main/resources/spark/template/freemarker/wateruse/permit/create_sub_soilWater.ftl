@@ -6,18 +6,55 @@
             soilTypeSB[i].style.display = "none";
         }
         document.getElementById("soilTypeSB_" + soilSource).style.display = "block";
+        if (soilSource !== "MAP") {
+            document.getElementById("total_area").disabled = true;
+            document.getElementById('total_area_input').max = "1000";
+            document.getElementById('soil_file_content').style.display = "none";
+        } else {
+            document.getElementById("total_area").disabled = false;
+            var max = Number(document.getElementById('total_area').max);
+            if (document.getElementById('total_area_input').value > max) {
+                document.getElementById('total_area_input').value = max;
+            }
+            document.getElementById('total_area_input').max = max;
+            document.getElementById('soil_file_content').style.display = "block";
+        }
+        
         updateWthSB(soilSource);
     }
 
-    function hideComp(switchClass) {
-        var switchcontent = document.getElementsByClassName(switchClass);
-        for (i = 0; i < switchcontent.length; i++) {
-            switchcontent[i].style.display = "none";
-        }
-    }
-    
     function readFile() {
-        var file = document.getElementById("soil_file").value;
+        var files = document.getElementById('soil_file').files;
+        if (!files.length) {
+            alert('Please select a file!');
+            return;
+        }
+
+        var file = files[0];
+        var start = 0;
+        var stop = file.size - 1;
+        var reader = new FileReader();
+        reader.onloadend = function (evt) {
+            if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+                var jsonStr = evt.target.result;
+                var obj = JSON.parse(jsonStr);
+                var soilsStr = JSON.stringify(obj["soils"]);
+                var totArea = Number(obj["asfirs"][0].TotalArea);
+                document.getElementById('soil_file_content').style.display = "block";
+                document.getElementById('soil_file_content').textContent = soilsStr;
+                document.getElementById('soil_file_json').value = jsonStr;
+                var value = document.getElementById('total_area_input').value;
+                document.getElementById('total_area').max = totArea;
+                document.getElementById('total_area_input').max = totArea;
+                if (value === "" || value > totArea) {
+                    document.getElementById('total_area').value = totArea;
+                    document.getElementById('total_area_input').value = totArea;
+                }
+            }
+        };
+
+        var blob = file.slice(start, stop + 1);
+        reader.readAsBinaryString(blob);
     }
 </script>
 <div class="subcontainer">
@@ -41,7 +78,7 @@
             <div class="col-md-5">
                 <select id="crop_name_annual" name="soil_type_db" class="form-control" onchange="" title="Select soil types for simulation." multiple>
                     <#list soilDBNameList as soilName>
-                    <option value="${soilName!}" <#if permit['soil_name']?? && permit['soil_name'].contains(soilName)>selected</#if>>${soilName!}</option>
+                    <option value="${soilName!}" <#if permit['dbSoilNames']?? && permit['dbSoilNames'].contains(soilName)>selected</#if>>${soilName!}</option>
                     </#list>
                 </select>
             </div>
@@ -50,11 +87,22 @@
             <label class="control-label col-sm-3" for="soil_file">Upload Soil File :</label>
             <div class="col-sm-5">
                 <input type="file" id="soil_file" name="soil_file" class="form-control" value="" accept=".json" onchange="readFile()" placeholder="Browse Soil File (.json)" data-toggle="tooltip" title="Browse Soil File (.json)">
+                <input type="hidden" id="soil_file_json" name="soil_file_json" value="">
             </div>
             <div class="col-sm-4">
                 <button type="button" class="btn btn-primary text-right" onclick="window.open('http://abe.ufl.edu/bmpmodel/arcGIS/Test/index_5CountyMerge.html')">View Soil Map</button>
                 <button type="button" class="btn btn-primary text-right" onclick="" disabled>Show Soil Data</button>
             </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-3" for="total_area">Planted Area :</label>
+            <div class="col-sm-4">
+                <input type="range" id="total_area" name="total_area" step="0.001" max="1000" min="0.001" class="form-control" value="${permit['totalArea']!}" placeholder="Enter Planted Area" data-toggle="tooltip" title="Planted Area" onchange="showValue('total_area')" disabled>
+            </div>
+            <div class="col-sm-3">
+                <input type="number" id="total_area_input" name="total_area_input" step="10" max="1000" min="0.1" class="form-control" value="${permit['totalArea']!}" placeholder="Enter Planted Area" data-toggle="tooltip" title="Planted Area" onchange="showRange('total_area')" formnovalidate="formnovalidate">
+            </div>
+            <label class="control-label col-sm-1" for="total_area">(Acres)</label>
         </div>
         <div class="form-group">
             <label class="control-label col-md-3" for="water_hold_capacity">Water Hold Capacity :</label>
@@ -66,6 +114,7 @@
                 </select>
             </div>
         </div>
+        <div id="soil_file_content" class="form-group"></div>
     </div>
     <div class="text-center">
         <div>
