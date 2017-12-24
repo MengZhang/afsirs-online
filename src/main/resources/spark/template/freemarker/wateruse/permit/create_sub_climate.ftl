@@ -13,10 +13,10 @@
         } else if (!disabled && SB.selectedIndex < 0) {
             SB.selectedIndex = nearestIdx;
         }
-        
+
         SB.options[nearestIdx].disabled = disabled;
     }
-    
+
     function selectNeareast(SBId) {
         var SB = document.getElementById(SBId);
         SB.selectedIndex = SB.length - 1;
@@ -47,11 +47,11 @@
             </div>
         </div>
     </div>
-</div>
-<div class="text-center">
-    <div>
-        <button type="button" class="btn btn-primary text-left" onclick="openTab('SoilWater')">Back</button>&nbsp;&nbsp;&nbsp;
-        <button type="button" class="btn btn-primary text-right" onclick="openTab('Decoef')">Next</button>
+    <br><br><br><br>
+    <div class="text-center">
+        <div>
+            <button type="button" class="btn btn-primary text-left" onclick="openTab('SoilWater')">Back</button>&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btn btn-primary text-right" onclick="openTab('Decoef')">Next</button>
+        </div>
     </div>
-</div>
 </div>
