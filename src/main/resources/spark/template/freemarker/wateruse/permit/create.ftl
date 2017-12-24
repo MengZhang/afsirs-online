@@ -42,10 +42,10 @@
                 border: 1px solid #ccc;
                 border-top: none;
             }
-            switchBtns {
+            cropNameSB {
                 display: none;
             }
-            cropNameSB {
+            soilTypeSB {
                 display: none;
             }
             cell {
@@ -63,10 +63,26 @@
                 } else if (document.getElementById("crop_type_perennial").checked) {
                     switchCropType('perennial');
                 }
+                var irrType = document.getElementById("irr_type");
+                irrType.options[4].disabled = true;
+                irrType.options[7].disabled = true;
+                irrType.options[8].disabled = true;
+                hideComp("soilTypeSB");
+                if (document.getElementById("soil_source_db").checked) {
+                    switchSoilSource('DB');
+                } else if (document.getElementById("soil_source_map").checked) {
+                    switchSoilSource('MAP');
+                } else {
+                    document.getElementById("soil_source_map").checked = true;
+                    switchSoilSource('MAP');
+                    document.getElementById("water_hold_capacity").selectedIndex = 1;
+                    selectNeareast("et_loc");
+                    selectNeareast("rain_loc");
+                }
             }
 
             function openTab(tabName) {
-                var i, tabcontent, tablinks, switchBtns;
+                var i, tabcontent, tablinks;
                 tabcontent = document.getElementsByClassName("tabcontent");
                 for (i = 0; i < tabcontent.length; i++) {
                     tabcontent[i].style.display = "none";
@@ -75,13 +91,24 @@
                 for (i = 0; i < tablinks.length; i++) {
                     tablinks[i].className = tablinks[i].className.replace(" active", "");
                 }
-                switchBtns = document.getElementsByClassName("switchBtns");
-                for (i = 0; i < tabcontent.length; i++) {
-                    switchBtns[i].style.display = "none";
-                }
                 document.getElementById(tabName).style.display = "block";
-                document.getElementById(tabName + "Btn").style.display = "block";
                 document.getElementById(tabName + "Tab").className += " active";
+                controlValidateInput(tabName);
+            }
+            
+            function controlValidateInput(tabName) {
+                var disableIrr = tabName !== "Irrigation";
+                var disableSW = tabName !== "SoilWater";
+                if (disableIrr) {
+                    document.getElementById("irr_depth_input").disabled = disableIrr;
+                } else {
+                    changeIrrDepDefinition();
+                }
+                document.getElementById("irr_efficiency_input").disabled = disableIrr;
+                document.getElementById("soil_surface_irr_input").disabled = disableIrr;
+                document.getElementById("et_extracted_input").disabled = disableIrr;
+                document.getElementById("water_table_depth_input").disabled = disableIrr;
+                document.getElementById("total_area_input").disabled = disableSW;
             }
 
             function hideComp(switchClass) {
@@ -90,55 +117,13 @@
                     switchcontent[i].style.display = "none";
                 }
             }
-
-            function switchCropType(cropType) {
-                hideComp("cropNameSB");
-                if (cropType === "annual") {
-                    document.getElementById("cropNameAnnualSB").style.display = "block";
-                    document.getElementById("startMonthSB").disabled = false;
-                    document.getElementById("startDaySB").disabled = false;
-                    document.getElementById("endMonthSB").disabled = false;
-                    document.getElementById("endDaySB").disabled = false;
-                } else if (cropType === "perennial") {
-                    document.getElementById("cropNamePerennialSB").style.display = "block";
-                    document.getElementById("startMonthSB").disabled = true;
-                    document.getElementById("startDaySB").disabled = true;
-                    document.getElementById("endMonthSB").disabled = true;
-                    document.getElementById("endDaySB").disabled = true;
-                }
+            
+            function showValue(compId) {
+                document.getElementById(compId+"_input").value = document.getElementById(compId).value;
             }
-
-            function switchMonthDayList(monthSBID, daySBID) {
-                var x = document.getElementById(monthSBID).value;
-
-                switch (x) {
-                    case "2":
-                        changeDayList(daySBID, 28);
-                        break;
-                    case "4":
-                    case "6":
-                    case "9":
-                    case "11":
-                        changeDayList(daySBID, 30);
-                        break;
-                    default:
-                        changeDayList(daySBID, 31);
-                        break;
-                }
-            }
-
-            function changeDayList(daySBID, totalDays) {
-                var select = document.getElementById(daySBID);
-                var length = select.options.length;
-                for (i = length - 1; i > totalDays; i--) {
-                    select.remove(i);
-                }
-                for (i = length; i <= totalDays; i++) {
-                    var option = document.createElement('option');
-                    option.innerHTML = i;
-                    option.value = i;
-                    select.append(option);
-                }
+            
+            function showRange(compId) {
+                document.getElementById(compId).value = document.getElementById(compId+"_input").value;
             }
         </script>
 
@@ -160,6 +145,7 @@
                         <button type="button" class="tablinks active" onclick="openTab('SiteInfo')" id= "SiteInfoTab">General</button>
                         <button type="button" class="tablinks" onclick="openTab('Irrigation')" id = "IrrigationTab">Irrigation</button>
                         <button type="button" class="tablinks" onclick="openTab('SoilWater')" id = "SoilWaterTab">Soil</button>
+                        <button type="button" class="tablinks" onclick="openTab('Climate')" id = "ClimateTab">Climate</button>
                         <button type="button" class="tablinks" onclick="openTab('Decoef')" id = "DecoefTab">Coefficient</button>
                     </div>
 
@@ -175,31 +161,18 @@
                     </div>
                     <div id="SoilWater" class="tabcontent">
                         <center>
-                            <#-- include "create_sub_soilWater.ftl" -->
+                            <#include "create_sub_soilWater.ftl">
+                        </center>   
+                    </div>
+                    <div id="Climate" class="tabcontent">
+                        <center>
+                            <#include "create_sub_climate.ftl">
                         </center>   
                     </div>
                     <div id="Decoef" class="tabcontent">
                         <center>
-                            <#-- include "create_sub_dcoef.ftl" -->
+                            <#include "create_sub_dcoef.ftl">
                         </center>   
-                    </div>
-                    <br><br>
-                    <div class="text-center">
-                        <div id="SiteInfoBtn" class="switchBtns">
-                            <button type="button" class="btn btn-primary text-right" onclick="openTab('Irrigation')">Next</button>
-                        </div>
-                        <div id="IrrigationBtn" class="switchBtns">
-                            <button type="button" class="btn btn-primary text-left" onclick="openTab('SiteInfo')">Back</button>&nbsp;&nbsp;&nbsp;
-                            <button type="button" class="btn btn-primary text-right" onclick="openTab('SoilWater')">Next</button>
-                        </div>
-                        <div id="SoilWaterBtn" class="switchBtns">
-                            <button type="button" class="btn btn-primary text-left" onclick="openTab('Irrigation')">Back</button>&nbsp;&nbsp;&nbsp;
-                            <button type="button" class="btn btn-primary text-right" onclick="openTab('Decoef')">Next</button>
-                        </div>
-                        <div id="DecoefBtn" class="switchBtns">
-                            <button type="button" class="btn btn-primary text-left" onclick="openTab('SoilWater')">Back</button>&nbsp;&nbsp;&nbsp;
-                            <button type="submit" class="btn btn-primary text-right" value="Submit">Save</button>
-                        </div>
                     </div>
                 </fieldset>
             </form>

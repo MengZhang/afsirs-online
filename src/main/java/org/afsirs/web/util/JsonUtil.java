@@ -42,4 +42,13 @@ public class JsonUtil {
         }
         return new JSONObject();
     }
+    
+    public static JSONObject parseFrom(String jsonString) {
+        try {
+            return new JSONObject((Map) PARSER.parse(jsonString));
+        } catch (ParseException ex) {
+            java.util.logging.Logger.getLogger(JsonUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return new JSONObject();
+    }
 }
