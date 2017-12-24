@@ -1,12 +1,12 @@
 package org.afsirs.web.dao.bean;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import javafx.util.converter.BigDecimalStringConverter;
 import lombok.Data;
 import org.afsirs.module.Soil;
 import org.afsirs.module.UserInput;
@@ -194,7 +194,7 @@ public class WaterUsePermit {
         input.setSoilSource(soil_source);
         input.setSoils(soils);
         input.setWATERHOLDINGCAPACITY(water_hold_capacity);
-        input.setPlantedAcres(new BigDecimalStringConverter().fromString(totalArea).doubleValue());
+        input.setPlantedAcres(new BigDecimal(totalArea).doubleValue());
 
         input.setWeather(DataUtil.toWeather(et_loc, rain_loc));
 
