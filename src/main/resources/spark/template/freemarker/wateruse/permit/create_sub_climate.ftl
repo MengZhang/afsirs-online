@@ -10,8 +10,16 @@
         var nearestIdx = SB.length - 1;
         if (disabled && SB.selectedIndex === nearestIdx) {
             SB.selectedIndex = -1;
+        } else if (!disabled && SB.selectedIndex < 0) {
+            SB.selectedIndex = nearestIdx;
         }
+        
         SB.options[nearestIdx].disabled = disabled;
+    }
+    
+    function selectNeareast(SBId) {
+        var SB = document.getElementById(SBId);
+        SB.selectedIndex = SB.length - 1;
     }
 </script>
 <div class="subcontainer">

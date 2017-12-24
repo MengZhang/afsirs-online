@@ -76,6 +76,8 @@
                     document.getElementById("soil_source_map").checked = true;
                     switchSoilSource('MAP');
                     document.getElementById("water_hold_capacity").selectedIndex = 1;
+                    selectNeareast("et_loc");
+                    selectNeareast("rain_loc");
                 }
             }
 
@@ -91,6 +93,21 @@
                 }
                 document.getElementById(tabName).style.display = "block";
                 document.getElementById(tabName + "Tab").className += " active";
+                controlValidateInput(tabName);
+            }
+            
+            function controlValidateInput(tabName) {
+                var disableIrr = tabName !== "Irrigation";
+                var disableSW = tabName !== "SoilWater";
+                if (disableIrr) {
+                    document.getElementById("irr_depth_input").disabled = disableIrr;
+                } else {
+                    changeIrrDepDefinition();
+                }
+                document.getElementById("irr_efficiency_input").disabled = disableIrr;
+                document.getElementById("soil_surface_irr_input").disabled = disableIrr;
+                document.getElementById("et_extracted_input").disabled = disableIrr;
+                document.getElementById("water_table_depth_input").disabled = disableIrr;
             }
 
             function hideComp(switchClass) {
