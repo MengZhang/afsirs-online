@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.LinkedHashMap;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.util.converter.BigDecimalStringConverter;
 import lombok.Data;
 import org.afsirs.module.Irrigation;
 import org.afsirs.module.Soil;
@@ -292,7 +292,6 @@ public class DataUtil {
 //        int row = 0;
 //        int whcIndex = waterholdcapacityBox.getSelectedIndex();
 //        ArrayList<Soil> soilList = new ArrayList<>();
-        BigDecimalStringConverter converter = new BigDecimalStringConverter();
         for (Map soil : soils) {
 
             String soilSeriesName = soil.get("mukeyName").toString();
@@ -311,10 +310,10 @@ public class DataUtil {
 
             for (Map soilLayer : soilLayers) {
                 //System.out.println ("NL we are looking for: " + NL);
-                wcu[nl] = converter.fromString(soilLayer.get("sldul").toString()).doubleValue() / 100.00;
-                du[nl] = converter.fromString(soilLayer.get("sllb").toString()).doubleValue() * 0.39370;
+                wcu[nl] = new BigDecimal(soilLayer.get("sldul").toString()).doubleValue() / 100.00;
+                du[nl] = new BigDecimal(soilLayer.get("sllb").toString()).doubleValue() * 0.39370;
                 du[nl] = round(du[nl], 3);
-                wcl[nl] = converter.fromString(soilLayer.get("slll").toString()).doubleValue() / 100.00;
+                wcl[nl] = new BigDecimal(soilLayer.get("slll").toString()).doubleValue() / 100.00;
 
 //                if (whcIndex == 0) {
 //                    wc[nl] = wcl[nl];
