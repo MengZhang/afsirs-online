@@ -1,5 +1,6 @@
 package org.afsirs.web.util;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -16,6 +17,10 @@ public class JSONObject extends org.json.simple.JSONObject {
         super(m);
     }
     
+    public JSONObject(org.json.simple.JSONObject o) {
+        super(o);
+    }
+    
     public String getOrBlank(String key) {
         return (String) getOrDefault(key, "");
     }
@@ -27,5 +32,21 @@ public class JSONObject extends org.json.simple.JSONObject {
         } else {
             return val.toString();
         }
+    }
+    
+    public Double getAsDouble(String key, int round) {
+        String read = getOrBlank(key);
+        if (!read.isEmpty()) {
+            return new BigDecimal(read).setScale(round, BigDecimal.ROUND_HALF_UP).doubleValue();
+        }
+        return null;
+    }
+    
+    public Double getAsDouble(String key) {
+        String read = getOrBlank(key);
+        if (!read.isEmpty()) {
+            return new BigDecimal(read).doubleValue();
+        }
+        return null;
     }
 }
