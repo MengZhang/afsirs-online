@@ -7,6 +7,10 @@
                 padding: 5px;
                 text-align: left;
             }
+            th {
+                background-color: #4CAF50;
+                color: white;
+            }
             div.tab {
                 overflow: hidden;
                 border: 1px solid #ccc;
@@ -94,8 +98,12 @@
                 document.getElementById(tabName).style.display = "block";
                 document.getElementById(tabName + "Tab").className += " active";
                 controlValidateInput(tabName);
+                if (tabName === "Decoef") {
+                    switchDecoef();
+                    setDecoefLabels();
+                }
             }
-            
+
             function controlValidateInput(tabName) {
                 var disableIrr = tabName !== "Irrigation";
                 var disableSW = tabName !== "SoilWater";
@@ -117,13 +125,13 @@
                     switchcontent[i].style.display = "none";
                 }
             }
-            
+
             function showValue(compId) {
-                document.getElementById(compId+"_input").value = document.getElementById(compId).value;
+                document.getElementById(compId + "_input").value = document.getElementById(compId).value;
             }
-            
+
             function showRange(compId) {
-                document.getElementById(compId).value = document.getElementById(compId+"_input").value;
+                document.getElementById(compId).value = document.getElementById(compId + "_input").value;
             }
         </script>
 
