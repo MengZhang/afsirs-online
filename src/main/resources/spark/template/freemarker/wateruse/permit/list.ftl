@@ -53,7 +53,7 @@
                         <td><a href="/wateruse/permit/find?permit_id=${permit["permit_id"]!}">${permit["permit_id"]!}</a></td>
                         <td>${permit["crop_name"]!}</td>
                         <td>${permit["description"]!}</td>
-                        <td><a href="/wateruse/afsirs?permit_id=${permit["permit_id"]!}" class="btn btn-default">Run AFSIRS</a></td>
+                        <td><a href="/simulation/afsirs?permit_id=${permit["permit_id"]!}" class="btn btn-default">Run AFSIRS</a></td>
                     </tr>
                     <#else>
                     <tr><td colspan="4">No permit has been created yet.</td></tr>
