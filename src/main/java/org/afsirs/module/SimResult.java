@@ -14,7 +14,7 @@ import org.afsirs.module.SummaryReport;
 public class SimResult {
     
     double totalArea = 0.0;
-    double[] soilArea;
+//    double[] soilArea;
     double[][] RAIN;
     
     // ArrayList for Soilnames with negative value error

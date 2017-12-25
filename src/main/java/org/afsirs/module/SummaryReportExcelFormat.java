@@ -40,7 +40,7 @@ public class SummaryReportExcelFormat {
 
     public SummaryReportExcelFormat(String fName) {
 
-        String[] fNameString = fName.split("/");
+        String[] fNameString = fName.split("[/\\\\]");
         this.fileName = fNameString[fNameString.length - 1];
 //        if (fName == null) {
         //throw new Exception ("File Name cant be null");

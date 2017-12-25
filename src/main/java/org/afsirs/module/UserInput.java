@@ -3,6 +3,7 @@ package org.afsirs.module;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +32,7 @@ public class UserInput {
 //    double[][] RAIN = new double[64][365];
 //    double[][] ETP = new double[64][365];
 
+    String coefficentType;
     double[] AKC = new double[12];
     double[] ALDP = new double[12];
 
@@ -94,13 +96,26 @@ public class UserInput {
     public void addDeviation(String varName, String varText) {
         deviation.put(varName, varText);
     }
+    
+    public UserInput() {
+        this(new Date());
+    }
 
-    public void setTodayDate(Date d) {
+    public UserInput(Date d) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd");
         String[] date = sdf.format(d).split(" ");
         IYEAR = Integer.parseInt(date[0]);
         MONTH = Integer.parseInt(date[1]);
         IIDAY = Integer.parseInt(date[2]);
+    }
+    
+    public void setOWNER(String OWNER, String outPath) {
+        this.OWNER = OWNER;
+        outFile = Paths.get(outPath, OWNER).toFile().getPath(); //siteName +"-"+ unitName;
+        summaryFile = outFile + "-Summary.pdf";
+        summaryFileExcel = outFile + "-Summary.xlsx";
+        calculationExcel = outFile + "-Cal.xlsx";
+        outFile += ".txt";
     }
 
     public void setCodes(int code, int print) {

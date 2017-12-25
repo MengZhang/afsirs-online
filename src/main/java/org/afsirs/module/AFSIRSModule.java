@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -2749,7 +2750,7 @@ public class AFSIRSModule {
             ArrayList<Soil> soils = input.getSoils();
             ArrayList<Soil> soilsFS = soils;
             double[] soilFractions = new double[soils.size()];
-            double[] soilArea = new double[soils.size()];
+//            double[] soilArea = new double[soils.size()];
             double totalArea = 0.0;
             int i = 0;
 
@@ -2757,7 +2758,7 @@ public class AFSIRSModule {
                 totalArea += s.getSoilTypeArea();
                 i++;
             }
-            ret.setSoilArea(soilArea);
+//            ret.setSoilArea(soilArea);
             if (totalArea == 0) {
                 totalArea = input.getPlantedAcres();
 
@@ -2907,6 +2908,7 @@ public class AFSIRSModule {
             p.add(keyChunk);
             p.add(valChunk);
         } catch (Exception e) {
+            e.printStackTrace(System.err);
             System.out.println("Please restart the app");
         }
         //Chunk valChunk = new Chunk(value, BLACK_BOLD);
@@ -4450,7 +4452,43 @@ public class AFSIRSModule {
         obj.put("water_table_depth", input.getDWT());
         obj.put("water_hold_capacity", input.getWATERHOLDINGCAPACITY());
         obj.put("soil_source", input.getSoilSource());
-
+        obj.put("soil_unit_name", input.getUNIT());
+        ArrayList soils = new ArrayList();
+        for (Soil soil : input.getSoils()) {
+            HashMap soilData = new HashMap();
+            soilData.put("mukey", soil.getSOILSERIESKEY());
+            soilData.put("mukeyName", soil.getSERIESNAME());
+            soilData.put("cokey", soil.getCOMPKEY());
+            soilData.put("soilName", soil.getSNAME());
+            soilData.put("compArea", soil.getSoilTypeArea());
+            ArrayList soilLayers = new ArrayList();
+            for (int i = 0; i < soil.getNL(); i++) {
+                HashMap soilLayer = new HashMap();
+                soilLayer.put("sllb", soil.getDU()[i]);
+                soilLayer.put("slll", soil.getWCL()[i]);
+                soilLayer.put("sldul", soil.getWCU()[i]);
+                soilLayers.add(soilLayer);
+            }
+            soilData.put("soilLayer", soilLayers);
+            soils.add(soilData);
+        }
+        obj.put("soils", soils);
+        obj.put("coefficent_type", input.getCoefficentType());
+        if ("annual".equalsIgnoreCase(input.getCropType())) {
+            obj.put("dzn", input.getDZN());
+            obj.put("dzx", input.getDZX());
+            obj.put("akc3", input.getAKC3());
+            obj.put("akc4", input.getAKC4());
+            obj.put("f1", input.getF()[0]);
+            obj.put("f2", input.getF()[1]);
+            obj.put("f3", input.getF()[2]);
+            obj.put("f4", input.getF()[3]);
+            obj.put("ald1", input.getALD()[0]);
+            obj.put("ald2", input.getALD()[1]);
+            obj.put("ald3", input.getALD()[2]);
+            obj.put("ald4", input.getALD()[3]);
+        }
+        
         try (FileWriter file = new FileWriter(Paths.get(outputDir.getPath(),  input.getSITE() + ".json").toFile())) {
 
             file.write(obj.toJSONString());
