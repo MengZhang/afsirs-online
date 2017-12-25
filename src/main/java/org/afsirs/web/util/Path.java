@@ -65,9 +65,17 @@ public class Path {
     public static class Folder {
 //        public final static String WORKING = "working";
         public final static String WATER_USE_PERMIT = "Permit";
-        public final static String DATA = "./Data";
+        public final static String WATER_USE_PERMIT_OUTPUT = "Output";
+        public final static String DATA = "Data";
         public static File getUserWaterUsePermitDir(String userId) {
             File ret = Paths.get(WATER_USE_PERMIT, userId).toFile();
+            if (!ret.isDirectory()) {
+                ret.mkdirs();
+            }
+            return ret;
+        }
+        public static File getUserWaterUsePermitOutputDir(String userId) {
+            File ret = Paths.get(WATER_USE_PERMIT_OUTPUT, userId).toFile();
             if (!ret.isDirectory()) {
                 ret.mkdirs();
             }
