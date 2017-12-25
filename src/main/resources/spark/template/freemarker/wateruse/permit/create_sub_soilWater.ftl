@@ -88,7 +88,7 @@
             <label class="control-label col-sm-3" for="soil_file">Upload Soil File :</label>
             <div class="col-sm-5">
                 <input type="file" id="soil_file" name="soil_file" class="form-control" value="" accept=".json" onchange="readFile()" placeholder="Browse Soil File (.json)" data-toggle="tooltip" title="Browse Soil File (.json)">
-                <input type="hidden" id="soil_file_json" name="soil_file_json" value="${permit['soil_json']!}">
+                <input type="hidden" id="soil_file_json" name="soil_file_json" value='{"soils":${permit["soil_json"]!}}'>
                 <input type="hidden" id="soil_unit_name" name="soil_unit_name" value="${permit['soil_unit_name']!}">
             </div>
             <div class="col-sm-4">

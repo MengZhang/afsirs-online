@@ -58,8 +58,8 @@ public class WaterUsePermit {
     private String soil_json;
     private String mapSoilJsonFile;
     private String water_hold_capacity;
-    private String latitude;
-    private String longitude;
+//    private String latitude;
+//    private String longitude;
     private String totalArea;
 
     // Climate
@@ -141,35 +141,36 @@ public class WaterUsePermit {
         ret.setSoil_source(soilSource);
         ret.setSoil_unit_name(request.queryParams("soil_unit_name"));
         ret.setWater_hold_capacity(request.queryParams("water_hold_capacity"));
+        ret.setTotalArea(request.queryParams("total_area"));
+        ret.setSoil_json(request.queryParams("soil_file_json"));
         if (soilSource.equalsIgnoreCase("DB")) {
             ret.setDbSoilNames(request.queryParamsValues("soil_type_db"));
             ret.setSoils(DataUtil.readSoils(ret.getDbSoilNames()));
-            ret.setTotalArea(request.queryParams("total_area"));
         } else if (soilSource.equalsIgnoreCase("MAP")) {
             String jsonStr = request.queryParams("soil_file_json");
             ret.setSoils(DataUtil.toSoils(jsonStr));
-            JSONObject data = JsonUtil.parseFrom(jsonStr);
-            List<Map> asfirs = (List) data.get("asfirs");
-            if (asfirs == null) {
-                return null;
-            }
-            String longi = null;
-            String lat = null;
+//            JSONObject data = JsonUtil.parseFrom(jsonStr);
+//            List<Map> asfirs = (List) data.get("asfirs");
+//            if (asfirs == null) {
+//                return null;
+//            }
+//            String longi = null;
+//            String lat = null;
 //            String totArea = null;
-            for (Map node : asfirs) {
-                longi = node.get("long").toString();
-                lat = node.get("lat").toString();
+//            for (Map node : asfirs) {
+//                longi = node.get("long").toString();
+//                lat = node.get("lat").toString();
 //                totArea = node.get("TotalArea").toString();
                 // TODO for multiple polygons
-            }
-            ret.setLatitude(lat);
-            ret.setLongitude(longi);
-            ret.setTotalArea(request.queryParams("total_area")); // TODO
+//            }
+//            ret.setLatitude(lat);
+//            ret.setLongitude(longi);
+//            ret.setTotalArea(request.queryParams("total_area")); // TODO
 //            ret.setTotalArea(totArea);
         }
 
-        ret.setEt_loc(calculateNearestStation(request.queryParams("et_loc"), "CLIMATE", ret));
-        ret.setRain_loc(calculateNearestStation(request.queryParams("rain_loc"), "RAIN", ret));
+        ret.setEt_loc(calculateNearestStation(request.queryParams("et_loc"), "CLIMATE", request));
+        ret.setRain_loc(calculateNearestStation(request.queryParams("rain_loc"), "RAIN", request));
 
         String coeffType = request.queryParams("coefficent_type");
         ret.setCoefficent_type(coeffType);
@@ -201,9 +202,24 @@ public class WaterUsePermit {
         return ret;
     }
 
-    private static String calculateNearestStation(String loc, String type, WaterUsePermit permit) {
+    private static String calculateNearestStation(String loc, String type, Request request) {
         if ("Nearest Station".equalsIgnoreCase(loc)) {
-            loc = DataUtil.calculateNearestStation(type, permit.getLatitude(), permit.getLongitude());
+            String jsonStr = request.queryParams("soil_file_json");
+            JSONObject data = JsonUtil.parseFrom(jsonStr);
+            List<Map> asfirs = (List) data.get("asfirs");
+            if (asfirs == null) {
+                return null;
+            }
+            String longi = null;
+            String lat = null;
+//            String totArea = null;
+            for (Map node : asfirs) {
+                longi = node.get("long").toString();
+                lat = node.get("lat").toString();
+//                totArea = node.get("TotalArea").toString();
+                // TODO for multiple polygons
+            }
+            loc = DataUtil.calculateNearestStation(type, lat, longi);
         }
         return loc;
     }
@@ -337,7 +353,7 @@ public class WaterUsePermit {
         input.setIrrOption(irr_option);
         input.setIDCODE(irr_depth_type, irr_depth);
         input.setIrrigationSystem(irr_type, soil_surface_irr, et_extracted, irr_efficiency,
-                DataUtil.getIRSysNameList().get(Integer.parseInt(irr_type) - 1));
+                DataUtil.getIRSysNameList().get(Integer.parseInt(irr_type)));
 //        input.setIVERS(ir_dat);
         input.setDWT(Double.parseDouble(water_table_depth));
 
