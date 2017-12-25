@@ -30,8 +30,8 @@ import static org.afsirs.web.Main.LOG;
  */
 public class DataUtil {
 
-    private final static ArrayList<String> CROP_LIST_ANNUAL = readCropList("ANNUAL");
-    private final static ArrayList<String> CROP_LIST_PERENNIAL = readCropList("PERENNIAL");
+    private final static LinkedHashMap<String, CropData> CROP_LIST_ANNUAL = readCropList("ANNUAL");
+    private final static LinkedHashMap<String, CropData> CROP_LIST_PERENNIAL = readCropList("PERENNIAL");
     private final static ArrayList<Irrigation> IR_SYS_LIST = new ArrayList();
     private final static ArrayList<String> IR_NAME_LIST = readIrrigationList();
     private final static LinkedHashSet<String> SOILTYPE_DB_NAME_LIST = readSoilData();
@@ -40,26 +40,55 @@ public class DataUtil {
 
     @Data
     public static class WeatherData {
-
         private double[][] data = new double[64][365];
         private String location;
         private int startYear;
         private int endYear;
+    }
+    
+    public static interface CropData{}
+    
+    @Data
+    public static class CropDataAnnual implements CropData {
+        private double DZN, DZX;
+        private double AKC3, AKC4;
+        private double[] F = new double[4];
+        private double[] ALD = new double[4];
+        public double[] getFR() {
+            return F;
+        }
+    }
+    
+    @Data
+    public static class CropDataPerennial implements CropData {
+        private double DRZIRR, DRZTOT;
+        private double[] AKC = new double[12];
+        private double[] ALDP = new double[12];
+        private double HGT;
     }
 
     public static ArrayList<String> getCropList(String type) {
         if (type != null) {
             switch (type) {
                 case "ANNUAL":
-                    return CROP_LIST_ANNUAL;
+                    return new ArrayList(CROP_LIST_ANNUAL.keySet());
                 case "PERENNIAL":
-                    return CROP_LIST_PERENNIAL;
+                    return new ArrayList(CROP_LIST_PERENNIAL.keySet());
                 default:
                     return new ArrayList();
             }
         } else {
             return new ArrayList();
         }
+    }
+    
+    public static int getCropIndexCode(String type, String cropName) {
+        if ("ANNUAL".equalsIgnoreCase(type)) {
+            return new ArrayList(CROP_LIST_ANNUAL.keySet()).indexOf(cropName);
+        } else if ("PERENNIAL".equalsIgnoreCase(type)) {
+            return new ArrayList(CROP_LIST_PERENNIAL.keySet()).indexOf(cropName);
+        }
+        return -1;
     }
 
     public static ArrayList<String> getIRSysNameList() {
@@ -89,9 +118,17 @@ public class DataUtil {
     public static WeatherData getRainfallData(String rainLoc) {
         return RAINFALL_DATA_LIST.get(rainLoc);
     }
+    
+    public static LinkedHashMap<String, CropData> getCropDataAnnual() {
+        return CROP_LIST_ANNUAL;
+    }
+    
+    public static LinkedHashMap<String, CropData> getCropDataPerennial() {
+        return CROP_LIST_PERENNIAL;
+    }
 
-    private static ArrayList<String> readCropList(String type) {
-        ArrayList<String> ret = new ArrayList();
+    private static LinkedHashMap<String, CropData> readCropList(String type) {
+        LinkedHashMap<String, CropData> ret = new LinkedHashMap();
         try {
             BufferedReader br = new BufferedReader(new FileReader(Path.Folder.getDataFile("crop.dat")));
             String line;
@@ -106,22 +143,83 @@ public class DataUtil {
                     break;
                 }
                 String crop;
+                CropData cropData;
                 if (type.equals("ANNUAL")) {
                     crop = line.substring(0, 13).trim();
+                    cropData = readCropDataAnnual(line);
                 } else {
                     crop = line.substring(0, 14).trim();
+                    cropData = readCropDataPerennial(line, br.readLine());
                 }
                 if (crop.length() < 1) {
                     break;
                 }
-                ret.add(crop);
-                if (type.equals("PERENNIAL")) {
-                    br.readLine();
-                }
+                ret.put(crop, cropData);
             }
 
         } catch (Exception e) {
             e.printStackTrace(System.err);
+        }
+        return ret;
+    }
+    
+    private static CropData readCropDataAnnual(String line) {
+        CropDataAnnual ret = new CropDataAnnual();
+        if (line.length() < 12) {
+            return ret;
+        }
+        String data = line.substring(12).trim();
+        String[] arr = data.split("\\s+");
+        int i = 0;
+        for (String str : arr) {
+            if (str.length() < 1) {
+                continue;
+            }
+            if (i == 0) {
+                ret.setDZN(new BigDecimal(str).doubleValue());
+            } else if (i == 1) {
+                ret.setDZX(new BigDecimal(str).doubleValue());
+            } else if (i == 2) {
+                ret.setAKC3(new BigDecimal(str).doubleValue());
+            } else if (i == 3) {
+                ret.setAKC4(new BigDecimal(str).doubleValue());
+            } else if (i < 8) {
+                ret.getF()[i - 4] = new BigDecimal(str).doubleValue();
+            } else {
+                ret.getALD()[i - 8] = new BigDecimal(str).doubleValue();
+            }
+            i++;
+        }
+        return ret;
+    }
+    
+    private static CropData readCropDataPerennial(String line1, String line2) {
+        CropDataPerennial ret = new CropDataPerennial();
+        String data = line1.substring(14);
+        String[] arr = data.split(" ");
+        int i = 0;
+        for (String str : arr) {
+            ret.getAKC()[i] = new BigDecimal(str).doubleValue();
+            i++;
+        }
+        data = line2.substring(8);
+        if (data.charAt(0) == ' ') {
+            data = data.substring(1);
+        }
+        arr = data.split(" ");
+        i = 0;
+        for (String str : arr) {
+            if (str.length() < 1) {
+                continue;
+            }
+            if (i == 0) {
+                ret.setDRZIRR(new BigDecimal(str).doubleValue());
+            } else if (i == 1) {
+                ret.setDRZTOT(new BigDecimal(str).doubleValue());
+            } else {
+                ret.getALDP()[i - 2] = new BigDecimal(str).doubleValue();
+            }
+            i++;
         }
         return ret;
     }
@@ -340,7 +438,7 @@ public class DataUtil {
     }
 
     public static Weather toWeather(String etLoc, String rainLoc) {
-        return toWeather(CLIMATE_DATA_LIST.get(etLoc), RAINFALL_DATA_LIST.get(rainLoc));
+        return toWeather(getClimateData(etLoc), getRainfallData(rainLoc));
     }
 
     public static Weather toWeather(WeatherData etData, WeatherData rainData) {
