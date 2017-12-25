@@ -35,11 +35,11 @@ public class DataUtil {
     private final static ArrayList<Irrigation> IR_SYS_LIST = new ArrayList();
     private final static ArrayList<String> IR_NAME_LIST = readIrrigationList();
     private final static LinkedHashSet<String> SOILTYPE_DB_NAME_LIST = readSoilData();
-    private final static LinkedHashMap<String, weatherData> CLIMATE_DATA_LIST = readWeatherData("CLIMLIST.txt");
-    private final static LinkedHashMap<String, weatherData> RAINFALL_DATA_LIST = readWeatherData("RAINLIST.txt");
+    private final static LinkedHashMap<String, WeatherData> CLIMATE_DATA_LIST = readWeatherData("CLIMLIST.txt");
+    private final static LinkedHashMap<String, WeatherData> RAINFALL_DATA_LIST = readWeatherData("RAINLIST.txt");
 
     @Data
-    public static class weatherData {
+    public static class WeatherData {
 
         private double[][] data = new double[64][365];
         private String location;
@@ -78,7 +78,7 @@ public class DataUtil {
         return new ArrayList(CLIMATE_DATA_LIST.keySet());
     }
 
-    public static weatherData getClimateData(String etLoc) {
+    public static WeatherData getClimateData(String etLoc) {
         return CLIMATE_DATA_LIST.get(etLoc);
     }
 
@@ -86,7 +86,7 @@ public class DataUtil {
         return new ArrayList(RAINFALL_DATA_LIST.keySet());
     }
 
-    public static weatherData getRainfallData(String rainLoc) {
+    public static WeatherData getRainfallData(String rainLoc) {
         return RAINFALL_DATA_LIST.get(rainLoc);
     }
 
@@ -211,8 +211,8 @@ public class DataUtil {
         return ret;
     }
 
-    private static LinkedHashMap<String, weatherData> readWeatherData(String fileName) {
-        LinkedHashMap<String, weatherData> ret = new LinkedHashMap<>();
+    private static LinkedHashMap<String, WeatherData> readWeatherData(String fileName) {
+        LinkedHashMap<String, WeatherData> ret = new LinkedHashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(Path.Folder.getDataFile(fileName)))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -227,8 +227,8 @@ public class DataUtil {
         return ret;
     }
 
-    private static weatherData readWeatherFile(File file) {
-        weatherData weather = new weatherData();
+    private static WeatherData readWeatherFile(File file) {
+        WeatherData weather = new WeatherData();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line = br.readLine();
             weather.setLocation(line.split(" ")[0]);
@@ -343,7 +343,7 @@ public class DataUtil {
         return toWeather(CLIMATE_DATA_LIST.get(etLoc), RAINFALL_DATA_LIST.get(rainLoc));
     }
 
-    public static Weather toWeather(weatherData etData, weatherData rainData) {
+    public static Weather toWeather(WeatherData etData, WeatherData rainData) {
         Weather weather = new Weather();
         int startYear = Math.max(etData.getStartYear(), rainData.getStartYear());
         int endYear = Math.min(etData.getEndYear(), rainData.getEndYear());
