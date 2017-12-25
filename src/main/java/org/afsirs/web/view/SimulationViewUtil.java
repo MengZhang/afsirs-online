@@ -92,6 +92,8 @@ public class SimulationViewUtil {
             irrReqAvg=0.0;
             twoIn10Avg=0.0;
             oneIn10Avg=0.0;
+            twoIn10AvgTot=0.0;
+            oneIn10AvgTot=0.0;
         }
         
         
