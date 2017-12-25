@@ -172,12 +172,13 @@ public class WaterUsePermit {
         return ret;
     }
 
-    public UserInput toAFSIRSInputData() {
+    public UserInput toAFSIRSInputData(String userId) {
         UserInput input = new UserInput();
         input.setSITE(permit_id);
-        input.setOWNER(owner_name);
+        input.setOWNER(owner_name, Path.Folder.getUserWaterUsePermitOutputDir(userId).getPath());
         input.setCropType(crop_type);
-        input.setCropName(crop_name);
+//        input.setCropName(crop_name);
+        input.setCropData(DataUtil.getCropIndexCode(crop_type, crop_name), crop_name);
         if (crop_type.equals("annual")) {
             input.setIrrigationSeason(beg_date_month, beg_date_day, end_date_month, end_date_day);
         } else {
