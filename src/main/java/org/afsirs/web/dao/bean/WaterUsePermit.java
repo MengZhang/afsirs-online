@@ -10,9 +10,15 @@ import java.util.Map;
 import lombok.Data;
 import org.afsirs.module.Soil;
 import org.afsirs.module.UserInput;
+import org.afsirs.module.util.Util;
 import org.afsirs.web.util.DataUtil;
+import org.afsirs.web.util.DataUtil.CropData;
+import org.afsirs.web.util.DataUtil.CropDataAnnual;
+import org.afsirs.web.util.DataUtil.CropDataPerennial;
 import org.afsirs.web.util.JSONObject;
 import org.afsirs.web.util.JsonUtil;
+import org.afsirs.web.util.Path;
+import org.json.simple.JSONArray;
 import spark.Request;
 
 /**
@@ -58,9 +64,46 @@ public class WaterUsePermit {
     private String et_loc;
     private String rain_loc;
 
+    // Coefficent
+    private String coefficent_type;
+    // Coefficent for Annual Crop
+    private String dzn;
+    private String dzx;
+    private String akc3;
+    private String akc4;
+    private String f1;
+    private String f2;
+    private String f3;
+    private String f4;
+    private String ald1;
+    private String ald2;
+    private String ald3;
+    private String ald4;
+
     public void setDbSoilNames(String[] names) {
         dbSoilNames = new LinkedHashSet<>();
         dbSoilNames.addAll(Arrays.asList(names));
+    }
+
+    public void setCropData(CropData input) {
+        if (input instanceof CropDataAnnual) {
+            CropDataAnnual data = (CropDataAnnual) input;
+            this.setDzn(data.getDZN() + "");
+            this.setDzx(data.getDZX() + "");
+            this.setAkc3(data.getAKC3() + "");
+            this.setAkc4(data.getAKC4() + "");
+            this.setF1(data.getF()[0] + "");
+            this.setF2(data.getF()[1] + "");
+            this.setF3(data.getF()[2] + "");
+            this.setF4(data.getF()[3] + "");
+            this.setAld1(data.getALD()[0] + "");
+            this.setAld2(data.getALD()[1] + "");
+            this.setAld3(data.getALD()[2] + "");
+            this.setAld4(data.getALD()[3] + "");
+        } else if (input instanceof CropDataPerennial) {
+            CropDataPerennial data = (CropDataPerennial) input;
+            // TODO
+        }
     }
 
     public static WaterUsePermit readFromRequest(Request request) {
@@ -69,10 +112,12 @@ public class WaterUsePermit {
         ret.setOwner_name(request.queryParams("owner_name"));
         String cropType = request.queryParams("crop_type");
         ret.setCrop_type(cropType);
-        if (cropType.equals("annual")) {
-            ret.setCrop_name(request.queryParams("crop_name_annual"));
-        } else {
-            ret.setCrop_name(request.queryParams("crop_name_perennial"));
+        if (cropType != null && !cropType.isEmpty()) {
+            if (cropType.equals("annual")) {
+                ret.setCrop_name(request.queryParams("crop_name_annual"));
+            } else {
+                ret.setCrop_name(request.queryParams("crop_name_perennial"));
+            }
         }
         ret.setBeg_date_month(request.queryParams("beg_date_month"));
         ret.setBeg_date_day(request.queryParams("beg_date_day"));
@@ -123,6 +168,33 @@ public class WaterUsePermit {
         ret.setEt_loc(calculateNearestStation(request.queryParams("et_loc"), "CLIMATE", ret));
         ret.setRain_loc(calculateNearestStation(request.queryParams("rain_loc"), "RAIN", ret));
 
+        String coeffType = request.queryParams("coefficent_type");
+        ret.setCoefficent_type(coeffType);
+        if ("default".equalsIgnoreCase(coeffType)) {
+            if (cropType != null && !cropType.isEmpty()) {
+                if (cropType.equals("annual")) {
+                    CropData cropData = DataUtil.getCropDataAnnual().get(ret.getCrop_name());
+                    ret.setCropData(cropData);
+                } else {
+                    CropData cropData = DataUtil.getCropDataPerennial().get(ret.getCrop_name());
+                    ret.setCropData(cropData);
+                }
+            }
+        } else {
+            ret.setDzn(request.queryParams("dzn"));
+            ret.setDzx(request.queryParams("dzx"));
+            ret.setAkc3(request.queryParams("akc3"));
+            ret.setAkc4(request.queryParams("akc4"));
+            ret.setF1(request.queryParams("f1"));
+            ret.setF2(request.queryParams("f2"));
+            ret.setF3(request.queryParams("f3"));
+            ret.setF4(request.queryParams("f4"));
+            ret.setAld1(request.queryParams("ald1"));
+            ret.setAld2(request.queryParams("ald2"));
+            ret.setAld3(request.queryParams("ald3"));
+            ret.setAld4(request.queryParams("ald4"));
+        }
+
         return ret;
     }
 
@@ -169,6 +241,20 @@ public class WaterUsePermit {
         ret.setEt_loc(data.getOrBlank("et_loc"));
         ret.setRain_loc(data.getOrBlank("rain_loc"));
 
+        ret.setCoefficent_type(data.getOrDefault("coefficent_type", null));
+        ret.setDzn(data.getOrBlank("dzn"));
+        ret.setDzx(data.getOrBlank("dzx"));
+        ret.setAkc3(data.getOrBlank("akc3"));
+        ret.setAkc4(data.getOrBlank("akc4"));
+        ret.setF1(data.getOrBlank("f1"));
+        ret.setF2(data.getOrBlank("f2"));
+        ret.setF3(data.getOrBlank("f3"));
+        ret.setF4(data.getOrBlank("f4"));
+        ret.setAld1(data.getOrBlank("ald1"));
+        ret.setAld2(data.getOrBlank("ald2"));
+        ret.setAld3(data.getOrBlank("ald3"));
+        ret.setAld4(data.getOrBlank("ald4"));
+
         return ret;
     }
 
@@ -198,6 +284,28 @@ public class WaterUsePermit {
         input.setPlantedAcres(new BigDecimal(totalArea).doubleValue());
 
         input.setWeather(DataUtil.toWeather(et_loc, rain_loc));
+
+        input.setCoefficentType(coefficent_type);
+        if (crop_type != null && !crop_type.isEmpty()) {
+            if (crop_type.equals("annual")) {
+                input.setDCOEFAnnual(
+                        new BigDecimal(dzn).doubleValue(),
+                        new BigDecimal(dzx).doubleValue(),
+                        new double[]{new BigDecimal(f1).doubleValue(),
+                            new BigDecimal(f2).doubleValue(),
+                            new BigDecimal(f3).doubleValue(),
+                            new BigDecimal(f4).doubleValue()},
+                        new double[]{new BigDecimal(ald1).doubleValue(),
+                            new BigDecimal(ald2).doubleValue(),
+                            new BigDecimal(ald3).doubleValue(),
+                            new BigDecimal(ald4).doubleValue()});
+                input.setAKC34(
+                        new BigDecimal(akc3).doubleValue(),
+                        new BigDecimal(akc4).doubleValue());
+            } else {
+                
+            }
+        }
 
         return input;
     }

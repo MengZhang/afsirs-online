@@ -32,6 +32,8 @@ public class WaterUsePermitViewUtil {
         }
         attributes.put("cropListAnnual", getCropList("ANNUAL"));
         attributes.put("cropListPerennial", getCropList("PERENNIAL"));
+        attributes.put("cropDataAnnual", DataUtil.getCropDataAnnual());
+        attributes.put("cropDataPerennial", DataUtil.getCropDataPerennial());
         attributes.put("irSysNameList", DataUtil.getIRSysNameList());
         attributes.put("irSysList", DataUtil.getIRSysList());
         attributes.put("soilDBNameList", DataUtil.getSoilTypeDBNameList());
