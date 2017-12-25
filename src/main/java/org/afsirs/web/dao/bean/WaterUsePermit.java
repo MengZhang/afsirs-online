@@ -52,8 +52,10 @@ public class WaterUsePermit {
 
     // Soil
     private String soil_source;
+    private String soil_unit_name;
     private LinkedHashSet<String> dbSoilNames;
     private ArrayList<Soil> soils;
+    private String soil_json;
     private String mapSoilJsonFile;
     private String water_hold_capacity;
     private String latitude;
@@ -137,6 +139,7 @@ public class WaterUsePermit {
 
         String soilSource = request.queryParams("soil_source");
         ret.setSoil_source(soilSource);
+        ret.setSoil_unit_name(request.queryParams("soil_unit_name"));
         ret.setWater_hold_capacity(request.queryParams("water_hold_capacity"));
         if (soilSource.equalsIgnoreCase("DB")) {
             ret.setDbSoilNames(request.queryParamsValues("soil_type_db"));
@@ -219,7 +222,7 @@ public class WaterUsePermit {
         ret.setDescription(data.getOrBlank("description"));
 
         ret.setIrr_type(data.getOrBlank("irr_type"));
-        ret.setIrr_option(data.getOrBlank("irr_option"));
+        ret.setIrr_option(data.getOrDefault("irr_option", null));
         String irrDepthType = data.getOrBlank("irr_depth_type");
         if (irrDepthType.isEmpty()) {
             irrDepthType = data.getOrBlank("irr_depth");
@@ -233,10 +236,12 @@ public class WaterUsePermit {
         ret.setEt_extracted(data.getOrBlank("et_extracted"));
         ret.setWater_table_depth(data.getOrBlank("water_table_depth"));
 
-        ret.setSoil_source(data.getOrBlank("soil_source"));
+        ret.setSoil_source(data.getOrDefault("soil_source", null));
+        ret.setSoil_unit_name(data.getOrBlank("soil_unit_name"));
         ret.setWater_hold_capacity(data.getOrBlank("water_hold_capacity"));
         ret.setTotalArea(data.getOrBlank("planted_area"));
-        // TODO handel soil data
+        ret.setSoil_json(((JSONArray) data.getOrDefault("soils", new JSONArray())).toJSONString());
+        ret.setSoils(readSoilFromPermitJson(data, ret.getWater_hold_capacity()));
 
         ret.setEt_loc(data.getOrBlank("et_loc"));
         ret.setRain_loc(data.getOrBlank("rain_loc"));
@@ -257,6 +262,62 @@ public class WaterUsePermit {
 
         return ret;
     }
+    
+    private static ArrayList<Soil> readSoilFromPermitJson(JSONObject data, String WHC) {
+        ArrayList<Soil> ret = new ArrayList();
+        ArrayList<org.json.simple.JSONObject> soilArr = (ArrayList) data.getOrDefault("soils", new ArrayList());
+        for (org.json.simple.JSONObject soilJS : soilArr) {
+            JSONObject soilJ = new JSONObject(soilJS);
+            String soilSeriesName = soilJ.getOrBlank("mukeyName");
+            String soilSeriesKey = soilJ.getOrBlank("mukey");
+
+            String soilName = soilJ.getOrBlank("soilName");
+            String compKey = soilJ.getOrBlank("cokey");
+
+            String soilTypeArea = soilJ.getOrBlank("compArea");
+
+            ArrayList<org.json.simple.JSONObject> soilLayersNodes = (ArrayList) soilJ.getOrDefault("soilLayer", new ArrayList());
+
+            int nl = 0;
+
+            double[] wc = new double[6];
+            double[] wcl = new double[6];
+            double[] wcu = new double[6];
+            double[] du = new double[6];
+            String[] txt = new String[3];
+
+            for (org.json.simple.JSONObject nodeJS : soilLayersNodes) {
+                //System.out.println ("NL we are looking for: " + NL);
+                JSONObject node = new JSONObject(nodeJS);
+                wcu[nl] = node.getAsDouble("sldul") / 100.00;
+                du[nl] = node.getAsDouble("sllb") * 0.39370;
+                du[nl] = Util.round(du[nl], 3);
+                wcl[nl] = node.getAsDouble("slll") / 100.00;
+
+                if (WHC.equalsIgnoreCase("Minimum")) {
+                    wc[nl] = wcl[nl];
+                } else if (WHC.equalsIgnoreCase("Maximum")) {
+                    wc[nl] = wcu[nl];
+                } else {
+                    wc[nl] = 0.5 * (wcl[nl] + wcu[nl]);
+                }
+
+                wc[nl] = Util.round(wc[nl], 3);
+                nl++;
+            }
+            
+            Soil soil = new Soil(soilName, soilSeriesKey, compKey, soilSeriesName, nl);
+            soil.setValues(wc, wcl, wcu, du, txt);
+
+            if (soilTypeArea != null) {
+                soil.setSoilTypeArea(Double.valueOf(soilTypeArea));
+            } else {
+                soil.setSoilTypeArea(0.0);
+            }
+            ret.add(soil);
+        }
+        return ret;
+    }
 
     public UserInput toAFSIRSInputData(String userId) {
         UserInput input = new UserInput();
@@ -270,6 +331,8 @@ public class WaterUsePermit {
         } else {
             input.setIrrigationSeason(1, 1, 12, 31);
         }
+        
+        input.setCodes(2, 0);
 
         input.setIrrOption(irr_option);
         input.setIDCODE(irr_depth_type, irr_depth);
@@ -279,6 +342,7 @@ public class WaterUsePermit {
         input.setDWT(Double.parseDouble(water_table_depth));
 
         input.setSoilSource(soil_source);
+        input.setUNIT(soil_unit_name);
         input.setSoils(soils);
         input.setWATERHOLDINGCAPACITY(water_hold_capacity);
         input.setPlantedAcres(new BigDecimal(totalArea).doubleValue());
