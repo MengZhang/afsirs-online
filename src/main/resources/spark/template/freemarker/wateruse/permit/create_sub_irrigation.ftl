@@ -1,13 +1,13 @@
 <script>
-    
+
     function getIrSysList() {
         var irrSysList = [];
 //      <#list irSysList as irSys>
-        irrSysList.push({eff:"${irSys['eff']!}", arzi:"${irSys['area']!}", exir:"${irSys['ex']!}", dwt:"${irSys['dwt']!}"});
+        irrSysList.push({eff: "${irSys['eff']!}", arzi: "${irSys['area']!}", exir: "${irSys['ex']!}", dwt: "${irSys['dwt']!}"});
 //      </#list>
         return irrSysList;
     }
-    
+
     function setDefIrrParams() {
         var irrSysList = getIrSysList();
         var irrType = document.getElementById("irr_type").selectedIndex;
@@ -24,8 +24,9 @@
         document.getElementById("et_extracted_input").value = irrSysList[irrType]["exir"];
         document.getElementById("water_table_depth").value = irrSysList[irrType]["dwt"];
         document.getElementById("water_table_depth_input").value = irrSysList[irrType]["dwt"];
+        setDecoefLabels();
     }
-    
+
     function changeIrrDepDefinition() {
         var irrDepType = document.getElementById("irr_depth_type");
         var irrDep = document.getElementById("irr_depth");
@@ -47,7 +48,7 @@
             document.getElementById("irr_depth_unit").innerHTML = "";
         }
     }
-    
+
     function setStatus(comp, disabled, max, min, step, value, msg) {
         comp.disabled = disabled;
         comp.max = max;
@@ -83,7 +84,10 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3" for="irr_depth_type">Irrigation water depths definition :</label>
+            <label class="control-label col-md-3" for="irr_depth_type"><u>Irrigation Water Depths</u></label>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3" for="irr_depth_type">Definition :</label>
             <div class="col-md-6">
                 <select id="irr_depth_type" name="irr_depth_type" class="form-control" onchange="changeIrrDepDefinition();" title="Define Irrigation Water depths per application">
                     <#list ['Irrigate to field capacity','Apply a fixed depth per application(>0.1)','Deficit Irrigation application'] as x>
@@ -94,9 +98,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3" for="irr_depth"></label>
-        <#if permit['irr_depth_type']??>
-          <#if permit['irr_depth_type']?number == 1>
+            <label class="control-label col-md-3" for="irr_depth">Value :</label>
+            <#if permit['irr_depth_type']??>
+            <#if permit['irr_depth_type']?number == 1>
             <div class="col-sm-4">
                 <input type="range" id="irr_depth" name="irr_depth" step="0.1" max="300" min="0.1" class="form-control" value="${permit['irr_depth']!}" placeholder="inches, Depth of water to apply per irrigation (>= 0.1)" data-toggle="tooltip" title="inches, Depth of water to apply per irrigation (>= 0.1)" onchange="showValue('irr_depth')" disabled>
             </div>
@@ -104,7 +108,7 @@
                 <input type="number" id="irr_depth_input" name="irr_depth_input" step="10" max="300" min="0.1" class="form-control" value="${permit['irr_depth']!}" placeholder="inches, Depth of water to apply per irrigation (>= 0.1)" data-toggle="tooltip" title="inches, Depth of water to apply per irrigation (>= 0.1)" onchange="showRange('irr_depth')" disabled>
             </div>
             <label id="irr_depth_unit" class="control-label col-sm-1" for="irr_depth">(inches)</label>
-          <#elseif permit['irr_depth_type']?number == 2>
+            <#elseif permit['irr_depth_type']?number == 2>
             <div class="col-sm-4">
                 <input type="range" id="irr_depth" name="irr_depth" step="0.1" max="100" min="50" class="form-control" value="${permit['irr_depth']!}" placeholder="%, of field capacity for deficit irrigation (50-100)" data-toggle="tooltip" title="%, of field capacity for deficit irrigation (50-100)" onchange="showValue('irr_depth')" disabled>
             </div>
@@ -112,7 +116,7 @@
                 <input type="number" id="irr_depth_input" name="irr_depth_input" step="5" max="100" min="50" class="form-control" value="${permit['irr_depth']!}" placeholder="%, of field capacity for deficit irrigation (50-100)" data-toggle="tooltip" title="%, of field capacity for deficit irrigation (50-100)" onchange="showRange('irr_depth')" disabled>
             </div>
             <label id="irr_depth_unit" class="control-label col-sm-1" for="irr_depth">(%)</label>
-          <#else>
+            <#else>
             <div class="col-sm-4">
                 <input type="range" id="irr_depth" name="irr_depth" class="form-control" value="${permit['irr_depth']!}" placeholder="" data-toggle="tooltip" title="" onchange="showValue('irr_depth')" disabled>
             </div>
@@ -120,8 +124,8 @@
                 <input type="number" id="irr_depth_input" name="irr_depth_input" class="form-control" value="${permit['irr_depth']!}" placeholder="" data-toggle="tooltip" title="" onchange="showRange('irr_depth')" disabled>
             </div>
             <label id="irr_depth_unit" class="control-label col-sm-1" for="irr_depth"></label>
-          </#if>
-          <#else>
+            </#if>
+            <#else>
             <div class="col-sm-4">
                 <input type="range" id="irr_depth" name="irr_depth" class="form-control" value="${permit['irr_depth']!}" placeholder="" data-toggle="tooltip" title="" onchange="showValue('irr_depth')" disabled>
             </div>
@@ -129,14 +133,18 @@
                 <input type="number" id="irr_depth_input" name="irr_depth_input" class="form-control" value="${permit['irr_depth']!}" placeholder="" data-toggle="tooltip" title="" onchange="showRange('irr_depth')" disabled>
             </div>
             <label id="irr_depth_unit" class="control-label col-sm-1" for="irr_depth"></label>
-          </#if>
+            </#if>
         </div>
-<!--        <div class="form-group">
-            <label class="control-label col-md-1" for="ir_dat"></label>
-            <div class="col-md-6">
-                <label class="form-check-label"><input name="ir_dat" type="checkbox" value="true" id="isBlackListed" class="form-check-input" <#if permit['ir_dat']?? && permit['ir_dat'] == "true">checked</#if>>&nbsp; &nbsp; Check to use default values from IR.DAT</label>
-            </div>
-        </div>-->
+        <!--        <div class="form-group">
+                    <label class="control-label col-md-1" for="ir_dat"></label>
+                    <div class="col-md-6">
+                        <label class="form-check-label"><input name="ir_dat" type="checkbox" value="true" id="isBlackListed" class="form-check-input" <#if permit['ir_dat']?? && permit['ir_dat'] == "true">checked</#if>>&nbsp; &nbsp; Check to use default values from IR.DAT</label>
+                    </div>
+                </div>-->
+        
+        <div class="form-group">
+            <label class="control-label col-md-3"><u>Irrigation Coefficient</u></label>
+        </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="irr_efficiency">Efficiency :</label>
             <div class="col-sm-4">
@@ -180,3 +188,4 @@
             <button type="button" class="btn btn-primary text-right" onclick="openTab('SoilWater')">Next</button>
         </div>
     </div>
+</div>

@@ -120,7 +120,7 @@ public class WaterUsePermitDAO {
 
     public static boolean add(WaterUsePermit permit, String currentUser) {
         File dir = Path.Folder.getUserWaterUsePermitDir(currentUser);
-        return AFSIRSModule.savePermitFile(dir, permit.toAFSIRSInputData());
+        return AFSIRSModule.savePermitFile(dir, permit.toAFSIRSInputData(currentUser));
     }
     
 //    public static boolean add(Project project) {

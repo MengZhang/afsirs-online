@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class JsonUtil {
 
     private static final Logger LOG = (Logger) LoggerFactory.getLogger(JsonUtil.class);
-    private static final JSONParser PARSER = new JSONParser();;
+    private static final JSONParser PARSER = new JSONParser();
 //    private static final JsonFactory FACTORY = new JsonFactory();
     public static final String EMPTY_ARRAY = "[]";
     public static final String EMPTY_DOC = "{}";

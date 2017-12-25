@@ -25,12 +25,13 @@
 
     function readFile() {
         var files = document.getElementById('soil_file').files;
-        if (!files.length) {
-            alert('Please select a file!');
+        if (files.length != 1) {
+            alert('Please select one file!');
             return;
         }
 
         var file = files[0];
+        document.getElementById('soil_unit_name').value = file.name.slice(0, -5);
         var start = 0;
         var stop = file.size - 1;
         var reader = new FileReader();
@@ -87,7 +88,8 @@
             <label class="control-label col-sm-3" for="soil_file">Upload Soil File :</label>
             <div class="col-sm-5">
                 <input type="file" id="soil_file" name="soil_file" class="form-control" value="" accept=".json" onchange="readFile()" placeholder="Browse Soil File (.json)" data-toggle="tooltip" title="Browse Soil File (.json)">
-                <input type="hidden" id="soil_file_json" name="soil_file_json" value="">
+                <input type="hidden" id="soil_file_json" name="soil_file_json" value="${permit['soil_json']!}">
+                <input type="hidden" id="soil_unit_name" name="soil_unit_name" value="${permit['soil_unit_name']!}">
             </div>
             <div class="col-sm-4">
                 <button type="button" class="btn btn-primary text-right" onclick="window.open('http://abe.ufl.edu/bmpmodel/arcGIS/Test/index_5CountyMerge.html')">View Soil Map</button>
@@ -114,7 +116,7 @@
                 </select>
             </div>
         </div>
-        <div id="soil_file_content" class="form-group"></div>
+        <div id="soil_file_content" class="form-group">${permit['soil_json']!}</div>
     </div>
     <div class="text-center">
         <div>

@@ -145,8 +145,8 @@
             <label class="control-label col-sm-3" for="end_date_month">End Date :</label>
             <div class="row col-md-6">
                 <div class="col-md-4">
-                    <select id="endMonthSB" name="end_date_month" class="form-control" onchange="switchMonthDayList('endMonthSB', 'endDaySB') >
-                                    < option value ="0" >Month</option>
+                    <select id="endMonthSB" name="end_date_month" class="form-control" onchange="switchMonthDayList('endMonthSB', 'endDaySB')">
+                        <option value ="0">Month</option>
                         <#list ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as x>
                         <option value="${x?counter}" <#if permit['end_date_month']?? && permit['end_date_month']?number == x?counter>selected</#if>>${x!}</option>
                         </#list>

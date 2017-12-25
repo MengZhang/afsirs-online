@@ -10,9 +10,15 @@ import java.util.Map;
 import lombok.Data;
 import org.afsirs.module.Soil;
 import org.afsirs.module.UserInput;
+import org.afsirs.module.util.Util;
 import org.afsirs.web.util.DataUtil;
+import org.afsirs.web.util.DataUtil.CropData;
+import org.afsirs.web.util.DataUtil.CropDataAnnual;
+import org.afsirs.web.util.DataUtil.CropDataPerennial;
 import org.afsirs.web.util.JSONObject;
 import org.afsirs.web.util.JsonUtil;
+import org.afsirs.web.util.Path;
+import org.json.simple.JSONArray;
 import spark.Request;
 
 /**
@@ -46,8 +52,10 @@ public class WaterUsePermit {
 
     // Soil
     private String soil_source;
+    private String soil_unit_name;
     private LinkedHashSet<String> dbSoilNames;
     private ArrayList<Soil> soils;
+    private String soil_json;
     private String mapSoilJsonFile;
     private String water_hold_capacity;
     private String latitude;
@@ -58,9 +66,46 @@ public class WaterUsePermit {
     private String et_loc;
     private String rain_loc;
 
+    // Coefficent
+    private String coefficent_type;
+    // Coefficent for Annual Crop
+    private String dzn;
+    private String dzx;
+    private String akc3;
+    private String akc4;
+    private String f1;
+    private String f2;
+    private String f3;
+    private String f4;
+    private String ald1;
+    private String ald2;
+    private String ald3;
+    private String ald4;
+
     public void setDbSoilNames(String[] names) {
         dbSoilNames = new LinkedHashSet<>();
         dbSoilNames.addAll(Arrays.asList(names));
+    }
+
+    public void setCropData(CropData input) {
+        if (input instanceof CropDataAnnual) {
+            CropDataAnnual data = (CropDataAnnual) input;
+            this.setDzn(data.getDZN() + "");
+            this.setDzx(data.getDZX() + "");
+            this.setAkc3(data.getAKC3() + "");
+            this.setAkc4(data.getAKC4() + "");
+            this.setF1(data.getF()[0] + "");
+            this.setF2(data.getF()[1] + "");
+            this.setF3(data.getF()[2] + "");
+            this.setF4(data.getF()[3] + "");
+            this.setAld1(data.getALD()[0] + "");
+            this.setAld2(data.getALD()[1] + "");
+            this.setAld3(data.getALD()[2] + "");
+            this.setAld4(data.getALD()[3] + "");
+        } else if (input instanceof CropDataPerennial) {
+            CropDataPerennial data = (CropDataPerennial) input;
+            // TODO
+        }
     }
 
     public static WaterUsePermit readFromRequest(Request request) {
@@ -69,10 +114,12 @@ public class WaterUsePermit {
         ret.setOwner_name(request.queryParams("owner_name"));
         String cropType = request.queryParams("crop_type");
         ret.setCrop_type(cropType);
-        if (cropType.equals("annual")) {
-            ret.setCrop_name(request.queryParams("crop_name_annual"));
-        } else {
-            ret.setCrop_name(request.queryParams("crop_name_perennial"));
+        if (cropType != null && !cropType.isEmpty()) {
+            if (cropType.equals("annual")) {
+                ret.setCrop_name(request.queryParams("crop_name_annual"));
+            } else {
+                ret.setCrop_name(request.queryParams("crop_name_perennial"));
+            }
         }
         ret.setBeg_date_month(request.queryParams("beg_date_month"));
         ret.setBeg_date_day(request.queryParams("beg_date_day"));
@@ -92,6 +139,7 @@ public class WaterUsePermit {
 
         String soilSource = request.queryParams("soil_source");
         ret.setSoil_source(soilSource);
+        ret.setSoil_unit_name(request.queryParams("soil_unit_name"));
         ret.setWater_hold_capacity(request.queryParams("water_hold_capacity"));
         if (soilSource.equalsIgnoreCase("DB")) {
             ret.setDbSoilNames(request.queryParamsValues("soil_type_db"));
@@ -123,6 +171,33 @@ public class WaterUsePermit {
         ret.setEt_loc(calculateNearestStation(request.queryParams("et_loc"), "CLIMATE", ret));
         ret.setRain_loc(calculateNearestStation(request.queryParams("rain_loc"), "RAIN", ret));
 
+        String coeffType = request.queryParams("coefficent_type");
+        ret.setCoefficent_type(coeffType);
+        if ("default".equalsIgnoreCase(coeffType)) {
+            if (cropType != null && !cropType.isEmpty()) {
+                if (cropType.equals("annual")) {
+                    CropData cropData = DataUtil.getCropDataAnnual().get(ret.getCrop_name());
+                    ret.setCropData(cropData);
+                } else {
+                    CropData cropData = DataUtil.getCropDataPerennial().get(ret.getCrop_name());
+                    ret.setCropData(cropData);
+                }
+            }
+        } else {
+            ret.setDzn(request.queryParams("dzn"));
+            ret.setDzx(request.queryParams("dzx"));
+            ret.setAkc3(request.queryParams("akc3"));
+            ret.setAkc4(request.queryParams("akc4"));
+            ret.setF1(request.queryParams("f1"));
+            ret.setF2(request.queryParams("f2"));
+            ret.setF3(request.queryParams("f3"));
+            ret.setF4(request.queryParams("f4"));
+            ret.setAld1(request.queryParams("ald1"));
+            ret.setAld2(request.queryParams("ald2"));
+            ret.setAld3(request.queryParams("ald3"));
+            ret.setAld4(request.queryParams("ald4"));
+        }
+
         return ret;
     }
 
@@ -147,7 +222,7 @@ public class WaterUsePermit {
         ret.setDescription(data.getOrBlank("description"));
 
         ret.setIrr_type(data.getOrBlank("irr_type"));
-        ret.setIrr_option(data.getOrBlank("irr_option"));
+        ret.setIrr_option(data.getOrDefault("irr_option", null));
         String irrDepthType = data.getOrBlank("irr_depth_type");
         if (irrDepthType.isEmpty()) {
             irrDepthType = data.getOrBlank("irr_depth");
@@ -161,28 +236,103 @@ public class WaterUsePermit {
         ret.setEt_extracted(data.getOrBlank("et_extracted"));
         ret.setWater_table_depth(data.getOrBlank("water_table_depth"));
 
-        ret.setSoil_source(data.getOrBlank("soil_source"));
+        ret.setSoil_source(data.getOrDefault("soil_source", null));
+        ret.setSoil_unit_name(data.getOrBlank("soil_unit_name"));
         ret.setWater_hold_capacity(data.getOrBlank("water_hold_capacity"));
         ret.setTotalArea(data.getOrBlank("planted_area"));
-        // TODO handel soil data
+        ret.setSoil_json(((JSONArray) data.getOrDefault("soils", new JSONArray())).toJSONString());
+        ret.setSoils(readSoilFromPermitJson(data, ret.getWater_hold_capacity()));
 
         ret.setEt_loc(data.getOrBlank("et_loc"));
         ret.setRain_loc(data.getOrBlank("rain_loc"));
 
+        ret.setCoefficent_type(data.getOrDefault("coefficent_type", null));
+        ret.setDzn(data.getOrBlank("dzn"));
+        ret.setDzx(data.getOrBlank("dzx"));
+        ret.setAkc3(data.getOrBlank("akc3"));
+        ret.setAkc4(data.getOrBlank("akc4"));
+        ret.setF1(data.getOrBlank("f1"));
+        ret.setF2(data.getOrBlank("f2"));
+        ret.setF3(data.getOrBlank("f3"));
+        ret.setF4(data.getOrBlank("f4"));
+        ret.setAld1(data.getOrBlank("ald1"));
+        ret.setAld2(data.getOrBlank("ald2"));
+        ret.setAld3(data.getOrBlank("ald3"));
+        ret.setAld4(data.getOrBlank("ald4"));
+
+        return ret;
+    }
+    
+    private static ArrayList<Soil> readSoilFromPermitJson(JSONObject data, String WHC) {
+        ArrayList<Soil> ret = new ArrayList();
+        ArrayList<org.json.simple.JSONObject> soilArr = (ArrayList) data.getOrDefault("soils", new ArrayList());
+        for (org.json.simple.JSONObject soilJS : soilArr) {
+            JSONObject soilJ = new JSONObject(soilJS);
+            String soilSeriesName = soilJ.getOrBlank("mukeyName");
+            String soilSeriesKey = soilJ.getOrBlank("mukey");
+
+            String soilName = soilJ.getOrBlank("soilName");
+            String compKey = soilJ.getOrBlank("cokey");
+
+            String soilTypeArea = soilJ.getOrBlank("compArea");
+
+            ArrayList<org.json.simple.JSONObject> soilLayersNodes = (ArrayList) soilJ.getOrDefault("soilLayer", new ArrayList());
+
+            int nl = 0;
+
+            double[] wc = new double[6];
+            double[] wcl = new double[6];
+            double[] wcu = new double[6];
+            double[] du = new double[6];
+            String[] txt = new String[3];
+
+            for (org.json.simple.JSONObject nodeJS : soilLayersNodes) {
+                //System.out.println ("NL we are looking for: " + NL);
+                JSONObject node = new JSONObject(nodeJS);
+                wcu[nl] = node.getAsDouble("sldul") / 100.00;
+                du[nl] = node.getAsDouble("sllb") * 0.39370;
+                du[nl] = Util.round(du[nl], 3);
+                wcl[nl] = node.getAsDouble("slll") / 100.00;
+
+                if (WHC.equalsIgnoreCase("Minimum")) {
+                    wc[nl] = wcl[nl];
+                } else if (WHC.equalsIgnoreCase("Maximum")) {
+                    wc[nl] = wcu[nl];
+                } else {
+                    wc[nl] = 0.5 * (wcl[nl] + wcu[nl]);
+                }
+
+                wc[nl] = Util.round(wc[nl], 3);
+                nl++;
+            }
+            
+            Soil soil = new Soil(soilName, soilSeriesKey, compKey, soilSeriesName, nl);
+            soil.setValues(wc, wcl, wcu, du, txt);
+
+            if (soilTypeArea != null) {
+                soil.setSoilTypeArea(Double.valueOf(soilTypeArea));
+            } else {
+                soil.setSoilTypeArea(0.0);
+            }
+            ret.add(soil);
+        }
         return ret;
     }
 
-    public UserInput toAFSIRSInputData() {
+    public UserInput toAFSIRSInputData(String userId) {
         UserInput input = new UserInput();
         input.setSITE(permit_id);
-        input.setOWNER(owner_name);
+        input.setOWNER(owner_name, Path.Folder.getUserWaterUsePermitOutputDir(userId).getPath());
         input.setCropType(crop_type);
-        input.setCropName(crop_name);
+//        input.setCropName(crop_name);
+        input.setCropData(DataUtil.getCropIndexCode(crop_type, crop_name), crop_name);
         if (crop_type.equals("annual")) {
             input.setIrrigationSeason(beg_date_month, beg_date_day, end_date_month, end_date_day);
         } else {
             input.setIrrigationSeason(1, 1, 12, 31);
         }
+        
+        input.setCodes(2, 0);
 
         input.setIrrOption(irr_option);
         input.setIDCODE(irr_depth_type, irr_depth);
@@ -192,11 +342,34 @@ public class WaterUsePermit {
         input.setDWT(Double.parseDouble(water_table_depth));
 
         input.setSoilSource(soil_source);
+        input.setUNIT(soil_unit_name);
         input.setSoils(soils);
         input.setWATERHOLDINGCAPACITY(water_hold_capacity);
         input.setPlantedAcres(new BigDecimal(totalArea).doubleValue());
 
         input.setWeather(DataUtil.toWeather(et_loc, rain_loc));
+
+        input.setCoefficentType(coefficent_type);
+        if (crop_type != null && !crop_type.isEmpty()) {
+            if (crop_type.equals("annual")) {
+                input.setDCOEFAnnual(
+                        new BigDecimal(dzn).doubleValue(),
+                        new BigDecimal(dzx).doubleValue(),
+                        new double[]{new BigDecimal(f1).doubleValue(),
+                            new BigDecimal(f2).doubleValue(),
+                            new BigDecimal(f3).doubleValue(),
+                            new BigDecimal(f4).doubleValue()},
+                        new double[]{new BigDecimal(ald1).doubleValue(),
+                            new BigDecimal(ald2).doubleValue(),
+                            new BigDecimal(ald3).doubleValue(),
+                            new BigDecimal(ald4).doubleValue()});
+                input.setAKC34(
+                        new BigDecimal(akc3).doubleValue(),
+                        new BigDecimal(akc4).doubleValue());
+            } else {
+                
+            }
+        }
 
         return input;
     }
