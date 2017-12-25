@@ -58,7 +58,7 @@ public class SimulationViewUtil {
         String twoIn10Key = "Weighted Avg 2-in-10";
         wgtAvgDataArr.put(oneIn10Key, new ArrayList());
         wgtAvgDataArr.put(twoIn10Key, new ArrayList());
-        double areaSum = simRet.getTotalArea();
+//        double areaSum = simRet.getTotalArea();
         
         ArrayList<SoilSpecificPeriodData> PDATA = AFSIRSModule.getGraphData(simRet, 0);
         for (int j = 0; j < simRet.getSummaryList().size(); j++) {
@@ -87,15 +87,16 @@ public class SimulationViewUtil {
             irrReqWgtAvgData[i] = irrReqAvg;
             twoIn10WgtAvgData[i] = twoIn10Avg;
             oneIn10WgtAvgData[i] = oneIn10Avg;
-            wgtAvgDataArr.get(twoIn10Key).add(twoIn10AvgTot/areaSum);
-            wgtAvgDataArr.get(oneIn10Key).add(oneIn10AvgTot/areaSum);
+            wgtAvgDataArr.get(twoIn10Key).add(twoIn10AvgTot);
+            wgtAvgDataArr.get(oneIn10Key).add(oneIn10AvgTot);
+//            wgtAvgDataArr.get(twoIn10Key).add(twoIn10AvgTot/areaSum);
+//            wgtAvgDataArr.get(oneIn10Key).add(oneIn10AvgTot/areaSum);
             irrReqAvg=0.0;
             twoIn10Avg=0.0;
             oneIn10Avg=0.0;
             twoIn10AvgTot=0.0;
             oneIn10AvgTot=0.0;
         }
-        
         
         irrReqData.put("Weighted Avg.", irrReqWgtAvgData);
         twoIn10Data.put("Weighted Avg.", twoIn10WgtAvgData);
