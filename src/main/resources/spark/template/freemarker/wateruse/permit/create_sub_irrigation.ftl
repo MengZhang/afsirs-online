@@ -64,7 +64,7 @@
     <div class="row">
         <div class="form-group">
             <label class="control-label col-sm-3" for="irr_type">Irrigation Type :</label>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 <select id="irr_type" name="irr_type" class="form-control" onchange="setDefIrrParams()" title="Select Irrigation System">
                     <#list irSysNameList as x>
                     <option value="${x?index}" <#if permit['irr_type']?? && permit['irr_type']?number == x?index>selected</#if>>${x!}</option>
@@ -74,21 +74,21 @@
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="irr_option">Calculation Type :</label>
-            <div class="col-md-6">
-                <div class="col-md-6">
+            <div class="col-sm-6">
+                <div class="col-sm-6">
                     <label><input type="radio" name="irr_option" id="irr_option_net" class="form-control" value="NET" onclick="setDefIrrParams()" <#if permit['irr_option']?? && permit['irr_option'] == "NET">checked</#if>>&nbsp;Net&nbsp;</label>
                 </div>
-                <div class="col-md-6">
+                <div class="col-sm-6">
                     <label><input type="radio" name="irr_option" id="irr_option_gross" class="form-control" value="GROSS" onclick="setDefIrrParams()" <#if permit['irr_option']?? && permit['irr_option'] == "GROSS">checked</#if>>Gross</label>
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3" for="irr_depth_type"><u>Irrigation Water Depths</u></label>
+            <label class="control-label col-sm-3" for="irr_depth_type"><u>Irrigation Water Depths</u></label>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3" for="irr_depth_type">Definition :</label>
-            <div class="col-md-6">
+            <label class="control-label col-sm-3" for="irr_depth_type">Definition :</label>
+            <div class="col-sm-6">
                 <select id="irr_depth_type" name="irr_depth_type" class="form-control" onchange="changeIrrDepDefinition();" title="Define Irrigation Water depths per application">
                     <#list ['Irrigate to field capacity','Apply a fixed depth per application(>0.1)','Deficit Irrigation application'] as x>
                     <option value="${x?index}" <#if permit['irr_depth_type']?? && permit['irr_depth_type']?number == x?index>selected</#if>>${x!}</option>
@@ -98,7 +98,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3" for="irr_depth">Value :</label>
+            <label class="control-label col-sm-3" for="irr_depth">Value :</label>
             <#if permit['irr_depth_type']??>
             <#if permit['irr_depth_type']?number == 1>
             <div class="col-sm-4">
@@ -136,14 +136,14 @@
             </#if>
         </div>
         <!--        <div class="form-group">
-                    <label class="control-label col-md-1" for="ir_dat"></label>
-                    <div class="col-md-6">
+                    <label class="control-label col-sm-1" for="ir_dat"></label>
+                    <div class="col-sm-6">
                         <label class="form-check-label"><input name="ir_dat" type="checkbox" value="true" id="isBlackListed" class="form-check-input" <#if permit['ir_dat']?? && permit['ir_dat'] == "true">checked</#if>>&nbsp; &nbsp; Check to use default values from IR.DAT</label>
                     </div>
                 </div>-->
         
         <div class="form-group">
-            <label class="control-label col-md-3"><u>Irrigation Coefficient</u></label>
+            <label class="control-label col-sm-3"><u>Irrigation Coefficient</u></label>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="irr_efficiency">Efficiency :</label>

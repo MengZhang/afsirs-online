@@ -91,18 +91,18 @@
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="crop_type">Crop :</label>
-            <div class="row col-md-6">
-                <div class="col-md-6">
+            <div class="row col-sm-6">
+                <div class="col-sm-6">
                     <label><input type="radio" name="crop_type" id="crop_type_annual" class="form-control" value="annual" onclick="switchCropType('annual')" <#if permit['crop_type']?? && permit['crop_type'] == "annual">checked</#if>>Annual</label>
                 </div>
-                <div class="col-md-6">
+                <div class="col-sm-6">
                     <label><input type="radio" name="crop_type" id="crop_type_perennial" class="form-control" value="perennial" onclick="switchCropType('perennial')" <#if permit['crop_type']?? && permit['crop_type'] == "perennial">checked</#if>>Perennial</label>
                 </div>
             </div>
         </div>
         <div id="cropNameAnnualSB" class="form-group cropNameSB">
             <label class="control-label col-sm-3" for="crop_name_annual"></label>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 <select id="crop_name_annual" name="crop_name_annual" class="form-control" onchange="changeIrrSysListByCrop('crop_name_annual')">
                     <#list cropListAnnual as cropName>
                     <option value="${cropName!}" <#if permit['crop_name']?? && permit['crop_name'] == cropName>selected</#if>>${cropName!}</option>
@@ -112,7 +112,7 @@
         </div>
         <div id="cropNamePerennialSB" class="form-group cropNameSB">
             <label class="control-label col-sm-3" for="crop_name_perennial"></label>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 <select id="crop_name_perennial" name="crop_name_perennial" class="form-control" onchange="changeIrrSysListByCrop('crop_name_perennial')">
                     <#list cropListPerennial as cropName>
                     <option value="${cropName!}" <#if permit['crop_name']?? && permit['crop_name'] == cropName>selected</#if>>${cropName!}</option>
@@ -122,8 +122,8 @@
         </div>
         <div id="startDateSB" class="form-group">
             <label class="control-label col-sm-3" for="beg_date_month">Start Date :</label>
-            <div class="row col-md-6">
-                <div class="col-md-4">
+            <div class="row col-sm-6">
+                <div class="col-sm-4">
                     <select id="startMonthSB"  name="beg_date_month" id="beg_date_month" class="form-control" onchange="switchMonthDayList('startMonthSB', 'startDaySB')">
                         <option value="0" >Month</option>
                         <#list ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as x>
@@ -131,7 +131,7 @@
                         </#list>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-sm-4">
                     <select id="startDaySB" name="beg_date_day" id="beg_date_day" class="form-control">
                         <option value="0" >Day</option>
                         <#list 1..31 as x>
@@ -143,8 +143,8 @@
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="end_date_month">End Date :</label>
-            <div class="row col-md-6">
-                <div class="col-md-4">
+            <div class="row col-sm-6">
+                <div class="col-sm-4">
                     <select id="endMonthSB" name="end_date_month" class="form-control" onchange="switchMonthDayList('endMonthSB', 'endDaySB')">
                         <option value ="0">Month</option>
                         <#list ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as x>
@@ -152,7 +152,7 @@
                         </#list>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-sm-4">
                     <select id="endDaySB" name="end_date_day" class="form-control">
                         <option value="0" >Day</option>
                         <#list 1..31 as x>

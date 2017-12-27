@@ -3,14 +3,14 @@
     <head>
         <#include "../../header.ftl">
         <style>
-            th, td {
+/*            th, td {
                 padding: 5px;
                 text-align: left;
             }
             th {
                 background-color: #4CAF50;
                 color: white;
-            }
+            }*/
             div.tab {
                 overflow: hidden;
                 border: 1px solid #ccc;
