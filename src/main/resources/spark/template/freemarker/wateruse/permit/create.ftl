@@ -67,10 +67,6 @@
                 } else if (document.getElementById("crop_type_perennial").checked) {
                     switchCropType('perennial');
                 }
-                var irrType = document.getElementById("irr_type");
-                irrType.options[4].disabled = true;
-                irrType.options[7].disabled = true;
-                irrType.options[8].disabled = true;
                 hideComp("soilTypeSB");
                 if (document.getElementById("soil_source_db").checked) {
                     switchSoilSource('DB');

@@ -93,6 +93,27 @@ public class WaterUsePermit {
         dbSoilNames = new LinkedHashSet<>();
         dbSoilNames.addAll(Arrays.asList(names));
     }
+    
+    public void setHgt(String hgt) {
+        if (hgt == null || hgt.isEmpty()) {
+            return;
+        }
+        this.hgt = hgt;
+        BigDecimal hgtVal = new BigDecimal(hgt).setScale(2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal hgtValInch = hgtVal.multiply(new BigDecimal(12)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        water_table_depth = hgtValInch.toString();
+        drzirr = hgtValInch.add(new BigDecimal(-6)).setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+        drztot = hgtValInch.add((new BigDecimal(12)).divide(hgtVal, 2, BigDecimal.ROUND_HALF_UP)).toString();
+        if (aldpArr == null) {
+            return;
+        }
+        for (int i = 0; i < aldpArr.size(); i++) {
+            if (new BigDecimal(aldpArr.get(i)).compareTo(new BigDecimal("0.5")) <= 0) {
+                aldpArr.set(i, "0.5");
+            }
+        }
+        
+    }
 
     public void setCropData(CropData input) {
         if (input instanceof CropDataAnnual) {
@@ -115,9 +136,6 @@ public class WaterUsePermit {
             this.setDrztot(data.getDRZTOT() + "");
             this.setAkcArr(toStringArray(data.getAKC()));
             this.setAldpArr(toStringArray(data.getALDP()));
-            if ((AFSIRSModule.IRCRFL + "").equals(this.getIrr_type())) {
-                this.setHgt(data.getHGT() + "");
-            }
             
         }
     }
@@ -204,6 +222,7 @@ public class WaterUsePermit {
                 } else {
                     CropData cropData = DataUtil.getCropDataPerennial().get(ret.getCrop_name());
                     ret.setCropData(cropData);
+                    ret.setHgt(request.queryParams("hgt"));
                 }
             }
         } else {
