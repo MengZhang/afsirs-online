@@ -85,7 +85,7 @@
         </div>
         <label class="control-label col-sm-2" for="f4">Growth Stage 4 :</label>
         <div class="col-sm-2">
-            <input type="text" id="f4" name="f4" class="form-control" value="${permit['f3']!}" placeholder="Fraction for growth stage 4" data-toggle="tooltip" title="Fraction of Growing season for growth stage 4">
+            <input type="text" id="f4" name="f4" class="form-control" value="${permit['f4']!}" placeholder="Fraction for growth stage 4" data-toggle="tooltip" title="Fraction of Growing season for growth stage 4">
         </div>
     </div>
     <div class="form-group">
