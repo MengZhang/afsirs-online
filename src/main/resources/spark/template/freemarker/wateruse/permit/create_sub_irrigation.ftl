@@ -166,7 +166,7 @@
                 <input type="range" id="irr_efficiency" name="irr_efficiency" step="0.01" max="1.0" min="0.01" class="form-control" value="${permit['irr_efficiency']!'1.0'}" placeholder="Irrigation Application Efficiency" data-toggle="tooltip" title="Irrigation Application Efficiency" onchange="showValue('irr_efficiency')">
             </div>
             <div class="col-sm-2">
-                <input type="number" id="irr_efficiency_input" step="0.05" max="1.0" min="0.01" class="form-control" value="${permit['irr_efficiency']!'1.0'}" placeholder="Irrigation Application Efficiency" data-toggle="tooltip" title="Irrigation Application Efficiency" onchange="showRange('irr_efficiency')" formnovalidate="formnovalidate">
+                <input type="number" id="irr_efficiency_input" step="0.05" max="1.0" min="0.01" class="form-control" value="${permit['irr_efficiency']!'1.0'}" placeholder="Irrigation Application Efficiency" data-toggle="tooltip" title="Irrigation Application Efficiency" onchange="showRange('irr_efficiency')">
             </div>
         </div>
         <div class="form-group">
@@ -175,7 +175,7 @@
                 <input type="range" id="soil_surface_irr" name="soil_surface_irr" step="0.01" max="1.0" min="0.01" class="form-control" value="${permit['soil_surface_irr']!'1.0'}" placeholder="Fraction of soil surface irrigated" data-toggle="tooltip" title="Fraction of soil surface irrigated" onchange="showValue('soil_surface_irr')">
             </div>
             <div class="col-sm-2">
-                <input type="number" id="soil_surface_irr_input" step="0.05" max="1.0" min="0.01" class="form-control" value="${permit['soil_surface_irr']!'1.0'}" placeholder="Fraction of soil surface irrigated" data-toggle="tooltip" title="Fraction of soil surface irrigated" onchange="showRange('soil_surface_irr')" formnovalidate="formnovalidate">
+                <input type="number" id="soil_surface_irr_input" step="0.05" max="1.0" min="0.01" class="form-control" value="${permit['soil_surface_irr']!'1.0'}" placeholder="Fraction of soil surface irrigated" data-toggle="tooltip" title="Fraction of soil surface irrigated" onchange="showRange('soil_surface_irr')">
             </div>
         </div>
         <div class="form-group">
@@ -184,7 +184,7 @@
                 <input type="range" id="et_extracted" name="et_extracted" step="0.01" max="1.0" min="0.01" class="form-control" value="${permit['et_extracted']!'1.0'}" placeholder="Fraction of ET extracted from the irrigated zone" data-toggle="tooltip" title="Fraction of ET extracted from the irrigated zone" onchange="showValue('et_extracted')">
             </div>
             <div class="col-sm-2">
-                <input type="number" id="et_extracted_input" step="0.05" max="1.0" min="0.01" class="form-control" value="${permit['et_extracted']!'1.0'}" placeholder="Fraction of ET extracted from the irrigated zone" data-toggle="tooltip" title="Fraction of ET extracted from the irrigated zone" onchange="showRange('et_extracted')" formnovalidate="formnovalidate">
+                <input type="number" id="et_extracted_input" step="0.05" max="1.0" min="0.01" class="form-control" value="${permit['et_extracted']!'1.0'}" placeholder="Fraction of ET extracted from the irrigated zone" data-toggle="tooltip" title="Fraction of ET extracted from the irrigated zone" onchange="showRange('et_extracted')">
             </div>
         </div>
         <div class="form-group">
@@ -193,8 +193,9 @@
                 <input type="range" id="water_table_depth" name="water_table_depth" step="0.1" max="200" min="0.1" class="form-control" value="${permit['water_table_depth']!'1.0'}" placeholder="Enter Depth of Water Table" data-toggle="tooltip" title="Water Table Depth" onchange="showValue('water_table_depth')">
             </div>
             <div class="col-sm-2">
-                <input type="number" id="water_table_depth_input" step="10" max="200" min="0.1" class="form-control" value="${permit['water_table_depth']!'1.0'}" placeholder="Enter Depth of Water Table" data-toggle="tooltip" title="Water Table Depth" onchange="showRange('water_table_depth')" formnovalidate="formnovalidate">
+                <input type="number" id="water_table_depth_input" step="10" max="200" min="0.1" class="form-control" value="${permit['water_table_depth']!'1.0'}" placeholder="Enter Depth of Water Table" data-toggle="tooltip" title="Water Table Depth" onchange="showRange('water_table_depth')">
             </div>
+            <label class="control-label col-sm-1">(Inches)</label>
         </div>
     </div>
     <div class="text-center">
