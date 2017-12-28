@@ -107,6 +107,7 @@
             function controlValidateInput(tabName) {
                 var disableIrr = tabName !== "Irrigation";
                 var disableSW = tabName !== "SoilWater";
+                var disableCoef = tabName !== "Decoef";
                 if (disableIrr) {
                     document.getElementById("irr_depth_input").disabled = disableIrr;
                 } else {
@@ -117,6 +118,9 @@
                 document.getElementById("et_extracted_input").disabled = disableIrr;
                 document.getElementById("water_table_depth_input").disabled = disableIrr;
                 document.getElementById("total_area_input").disabled = disableSW;
+                if (disableCoef) {
+                    activeHGT();
+                }
             }
 
             function hideComp(switchClass) {
@@ -133,6 +137,15 @@
             function showRange(compId) {
                 document.getElementById(compId).value = document.getElementById(compId + "_input").value;
             }
+            
+            function collectData() {
+                if (document.getElementById("crop_type_annual").checked) {
+                    return checkAnnualCropInfo();
+                } else if (document.getElementById("crop_type_perennial").checked) {
+                    savePerennialCropInfo();
+                }
+                return true;
+            }
         </script>
 
     </head>
@@ -145,7 +158,7 @@
             <p>${error_message!"Permit Already Exist"}</p>
             </#if>
 
-            <form id="createPermitForm" action="/wateruse/permit/create" class="form-horizontal" method="post">
+            <form id="createPermitForm" action="/wateruse/permit/create" class="form-horizontal" method="post" onsubmit="return collectData()">
                 <fieldset>
                     <legend>Create New Permit</legend>
 

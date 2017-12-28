@@ -30,8 +30,6 @@
             setCropDefValAnnual(isDefault);
         } else if (document.getElementById("crop_type_perennial").checked) {
             setCropDefValPerennial(isDefault);
-        } else {
-
         }
     }
 
