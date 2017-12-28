@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.afsirs.module.Irrigation;
 import org.afsirs.module.Soil;
 import org.afsirs.module.Weather;
