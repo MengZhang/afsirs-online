@@ -16,6 +16,8 @@
             document.getElementById("endDaySB").disabled = true;
             changeIrrSysListByCrop("crop_name_perennial");
         }
+        document.getElementById("coefficent_type_default").checked = true;
+        switchCropData();
     }
 
     function switchMonthDayList(monthSBID, daySBID) {
