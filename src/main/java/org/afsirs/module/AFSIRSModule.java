@@ -23,12 +23,14 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import static org.afsirs.module.DateUtil.MDAY;
 import static org.afsirs.module.DateUtil.NKC;
@@ -4487,6 +4489,11 @@ public class AFSIRSModule {
             obj.put("ald2", input.getALD()[1]);
             obj.put("ald3", input.getALD()[2]);
             obj.put("ald4", input.getALD()[3]);
+        } else {
+            obj.put("drzirr", input.getDRZIRR());
+            obj.put("drztot", input.getDRZTOT());
+            obj.put("akc", Arrays.stream(input.getAKC()).boxed().collect(Collectors.toList()));
+            obj.put("aldp", Arrays.stream(input.getALDP()).boxed().collect(Collectors.toList()));
         }
         
         try (FileWriter file = new FileWriter(Paths.get(outputDir.getPath(),  input.getSITE() + ".json").toFile())) {
