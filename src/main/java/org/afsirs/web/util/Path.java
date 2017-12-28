@@ -17,6 +17,7 @@ public class Path {
         public static class Simulation {
             private static final String PACKAGE = "/" + Simulation.class.getSimpleName().toLowerCase();
             @Getter public static final String AFSIRS = PACKAGE + "/afsirs";
+            @Getter public static final String AFSIRS_RESULT = PACKAGE + "/afsirs_result";
         }
         
         public static class WaterUse {

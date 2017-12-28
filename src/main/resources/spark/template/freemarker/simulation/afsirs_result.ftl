@@ -422,10 +422,20 @@
                 </div>
             </fieldset>
         </div>
-        <div class="text-center">
-            <div>
-                <button type="button" class="btn btn-primary text-right" onclick="window.location.href = 'wateruse/list'">Back to list</button>
-                <button type="button" class="btn btn-primary text-right" onclick="window.location.href = 'wateruse/create?permit_id={$permit_id!}'">Edit Permit</button>
+        <div class="row">
+            <div class="text-right col-md-6">
+                <div>
+                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=${permit_id!}&file_type=pdf'">Summary PDF</button>
+                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=${permit_id!}&file_type=excel'">Summary EXCEL</button>
+                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=${permit_id!}&file_type=calcExcel'">Calculation EXCEL</button>
+                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=${permit_id!}&file_type=text'">Raw Text</button>
+                </div>
+            </div>
+            <div class="text-right col-md-4">
+                <div>
+                    <button type="button" class="btn btn-primary text-right" onclick="window.location.href = '/wateruse/permit/list'">Back to list</button>
+                    <button type="button" class="btn btn-primary text-right" onclick="window.location.href = '/wateruse/permit/create?permit_id=${permit_id!}'">Edit Permit</button>
+                </div>
             </div>
         </div>
         <br><br>

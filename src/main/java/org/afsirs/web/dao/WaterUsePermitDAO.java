@@ -151,4 +151,27 @@ public class WaterUsePermitDAO {
 //            return false;
 //        }
 //    }
+    
+    public static File getOutputFile(String userId, String permitId, String fileType) {
+        
+        WaterUsePermit permit = find(permitId, userId);
+        String ownerName = permit.getOwner_name();
+        File outDir = Path.Folder.getUserWaterUsePermitOutputDir(userId);
+        String fileName;
+        
+        if (fileType == null || fileType.isEmpty()) {
+            fileName = ownerName + "-Summary.pdf";
+        } else if ("text".equalsIgnoreCase(fileType)) {
+            fileName = ownerName + ".txt";
+        } else if ("pdf".equalsIgnoreCase(fileType)) {
+            fileName = ownerName + "-Summary.pdf";
+        } else if ("excel".equalsIgnoreCase(fileType)) {
+            fileName = ownerName + "-Summary.xlsx";
+        } else if ("calcExcel".equalsIgnoreCase(fileType)) {
+            fileName = ownerName + "-Cal.xlsx";
+        } else {
+            fileName = ownerName + "-Summary.pdf";
+        }
+        return Paths.get(outDir.getPath(), fileName).toFile();
+    }
 }
