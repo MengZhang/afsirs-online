@@ -47,17 +47,11 @@ public class DataUtil {
         private int endYear;
     }
     
-    @Data
-    public abstract class CropData {
-        protected String cropName;
-        private CropData(String cropName) {
-            this.cropName = cropName;
-        }
-    }
+    public interface CropData {}
     
     @Data
-    @EqualsAndHashCode(callSuper=true)
-    public static class CropDataAnnual extends CropData {
+    public static class CropDataAnnual implements CropData {
+        private String cropName;
         private double DZN, DZX;
         private double AKC3, AKC4;
         private double[] F = new double[4];
@@ -66,19 +60,19 @@ public class DataUtil {
             return F;
         }
         public CropDataAnnual(String cropName) {
-            super(cropName);
+            this.cropName = cropName;
         }
     }
     
     @Data
-    @EqualsAndHashCode(callSuper=true)
-    public static class CropDataPerennial extends CropData {
+    public static class CropDataPerennial implements CropData {
+        private String cropName;
         private double DRZIRR, DRZTOT;
         private double[] AKC = new double[12];
         private double[] ALDP = new double[12];
         private double HGT;
         public CropDataPerennial(String cropName) {
-            super(cropName);
+            this.cropName = cropName;
         }
     }
 
