@@ -102,7 +102,7 @@
                 <input type="range" id="total_area" name="total_area" step="0.001" max="1000" min="0.001" class="form-control" value="${permit['totalArea']!}" placeholder="Enter Planted Area" data-toggle="tooltip" title="Planted Area" onchange="showValue('total_area')" disabled>
             </div>
             <div class="col-sm-3">
-                <input type="number" id="total_area_input" name="total_area_input" step="10" max="1000" min="0.1" class="form-control" value="${permit['totalArea']!}" placeholder="Enter Planted Area" data-toggle="tooltip" title="Planted Area" onchange="showRange('total_area')" formnovalidate="formnovalidate">
+                <input type="number" id="total_area_input" step="10" max="1000" min="0.1" class="form-control" value="${permit['totalArea']!}" placeholder="Enter Planted Area" data-toggle="tooltip" title="Planted Area" onchange="showRange('total_area')" formnovalidate="formnovalidate">
             </div>
             <label class="control-label col-sm-1" for="total_area">(Acres)</label>
         </div>
