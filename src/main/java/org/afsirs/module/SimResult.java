@@ -1,9 +1,9 @@
 package org.afsirs.module;
 
 import com.itextpdf.text.pdf.PdfPTable;
+import java.io.File;
 import java.util.ArrayList;
 import lombok.Data;
-import org.afsirs.module.SummaryReport;
 
 /**
  * The container class for simulation result
@@ -25,4 +25,5 @@ public class SimResult {
     
     ArrayList<SummaryReport> summaryList = new ArrayList<>();
     ArrayList<PdfPTable> summaryTables = new ArrayList<>();
+    File outFile, summaryFile, summaryFileExcel, calculationExcel;
 }

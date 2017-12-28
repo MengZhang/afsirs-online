@@ -68,69 +68,6 @@ import org.json.simple.JSONObject;
  */
 public class AFSIRSModule {
 
-//    /**
-//     * @return the climIR
-//     */
-//    public InputStreamReader getClimIR() {
-//        return climIR;
-//    }
-//    
-//    /**
-//     * @param climIR the climIR to set
-//     */
-//    public void setClimIR(InputStreamReader climIR) {
-//        this.climIR = climIR;
-//    }
-//    
-//    /**
-//     * @return the rainfallIR
-//     */
-//    public InputStreamReader getRainfallIR() {
-//        return rainfallIR;
-//    }
-//    
-//    /**
-//     * @param rainfallIR the rainfallIR to set
-//     */
-//    public void setRainfallIR(InputStreamReader rainfallIR) {
-//        this.rainfallIR = rainfallIR;
-//    }
-//    
-//    /**
-//     * @return the climIRDate
-//     */
-//    public InputStreamReader getClimIRDate() {
-//        return climIRDate;
-//    }
-//    
-//    /**
-//     * @param climIRDate the climIRDate to set
-//     */
-//    public void setClimIRDate(InputStreamReader climIRDate) {
-//        this.climIRDate = climIRDate;
-//    }
-//    
-//    /**
-//     * @return the rainfallIRDate
-//     */
-//    public InputStreamReader getRainfallIRDate() {
-//        return rainfallIRDate;
-//    }
-//    
-//    /**
-//     * @param rainfallIRDate the rainfallIRDate to set
-//     */
-//    public void setRainfallIRDate(InputStreamReader rainfallIRDate) {
-//        this.rainfallIRDate = rainfallIRDate;
-//    }
-//    
-//    public String getWATERHOLDINGCAPACITY() {
-//        return WATERHOLDINGCAPACITY;
-//    }
-//
-//    public void setWATERHOLDINGCAPACITY(String WATERHOLDINGCAPACITY) {
-//        this.WATERHOLDINGCAPACITY = WATERHOLDINGCAPACITY;
-//    }
     static Logger logger = Logger.getLogger(AFSIRSModule.class.getName());
 
     private static final Font BLACK_NORMAL = new Font(FontFamily.HELVETICA, 7, Font.NORMAL, BaseColor.BLACK);
@@ -140,7 +77,6 @@ public class AFSIRSModule {
     private static final Font BLUE_HEADER = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLUE);
     private static final Font GREEN_ITALIC = new Font(FontFamily.HELVETICA, 7, Font.ITALIC, BaseColor.GREEN);
 
-//    int IR, ISIM, J1REP, JNREP, J1SAVE, JNSAVE, ICODE, IPRT;
     // Initialization of constants
     public static final int IRSEEP = 6;
     public static final int IRCRFL = 7;
@@ -155,110 +91,10 @@ public class AFSIRSModule {
 
     public static final boolean defaultMode = true;
 
-//    int NYR, J1, JN, ICROP, NDAYS, IDCODE = 0;
-//    double ARZI, ARZN, FIX, FRIR, PIR, IEFF;
-//    double EXIR, EPS = 0.000001, SWCI1, SWCN1;
-//    double DRZIRR, DRZTOT;
-//    double DWT;
-//    double PLANTEDACRES = 0.0;
-//    double MAPAREA = 0.0;
-//    double[][] RAIN = new double[64][365];
-//    double[][] ETP = new double[64][365];
-//    double[][] IRR = new double[64][365];
-//    double[][] RAIN_S = new double[64][365];
-//    double[][] ETP_S = new double[64][365];
-//    double[][] IRR_S = new double[64][365];
-//
-//    double[][] RAIN_1 = new double[64][365]; // Go to local finishInput
-//    double[][] ETP_1 = new double[64][365]; // Go to local finishInput
-//    double[] DRZ_1 = new double[365]; // Go to local finishInput
-//    double[] DRZI_1 = new double[365]; // Go to local finishInput
-//    double[] AWD_1 = new double[365]; // Go to local finishInput
-//    double[] RKC_1 = new double[365]; // Go to local finishInput
-//    int[] NF_1 = new int[4]; // Go to local finishInput
-//
-//    double[] SDR = new double[365];
-//    double[] SET = new double[365];
-//    double[] SETP = new double[365];
-//    double[] SRAIN = new double[365];
-//    double[] DRZ = new double[365]; // Meng: Not related with any user input yet
-//    double[] DRZI = new double[365];
-//    double[] RKC = new double[365]; // Meng: Not related with any user input yet
-//    double[] NIR = new double[365];
-//    double[] SWIRR = new double[365];
-//    double[] SWMAX = new double[365];
-//    double[] SWCIX = new double[365];
-//    double[] SWCNX = new double[365];
-
-//    double[] AWD = new double[365]; // Meng: Not related with any user input yet
-//    double[] AKC = new double[12];
-//    double[] ALDP = new double[12];
-//    int[] NF = new int[4]; // Meng: Not related with any user input yet
-//    double AKC3, AKC4;
-//    double DZN, DZX;
-//    double[] F;
-//    double[] ALD;
-//    double HGT;
-//    double[] PDATM = new double[12];
-//    double[] PDATBW = new double[26];
-//    double[] PDATW = new double[52];
-//
-//    // ArrayList to Hold all the data
-//    ArrayList<PDAT> allSoilInfo = new ArrayList<>();
-//
-//    // ArrayList for Soilnames with negative value error
-//    ArrayList<String> soilNames = new ArrayList<>();
-//
-//    int[] JDAY = new int[365];
-//    int MONTH, IIDAY, IYEAR, startYear, endYear;
-//    int MO1, MON, DAY1, DAYN; //For Irrigation Season
     //Irrigation parameters
     double[] EFF = new double[10];
 
-//    //Soil Data
-//    String SSERIESNAME;
-//    String SOILSMAPUNITCODE;
-//    String WATERHOLDINGCAPACITY;
-//
-//   
-//    String SNAME;
-//    String SOILCOMPCODE;
-//    
-//    String[] TXT;
-//    double[] DU, WCL, WCU, WC;
-//    int NL;
-//    
-//    String OUTFIL, SUMMARYFILE, SUMMARYFILEEXCEL, CTYPE, CLIMFIL, CLIMATELOC, RAINFALLLOC, IRNAME;
-//    private String CALCULATIONEXCEL;
-//    String SITE, UNIT, OWNER; //Name changed in desktop to Permit ID, Map Name, Output file name
-//    
-    //public SummaryReport summaryReport = new SummaryReport();
-//    public ArrayList<SummaryReport> summaryList = new ArrayList<>(); // Go to local finishInput
-
-//    boolean isPerennial, IVERS, isNet = false;
-//    int[] NKC = {15, 45, 74, 105, 135, 166, 196, 227, 258, 288, 319, 349};
-//    final static int[] MDAY = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     private static final String EOL = Messages.EOL;
-
-//    private static AFSIRSUtils instance;
-//    BufferedWriter bwOutputFile; // Go to local finishInput
-    //BufferedWriter bwOutputSummaryFile;
-//    Document bwOutputSummaryFile; // Go to local finishInput
-//    SummaryReportExcelFormat excelSummary, excelCal; // Go to local finishInput
-//    ArrayList<PdfPTable> summaryTables; // Go to local finishInput
-//    private double[] soilFractions; // Go to local finishInput
-//    static private double[] soilArea;
-//    private double totalArea; // Go to SimResult
-//    private Soil soil; // Go to local finishInput
-//    private SoilData soilData;
-//    private String CLIMATESTATION;
-//    private String RAINFALLSTATION;
-//    private String irrOption;
-    //moving the variables from SiteInfoFrame
-//    private InputStreamReader climIR;
-//    private InputStreamReader rainfallIR;
-//    private InputStreamReader climIRDate;
-//    private InputStreamReader rainfallIRDate;
 
     private AFSIRSModule() {
         Appender fh;
@@ -273,401 +109,13 @@ public class AFSIRSModule {
         }
     }
 
-//    private static void getDataCopy() {
-//
-//        RAIN_1 = Arrays.copyOf(RAIN, RAIN.length);
-//        ETP_1 = Arrays.copyOf(ETP, ETP.length);
-//
-//        DRZ_1 = Arrays.copyOf(DRZ, DRZ.length);
-//        DRZI_1 = Arrays.copyOf(DRZI, DRZI.length);
-//        AWD_1 = Arrays.copyOf(AWD, AWD.length);
-//        RKC_1 = Arrays.copyOf(RKC, RKC.length);
-//        NF_1 = Arrays.copyOf(NF, NF.length);
-//    }
-//
-//    private static void resetAllocate (UserInput input, double EXIR, double[][] RAIN, double[][] ETP, DeCoefResult deCoefRet, DeCoefResult deCoefbackup) {
-////        SDR = new double[365];
-////        SET = new double[365];
-////        SETP = new double[365];
-////        SRAIN = new double[365];
-////        IRR = new double[64][365];
-//
-//        input.setEXIR(EXIR);
-//        input.setRAIN(RAIN);
-//        input.setETP(RAIN);
-////        RAIN = Arrays.copyOf(RAIN_1, RAIN_1.length);
-////        ETP = Arrays.copyOf(ETP_1, ETP_1.length);
-//        deCoefRet.reset(deCoefbackup);
-////        DRZ = Arrays.copyOf(DRZ_1, DRZ_1.length);
-////        DRZI = Arrays.copyOf(DRZI_1, DRZI_1.length);
-////        AWD = Arrays.copyOf(AWD_1, AWD_1.length);
-////        RKC = Arrays.copyOf(RKC_1, RKC_1.length);
-////        NF = Arrays.copyOf(NF_1, NF_1.length);
-//    }
-
-//    public static AFSIRSUtils getInstance() {
-//        if (instance == null) {
-//            instance = new AFSIRSUtils();
-//        }
-//        return instance;
-//    }
-//    
-//    public static void resetData(){
-//        instance = new AFSIRSUtils();
-//    }
-//    
-//    public void INIT() {
-//        IR = 0;
-//        ISIM = 0;
-//        J1SAVE = 0;
-//        JNSAVE = 0;
-//        EPS = 0.000001;
-//    }
-//    
-//    public void setOutFile(String name) {
-//        OUTFIL = name;
-//    }
-//    
-//    public String getOutFile() {
-//        return OUTFIL;
-//    }
-//    
-//    public void setSummaryFile(String fName) {
-//        SUMMARYFILE = fName;
-//    }
-//    
-//    public String getSummaryFile () {
-//        return SUMMARYFILE;
-//    }
-//    
-//    public void setSummaryFileExcel(String fName) {
-//        SUMMARYFILEEXCEL = fName;
-//    }
-//    
-//    public String getSummaryFileExcel () {
-//        return SUMMARYFILEEXCEL;
-//    }
-//    
-//    
-//    public void setTodayDate(Date d) {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd");
-//        String[] date = sdf.format(d).split(" ");
-//        IYEAR = Integer.parseInt(date[0]);
-//        MONTH = Integer.parseInt(date[1]);
-//        IIDAY = Integer.parseInt(date[2]);
-//    }
-//    
-//    public void setSiteName(String site) {
-//        SITE = site;
-//    }
-//    
-//    public String getSITE() {
-//        return SITE;
-//    }
-//    
-//    public double getPLANTEDACRES() {
-//        return PLANTEDACRES;
-//    }
-//    
-//    public void setPLANTEDACRES(double PLANTEDACRES) {
-//        this.PLANTEDACRES = PLANTEDACRES;
-//    }
-//    
-//    public String getUNIT() {
-//        return UNIT;
-//    }
-//    
-//    public void setMapName(String UNIT) {
-//        this.UNIT = UNIT;
-//    }
-//    public void setMapArea(double MAPAREA){
-//        
-//        this.MAPAREA = MAPAREA;
-//    }
-//    public double getMapArea(){
-//        
-//        return MAPAREA;
-//    }
-//    
-//    public String getOWNER() {
-//        return OWNER;
-//    }
-//    
-//    public void setOWNER(String OWNER) {
-//        this.OWNER = OWNER;
-//    }
-//    public void setCodes(int code, int print) {
-//        ICODE = code;
-//        IPRT = print;
-//    }
-//    
-//    public int getICODE() {
-//        return ICODE;
-//    }
-//    
-//    public int getICODE() {
-//        return ICODE;
-//    }
-//    
-//    public String getCLIMATESTATION() {
-//        return CLIMATESTATION;
-//    }
-//    
-//    //Hiranava 25 Aug 2016 Added rainfall staion case
-//    public String getRAINFALLSTATION() {
-//        return RAINFALLSTATION;
-//    }
-//    
-//    public void setCLIMATESTATION(String CLIMATESTATION) {
-//        this.CLIMATESTATION = CLIMATESTATION;
-//    }
-//    
-//    //Hiranava 25 Aug 2016 Added rainfall staion case
-//    public void setRAINFALLSTATION(String RAINFALLSTATION) {
-//        this.RAINFALLSTATION = RAINFALLSTATION;
-//    }
-//    
-//    public void setCropData(int code, String name) {
-//        CTYPE = name;
-//        ICROP = code;
-//        System.out.println("CTYPE" +CTYPE);
-//    }
-//    
-//    public String getCropName() {
-//        return CTYPE;
-//    }
-//    
-//    public int getICROP() {
-//        return ICROP;
-//    }
-//    
-//    public void setIVERS(boolean ivers) {
-//        IVERS = ivers;
-//    }
-//    
-//    public boolean getIVERS() {
-//        return IVERS;
-//    }
-//    
-//    public void setIrrigationSystem(int ir, double arzi, double exir, double eff, String name) {
-//        IR = ir;
-//        ARZI = arzi;
-//        EXIR = exir;
-//        IEFF = eff;
-//        IRNAME = name;
-//    }
-//    
-//    public void setEXIR(double exir) {
-//        EXIR = exir;
-//    }
-//    
-//    public double getARZI() {
-//        return ARZI;
-//    }
-//    
-//    public int getIrrigationSystem() {
-//        return IR;
-//    }
-//    
-//    public String getIrrigationSystemName() {
-//        return IRNAME;
-//    }
-//    
-//    public int getJ1SAVE() {
-//        return J1SAVE;
-//    }
-//    
-//    public int getJNSAVE() {
-//        return JNSAVE;
-//    }
-//    
-//    public int getJ1() {
-//        return J1;
-//    }
-//    
-//    public int getJN() {
-//        return JN;
-//    }
-//    
-//    public double getEPS() {
-//        return EPS;
-//    }
-//    
-//    public void setIDCODE(int code, double value) {
-//        if (code == 1) {
-//            FIX = value;
-//        } else if (code == 2) {
-//            PIR = value;
-//        }
-//        
-//        IDCODE = code;
-//    }
-//    
-//    public void setDCOEFPerennial(double drzirr, double drztot, double[] akc, double[] aldp) {
-//        DRZIRR = drzirr;
-//        DRZTOT = drztot;
-//        AKC = akc;
-//        ALDP = aldp;
-//    }
-//    
-//    public void setDRZ(double[] drz) {
-//        DRZ = drz;
-//    }
-//    
-//    public double[] getDRZ() {
-//        return DRZ;
-//    }
-//    
-//    public void setAWD(double[] awd) {
-//        AWD = awd;
-//    }
-//    
-//    public double[] getAWD() {
-//        return AWD;
-//    }
-//    
-//    public void setRKC(double[] rkc) {
-//        RKC = rkc;
-//    }
-//    
-//    public double[] getRKC() {
-//        return RKC;
-//    }
-//    
-//    public void setDWT(double val) {
-//        DWT = val;
-//    }
-//    
-//    public double getDWT() {
-//        return DWT;
-//    }
-//    
-//    public void setPerennial(boolean perennial) {
-//        isPerennial = perennial;
-//    }
-//    
-//    public boolean getPerennial() {
-//        return isPerennial;
-//    }
-//    
-//    public void setNF(int[] NF) {
-//        this.NF = NF;
-//    }
-//    
-//    public int[] getNF() {
-//        return NF;
-//    }
-//
-//    public void setDCOEFAnnual(double dzn, double dzx, double[] f, double[] ald) {
-//        DZN = dzn;
-//        DZX = dzx;
-//        F = f;
-//        ALD = ald;
-//    }
-//    
-//    public void setHGT(double HGT) {
-//        this.HGT = HGT;
-//    }
-//    
-//    public void setAKC(double akc3, double akc4) {
-//        AKC3 = akc3;
-//        AKC4 = akc4;
-//    }
-//    
-//    public double getAKC(int index) {
-//        if (index == 3) {
-//            return AKC3;
-//        } else {
-//            return AKC4;
-//        }
-//    }
-//    
-//    public void setHGT(double HGT) {
-//        this.HGT = HGT;
-//    }
-//    
-//    public void setSoilData(SoilData soilData) {
-//        //this.soil = soilData.getSoils().get(0);
-//        this.soilData = soilData;
-//        
-//        
-//        //SNAME = soil.getName();
-//        //TXT = soil.getTXT();
-//        //DU = soil.getDU();
-//        
-//        double WCLn[] = {.9,.9,.9,.9,.9,.9};
-//        WCL = WCLn;
-//        //WCL = soil.getWCL();
-//        //WCU = soil.getWCU();
-//        double WCUn [] = {.9,.9,.9,.9,.9,.9};
-//        WCU = WCUn;
-//        //WC = soil.getWC();
-//        //NL = soil.getNL();
-//        
-//        
-//        /*SNAME = firstSoil.getName();
-//        TXT = firstSoil.getTXT();
-//        DU = firstSoil.getDU();
-//        WCL = firstSoil.getWCL();
-//        WCU = firstSoil.getWCU();
-//        WC = firstSoil.getWC();
-//        NL = firstSoil.getNL();*/
-//    }
-//
-//    public void setDefaultSoil (Soil soil) {
-//        SSERIESNAME = soil.getSERIESNAME();
-//        SOILSMAPUNITCODE = soil.getSOILSERIESKEY();
-//        
-//        SNAME = soil.getName();
-//        SOILCOMPCODE = soil.getCOMPKEY();
-//        
-//        TXT = soil.getTXT();
-//        DU = soil.getDU();
-//        WCL = soil.getWCL();
-//        WC = soil.getWC();
-//        WCU = soil.getWCU();
-//        NL = soil.getNL();
-//    }
-//    
-//    public SoilData getSoilData() {
-//        return soilData;
-//    }
-//    public void setSWIRR(double[] swirr) {
-//        SWIRR = swirr;
-//    }
-//
-//    public void setSWCIX(double[] swcix) {
-//        SWCIX = swcix;
-//    }
-//
-//    public void setSWCNX(double[] swcnx) {
-//        SWCNX = swcnx;
-//    }
-//
-//    public void setSWMAX(double[] swmax) {
-//        SWMAX = swmax;
-//    }
-//
-//    public double[] getSWCIX() {
-//        return SWCIX;
-//    }
-//
-//    public double[] getSWCNX() {
-//        return SWCNX;
-//    }
-//
-//    public double[] getSWMAX() {
-//        return SWMAX;
-//    }
-//
-//    public void setSWCN1(double swcn1) {
-//        SWCN1 = swcn1;
-//    }
-//    
-//    public void setSWCI1(double swci1) {
-//        SWCI1 = swci1;
-//    }
-    //type = 0, Monthly : 1, Bi-Weekly : 2, Weekly
+    /**
+     * Reorganize data for graph output
+     * 
+     * @param simRet
+     * @param type  0, Monthly; 1, Bi-Weekly; 2, Weekly
+     * @return Time-series output value by soil in a list
+     */
     public static ArrayList<SoilSpecificPeriodData> getGraphData(SimResult simRet, int type) {
 
         ArrayList<SoilSpecificPeriodData> data = new ArrayList<>();
@@ -705,321 +153,7 @@ public class AFSIRSModule {
         return null;
     }
 
-//    public void setisNet(boolean net) {
-//        isNet = net;
-//    }
-//    
-//    //public void setIrrigationSeason(Date startDate, Date endDate) {
-//    public void setIrrigationSeason(int sMonth, int sDay, int eMonth, int eDay) {
-//        //J1, JN calculation and saved in
-//        //J1Save and JNSave
-//        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd");
-//        //String[] date = sdf.format(startDate).split(" ");
-//        //MO1 = Integer.parseInt(date[1]);
-//        //DAY1 = Integer.parseInt(date[2]);
-//        MO1 = sMonth;
-//        DAY1 = sDay;
-//        MON = eMonth;
-//        DAYN = eDay;
-//        
-//        J1 = DAY1;
-//        for (int i = 0; i < MO1 - 1; i++) {
-//            J1 += MDAY[i];
-//        }
-//        JN = DAYN;
-//        for (int i = 0; i < MON - 1; i++) {
-//            JN += MDAY[i];
-//        }
-//        
-//        NDAYS = JN - J1 + 1;
-//        
-//        if (NDAYS < 0) {
-//            NDAYS += 365;
-//        }
-//        
-//        //Save growing data for next simulation
-//        J1SAVE = J1;
-//        JNSAVE = JN;
-//        
-//        if (JN < J1) {
-//            J1 = 1;
-//            JN = NDAYS;
-//        }
-//    }
-//    
-//    public int getNYR() {
-//        return NYR;
-//    }
-//    
-//    public double[][] getRain() {
-//        return RAIN;
-//    }
-//    
-//    public double[][] getET() {
-//        return ETP;
-//    }
-//    //04 Sep 2016: Hiranava Das: new function to set start and end year
-//    public void setStartEndYear(InputStreamReader irET, InputStreamReader irRF ) throws IOException{
-//        BufferedReader brRF;
-//        BufferedReader brET;
-//        try {
-//            //getting start year and end year from ET data
-//            
-//            brET = new BufferedReader(irET);
-//            
-//            String lineET = brET.readLine();
-//            //brET.mark(10000);
-//            CLIMATELOC = lineET.split(" ")[0];
-//            lineET = brET.readLine();
-//            int i = 0;
-//            int year = 0;
-//            while (lineET.charAt(i) == ' ') {
-//                i++;
-//            }
-//            lineET = lineET.substring(i);
-//            i = 0;
-//            while (lineET.charAt(i) != ' ') {
-//                i++;
-//            }
-//            int newYear = Integer.parseInt(lineET.substring(0, i).trim());
-//            for (int j = 0; j < newYear; j++) {
-//                lineET = brET.readLine();
-//                year = Integer.parseInt(lineET);
-//                if (j==0){
-//                    startYear = year;
-//                }
-//                int k = 0;
-//                while (k < 365) {
-//                    String[] parts = brET.readLine().split(" ");
-//                    for (String x : parts) {
-//                        if (x.length() > 0) {
-//                            k++;
-//                        }
-//                    }
-//                }
-//                
-//            }
-//            endYear = year;
-//            //getting start year and end year from Rainfall data
-//            brRF = new BufferedReader(irRF);
-//            String lineRF = brRF.readLine();
-//            RAINFALLLOC = lineRF.split(" ")[0];
-//            lineRF = brRF.readLine();
-//            i = 0;
-//            year = 0;
-//            while (lineRF.charAt(i) == ' ') {
-//                i++;
-//            }
-//            lineRF = lineRF.substring(i);
-//            i = 0;
-//            while (lineRF.charAt(i) != ' ') {
-//                i++;
-//            }
-//            newYear = Integer.parseInt(lineRF.substring(0, i).trim());
-//            
-//            for (int j = 0; j < newYear; j++) {
-//                lineRF = brRF.readLine();
-//                year = Integer.parseInt(lineRF);
-//                
-//                if (j==0 && startYear < year){
-//                    startYear = year;
-//                }
-//                int k = 0;
-//                while (k < 365) {
-//                    String[] parts = brRF.readLine().split(" ");
-//                    for (String x : parts) {
-//                        if (x.length() > 0) {
-//                            k++;
-//                        }
-//                    }
-//                }
-//                
-//            }
-//            if (endYear > year){
-//                endYear = year;
-//            }
-//            
-//            NYR = endYear - startYear + 1;
-//            
-//        }
-//        catch (IOException | NumberFormatException e) {
-//            e.printStackTrace(System.err);
-//        }
-//        
-//    }
-//    //read the file for climate data and set it to a array
-//    public void setClimateFile(InputStreamReader ir) {
-//        try {
-//            BufferedReader br = new BufferedReader(ir);
-//            String line = br.readLine();
-//            CLIMATELOC = line.split(" ")[0];
-//            line = br.readLine();
-//            int i = 0;
-//            while (line.charAt(i) == ' ') {
-//                i++;
-//            }
-//            line = line.substring(i);
-//            i = 0;
-//            while (line.charAt(i) != ' ') {
-//                i++;
-//            }
-//            String year = line.substring(0, i).trim();
-//            int totalYears = Integer.parseInt(year);
-//            int cyear = 0;
-//            for (int j = 0; j < totalYears; j++) {
-//                int IYEAR = Integer.parseInt(br.readLine());
-//                int k = 0;
-//                int l = 0;
-//                
-//                while (l < 365) {
-//                    
-//                    String[] parts = br.readLine().split(" ");
-//                    
-//                    for (String x : parts) {
-//                        
-//                        if (x.length() > 0 && IYEAR >= startYear && IYEAR <= endYear) {
-//                            ETP[cyear][k] = Double.parseDouble(x);
-//                            k++;
-//                        }
-//                        if (x.length() > 0){
-//                            l++;
-//                        }
-//                    }
-//                }
-//                if(IYEAR >= startYear && IYEAR <= endYear){
-//                    cyear++;
-//                }
-//            }
-//            br.readLine();
-//            
-//            for (int k = 0; k < 365; k++) {
-//                JDAY[k] = k + 1;
-//            }
-//            
-//            if (J1SAVE >= JNSAVE) {
-//                NYR = NYR - 1; // Reduced no of year
-//                for (int iy = 0; iy < NYR; iy++) {
-//                    int j = -1;
-//                    int iy1 = iy + 1;
-//                    for (int jd = J1SAVE - 1; jd < 365; jd++) {
-//                        j = j + 1;
-//                        JDAY[j] = jd + 1;
-//                        ETP[iy][j] = ETP[iy][jd];
-//                        
-//                    }
-//                    for (int jd = 0; jd < JNSAVE; jd++) {
-//                        j = j + 1;
-//                        JDAY[j] = jd + 1;
-//                        
-//                        ETP[iy][j] = ETP[iy1][jd];
-//                        
-//                    }
-//                }
-//            }
-////            for(int k=0;k<ETP.length;k++){
-////                System.out.println("Year "+k);
-////                for(int j=0;j<ETP[0].length;j++){
-////                    System.out.println("ETP " +j+":"+ETP[k][j]);
-////                }
-////            }
-//                
-//            
-//        } catch (IOException | NumberFormatException e) {
-//            e.printStackTrace(System.err);
-//        }
-//    }
-//    //read the file for climate data and set it to a array
-//    //Hiranava 25 Aug 2016 Separating Rainfall data to another method.
-//    public void setRainfallFile(InputStreamReader ir) {
-//        try {
-//            BufferedReader br = new BufferedReader(ir);
-//            String line = br.readLine();
-//            RAINFALLLOC = line.split(" ")[0];
-//            line = br.readLine();
-//            int i = 0;
-//            int cyear = 0;
-//            while (line.charAt(i) == ' ') {
-//                i++;
-//            }
-//            line = line.substring(i);
-//            i = 0;
-//            while (line.charAt(i) != ' ') {
-//                i++;
-//            }
-//            String year = line.substring(0, i).trim();
-//            int totalYears = Integer.parseInt(year);
-//            
-//            for (int j = 0; j < totalYears; j++) {
-//                String line1 = br.readLine();
-//                int IYEAR = Integer.parseInt(line1);
-//                
-//                int k = 0,l=0;
-//                while (l < 365) {
-//                    String curLine = br.readLine();
-//                    String[] parts = curLine.split(" ");
-//                    
-//                    for (String x : parts) {
-//                        
-//                        if (x.length() > 0 && IYEAR >= startYear && IYEAR <= endYear) {
-//                            RAIN[cyear][k] = Double.parseDouble(x);
-//                            k++;
-//                        }
-//                        if (x.length() > 0){
-//                            l++;
-//                        }
-//                    }
-//                    
-//                }
-//                if(IYEAR >= startYear && IYEAR <= endYear){
-//                    cyear++;
-//                }
-//            }
-//            
-//            
-//            for (int k = 0; k < 365; k++) {
-//                JDAY[k] = k + 1;
-//            }
-//            
-//            if (J1SAVE >= JNSAVE) {
-//                NYR = NYR - 1; // Reduced no of year
-//                for (int iy = 0; iy < NYR; iy++) {
-//                    int j = -1;
-//                    int iy1 = iy + 1;
-//                    for (int jd = J1SAVE - 1; jd < 365; jd++) {
-//                        j = j + 1;
-//                        JDAY[j] = jd + 1;
-//                        RAIN[iy][j] = RAIN[iy][jd];
-//                    }
-//                    for (int jd = 0; jd < JNSAVE; jd++) {
-//                        j = j + 1;
-//                        JDAY[j] = jd + 1;
-//                        RAIN[iy][j] = RAIN[iy1][jd];
-//                    }
-//                }
-//            }
-//            
-//        } catch (IOException | NumberFormatException e) {
-//            e.printStackTrace(System.err);
-//        }
-//    }
-//    public static void writeOutput(BufferedWriter bwOutputFile, String str) {
-//        try {
-//            bwOutputFile.append(str);
-//        } catch (Exception e) {
-//            e.printStackTrace(System.err);
-//        }
-//    }
-//    public void MAIN() {
-//        // Iterate Simulations ..
-//        FRIR = 1.00;
-//        FIX = 0.00;
-//        for (int i = 0; i < 365; i++) {
-//            JDAY[i] = i;
-//        }
-//        ISIM = ISIM + 1;
-//        J1REP = J1SAVE;
-//        JNREP = JNSAVE;
-//    }
+
     //BAL.for
     private static void calculateBalance(SummaryReport report, UserInput input, SWResult swRet, BufferedWriter bwOutputFile) throws IOException {
 
@@ -2023,12 +1157,7 @@ public class AFSIRSModule {
 //        ret.setRKC(RKC);
         return ret;
     }
-//    private void displayArray (double [] a) {
-//
-//        for (double v : a) {
-//            // System.out.print (v + " ");
-//        }
-//    }
+
     /*
      This subroutine orders the irrigation requirements data base from
      largest to smallest and it calculates the plotting positions for
@@ -2563,7 +1692,12 @@ public class AFSIRSModule {
     public static SimResult run(UserInput input, File outputDir) {
 
         SimResult ret = new SimResult();
+        ret.setOutFile(new File(input.getOutFile()));
+        ret.setSummaryFile(new File(input.getSummaryFile()));
+        ret.setSummaryFileExcel(new File(input.getSummaryFileExcel()));
+        ret.setCalculationExcel(new File(input.getCalculationExcel()));
         ret.setTotalArea(input.getPlantedAcres());
+        
         SummaryReportExcelFormat excelSummary, excelCal;
         Document bwOutputSummaryFile = new Document();
         DeCoefResult deCoefRet;
@@ -2572,13 +1706,13 @@ public class AFSIRSModule {
         if(ret.getTotalArea() == 0.0){
             ret.setTotalArea(input.getPlantedAcres());
         }
-        try (BufferedWriter bwOutputFile = new BufferedWriter(new FileWriter(input.getOutFile(), true))) {
+        try (BufferedWriter bwOutputFile = new BufferedWriter(new FileWriter(ret.getOutFile(), true))) {
             //bwOutputSummaryFile = new BufferedWriter(new FileWriter(SUMMARYFILE, true));
 
             //PdfWriter.getInstance(bwOutputSummaryFile, new FileOutputStream(SUMMARYFILE+"-Summary.pdf"));
-            PdfWriter.getInstance(bwOutputSummaryFile, new FileOutputStream(input.getSummaryFile()));
+            PdfWriter.getInstance(bwOutputSummaryFile, new FileOutputStream(ret.getSummaryFile()));
 
-            excelSummary = new SummaryReportExcelFormat(input.getSummaryFileExcel());
+            excelSummary = new SummaryReportExcelFormat(ret.getSummaryFileExcel());
             deCoefRet = DECOEF(input);
 
             initOutputFile(bwOutputFile);
@@ -3578,14 +2712,7 @@ public class AFSIRSModule {
     //Hiranava Das: 16 Sep 2016: New function call to sort the output
 
     private static void storeTotalIrr(SummaryReport report, Soil soil, SimResult ret) throws DocumentException {
-        // ArrayList<Soil> soils = soilData.getSoils();
-        //boolean isSorted = false;
-//        double [] soilArea = getSoilArea();
-//        double areaSum = 0.0;
-//
-//        for (double a : soilArea) {
-//            areaSum += a;
-//        }
+
         double areaSum = ret.getTotalArea();
 
         double totalVal = 0.0;
@@ -3916,13 +3043,6 @@ public class AFSIRSModule {
 
     }
 
-//    public double[] getFractions() {
-//        return soilFractions;
-//    }
-
-//    public double [] getSoilArea() {
-//        return soilArea;
-//    }
     private static void addDeviations(UserInput input, Document bwOutputSummaryFile) throws DocumentException {
         //========================
         Paragraph p;
@@ -3957,22 +3077,8 @@ public class AFSIRSModule {
         bwOutputSummaryFile.add(t);
     }
 
-//    /**
-//     * @return the CALCULATIONEXCEL
-//     */
-//    public String getCalculationExcel() {
-//        return CALCULATIONEXCEL;
-//    }
-//
-//    /**
-//     * @param CALCULATIONEXCEL the CALCULATIONEXCEL to set
-//     */
-//    public void setCalculationExcel(String CALCULATIONEXCEL) {
-//        this.CALCULATIONEXCEL = CALCULATIONEXCEL;
-//    }
-
     private static SummaryReportExcelFormat buildCalculationExcel(UserInput input, SimResult ret, ArrayList<SummaryReport> summaryList) {
-        SummaryReportExcelFormat excelCal = new SummaryReportExcelFormat(input.getCalculationExcel());
+        SummaryReportExcelFormat excelCal = new SummaryReportExcelFormat(ret.getCalculationExcel());
         ArrayList<Soil> soils = input.getSoils();
         excelCal.setRowNum(2);
         excelCal.insertDataWithStyle(Messages.DOC_HEADER_EXCEL, 2, true, true);
@@ -4411,19 +3517,6 @@ public class AFSIRSModule {
         return excelCal;
     }
 
-//    /**
-//     * @return the irrOption
-//     */
-//    public String getIrrOption() {
-//        return irrOption;
-//    }
-//    
-//    /**
-//     * @param irrOption the irrOption to set
-//     */
-//    public void setIrrOption(String irrOption) {
-//        this.irrOption = irrOption;
-//    }
     //save permit files in JSON format
     public static boolean savePermitFile(File outputDir, UserInput input) {
         JSONObject obj = new JSONObject();
@@ -4555,14 +3648,3 @@ class STATResult {
     }
 
 }
-
-//class PDAT {
-//
-//    String soilName = "";
-//    Double[] PDATM = new Double[12];
-//    Double[] PDATBW = new Double[12];
-//    Double[] PDATW = new Double[12];
-//
-//    //Double[] PDATBW = new Double[26];
-//    //Double[] PDATW = new Double[52];
-//}

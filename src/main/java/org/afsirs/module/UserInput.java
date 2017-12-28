@@ -22,15 +22,12 @@ public class UserInput {
     int IR, ISIM, J1REP, JNREP, J1SAVE, JNSAVE, ICODE, IPRT;
 
     int J1, JN, ICROP, NDAYS, IDCODE = 0;
-//    int NYR, startYear, endYear;
     double ARZI, ARZN, FIX, FRIR, PIR, IEFF;
     double EXIR, EPS = 0.000001;
     double DRZIRR, DRZTOT;
     double DWT;
     double plantedAcres = 0.0;
     double mapArea = 0.0;
-//    double[][] RAIN = new double[64][365];
-//    double[][] ETP = new double[64][365];
 
     String coefficentType;
     double[] AKC = new double[12];
@@ -42,25 +39,11 @@ public class UserInput {
     double[] ALD;
     double HGT;
 
-//    int[] JDAY = new int[365];
     int MONTH, IIDAY, IYEAR;
     int MO1, MON, DAY1, DAYN; //For Irrigation Season
 
-//    //Soil Data
-//    String SSERIESNAME;
-//    String SOILSMAPUNITCODE;
-    String WATERHOLDINGCAPACITY;
-    String soilSource;
-//    String SNAME;
-//    String SOILCOMPCODE;
-//    
-//    String[] TXT;
-//    double[] DU, WCL, WCU, WC;
-//    int NL;
-
     String outFile, summaryFile, summaryFileExcel, calculationExcel;
     String cropName, IRNAME, CLIMFIL;
-//    String , CLIMATELOC, RAINFALLLOC;
     Weather weather = new Weather();
     private String SITE, UNIT, OWNER; //Name changed in desktop to Permit ID, Map Name, Output file name
 
@@ -81,11 +64,12 @@ public class UserInput {
         return irrOption.equalsIgnoreCase("NET");
     }
 
-//    public LinkedHashSet<String> deviations = new LinkedHashSet();
     public LinkedHashMap deviation = new LinkedHashMap();
 
 //    private SoilData soilData;
     private ArrayList<Soil> soils = new ArrayList();
+    private String WATERHOLDINGCAPACITY;
+    private String soilSource;
     private String CLIMATESTATION;
     private String RAINFALLSTATION;
     private InputStreamReader climIR;

@@ -62,6 +62,27 @@ public class SummaryReportExcelFormat {
 
         }
     }
+    
+    public SummaryReportExcelFormat(File file) {
+
+        this.fileName = file.getName();
+        rowNum = 1;
+        colNum = 1;
+        //Create blank workbook
+        workbook = new XSSFWorkbook();
+        //Create a blank sheet
+        spreadsheet = workbook.createSheet(fileName);
+        spreadsheet.addMergedRegion(new CellRangeAddress(rowNum, rowNum, 1, 14));
+        //This data needs to be written (Object[])
+        summaryInfo = new TreeMap<>();
+        row = spreadsheet.createRow(rowNum);
+        try {
+            //Write the workbook in file system
+            out = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+
+        }
+    }
 
     public int getRowNum() {
         return rowNum;
