@@ -1,11 +1,13 @@
 package org.afsirs.web.controller;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import static org.afsirs.web.Main.LOG;
 import org.afsirs.web.dao.WaterUsePermitDAO;
 import org.afsirs.web.dao.bean.WaterUsePermit;
 import org.afsirs.web.util.Path;
+import static org.afsirs.web.view.SimulationViewUtil.getAfsirsDownloadResponse;
 import static org.afsirs.web.view.SimulationViewUtil.getAfsirsResultPage;
 import org.afsirs.web.view.ViewUtil;
 import spark.Request;
@@ -17,9 +19,9 @@ import spark.Route;
  * @author Meng Zhang
  */
 public class SimulationPageController {
-
+    
     public static Route serveAfsirsPage = new Route() {
-
+        
         @Override
         public Object handle(Request request, Response response) {
             LOG.info("Serve AFSIRS Page");
@@ -39,9 +41,9 @@ public class SimulationPageController {
             return getAfsirsResultPage(request, attributes);
         }
     };
-
+    
     public static Route handleAfsirsPost = new Route() {
-
+        
         @Override
         public Object handle(Request request, Response response) {
             LOG.info("Handle AFSIRS Post");
@@ -59,6 +61,29 @@ public class SimulationPageController {
                 attributes.put("afsirs_input", permit.toAFSIRSInputData(userId));
             }
             return getAfsirsResultPage(request, attributes);
+        }
+    };
+    
+    public static Route serveDownloadRequest = new Route() {
+        
+        @Override
+        public Object handle(Request request, Response response) {
+            LOG.info("Handle AFSIRS Result Download Post");
+            Map<String, Object> attributes = new HashMap<>();
+            if (!ViewUtil.isLogined(request)) {
+                response.redirect(Path.Web.LOGIN);
+                return ViewUtil.getLoginPage(request, attributes);
+            }
+            String userId = ViewUtil.getUserID(request);
+            String permitId = request.queryParams("permit_id");
+            String fileType = request.queryParams("file_type");
+            File downloandFile = WaterUsePermitDAO.getOutputFile(userId, permitId, fileType);
+            if (downloandFile.exists()) {
+                return getAfsirsDownloadResponse(response, downloandFile);
+            } else {
+                response.status(404);
+                return "FILE NOT FOUND";
+            }
         }
     };
 }

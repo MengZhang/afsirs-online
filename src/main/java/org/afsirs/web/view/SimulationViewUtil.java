@@ -1,9 +1,12 @@
 package org.afsirs.web.view;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.servlet.ServletOutputStream;
 import org.afsirs.module.AFSIRSModule;
 import org.afsirs.module.SimResult;
 import org.afsirs.module.SoilSpecificPeriodData;
@@ -11,8 +14,10 @@ import org.afsirs.module.SummaryReport;
 import org.afsirs.module.UserInput;
 import org.afsirs.web.util.Path;
 import static org.afsirs.web.view.ViewUtil.setCommonParam;
+import org.eclipse.jetty.io.EofException;
 import spark.ModelAndView;
 import spark.Request;
+import spark.Response;
 import spark.template.freemarker.FreeMarkerEngine;
 
 /**
@@ -135,5 +140,39 @@ public class SimulationViewUtil {
 
         attributes.put("permit_id", request.queryParams("permit_id"));
         return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.Simulation.AFSIRS_RESULT));
+    }
+
+    public static Object getAfsirsDownloadResponse(Response response, File downloandFile) {
+        response.status(200);
+        if (downloandFile.getName().endsWith(".pdf")) {
+            response.type("application/pdf");
+            response.header("Content-Disposition", "filename=" + downloandFile.getName());
+        } else if (downloandFile.getName().endsWith(".xlsx")) {
+            response.type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.header("Content-Disposition", "attachment;filename=" + downloandFile.getName());
+        } else {
+            response.type("text/plain");
+            response.header("Content-Disposition", "filename=" + downloandFile.getName());
+        }
+
+        try {
+            FileInputStream in = new FileInputStream(downloandFile);
+            ServletOutputStream out = response.raw().getOutputStream();
+
+            byte[] outputByte = new byte[4096];
+            //copy binary contect to output stream
+            int bytesRead;
+            while ((bytesRead = in.read(outputByte, 0, 4096)) != -1) {
+                out.write(outputByte, 0, bytesRead);
+            }
+            out.flush();
+            return out;
+        } catch (EofException ex) {
+            return "";
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+            response.status(404);
+            return "FILE BROKEN";
+        }
     }
 }

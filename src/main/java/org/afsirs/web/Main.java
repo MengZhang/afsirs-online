@@ -64,6 +64,7 @@ public class Main {
         
         get(Path.Web.Simulation.AFSIRS,             SimulationPageController.serveAfsirsPage);
         post(Path.Web.Simulation.AFSIRS,          SimulationPageController.handleAfsirsPost);
+        get(Path.Web.Simulation.AFSIRS_RESULT,          SimulationPageController.serveDownloadRequest);
         
         get(Path.Web.WaterUse.LIST,             WaterUsePageController.serveListPage);
         get(Path.Web.WaterUse.CREATE,           WaterUsePageController.serveCreatePage);
