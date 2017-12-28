@@ -11,6 +11,21 @@
     function setDefIrrParams() {
         var irrSysList = getIrSysList();
         var irrType = document.getElementById("irr_type").selectedIndex;
+        if (irrType >= 6 && irrType <= 8) {
+            document.getElementById("irr_depth_type").options[0].disabled = true;
+            document.getElementById("irr_depth_type").options[1].disabled = true;
+            document.getElementById("irr_depth_type").options[2].disabled = true;
+            document.getElementById("irr_depth_type").options[3].disabled = false;
+            document.getElementById("irr_depth_type").selectedIndex = 3;
+        } else {
+            document.getElementById("irr_depth_type").options[0].disabled = false;
+            document.getElementById("irr_depth_type").options[1].disabled = false;
+            document.getElementById("irr_depth_type").options[2].disabled = false;
+            document.getElementById("irr_depth_type").options[3].disabled = true;
+            if (document.getElementById("irr_depth_type").selectedIndex === 3) {
+                document.getElementById("irr_depth_type").selectedIndex = 0;
+            }
+        }
         if (document.getElementById("irr_option_net").checked) {
             document.getElementById("irr_efficiency").value = "1.0";
             document.getElementById("irr_efficiency_input").value = "1.0";
