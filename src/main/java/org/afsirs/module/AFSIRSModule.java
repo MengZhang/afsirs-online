@@ -4494,6 +4494,9 @@ public class AFSIRSModule {
             obj.put("drztot", input.getDRZTOT());
             obj.put("akc", Arrays.stream(input.getAKC()).boxed().collect(Collectors.toList()));
             obj.put("aldp", Arrays.stream(input.getALDP()).boxed().collect(Collectors.toList()));
+            if (input.getIR() == IRCRFL) {
+                obj.put("hgt", input.getHGT() + "");
+            }
         }
         
         try (FileWriter file = new FileWriter(Paths.get(outputDir.getPath(),  input.getSITE() + ".json").toFile())) {
