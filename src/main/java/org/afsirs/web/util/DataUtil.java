@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.afsirs.module.Irrigation;
 import org.afsirs.module.Soil;
 import org.afsirs.module.Weather;
@@ -46,10 +47,17 @@ public class DataUtil {
         private int endYear;
     }
     
-    public static interface CropData{}
+    @Data
+    public abstract class CropData {
+        protected String cropName;
+        private CropData(String cropName) {
+            this.cropName = cropName;
+        }
+    }
     
     @Data
-    public static class CropDataAnnual implements CropData {
+    @EqualsAndHashCode(callSuper=true)
+    public static class CropDataAnnual extends CropData {
         private double DZN, DZX;
         private double AKC3, AKC4;
         private double[] F = new double[4];
@@ -57,14 +65,21 @@ public class DataUtil {
         public double[] getFR() {
             return F;
         }
+        public CropDataAnnual(String cropName) {
+            super(cropName);
+        }
     }
     
     @Data
-    public static class CropDataPerennial implements CropData {
+    @EqualsAndHashCode(callSuper=true)
+    public static class CropDataPerennial extends CropData {
         private double DRZIRR, DRZTOT;
         private double[] AKC = new double[12];
         private double[] ALDP = new double[12];
         private double HGT;
+        public CropDataPerennial(String cropName) {
+            super(cropName);
+        }
     }
 
     public static ArrayList<String> getCropList(String type) {
@@ -146,10 +161,10 @@ public class DataUtil {
                 CropData cropData;
                 if (type.equals("ANNUAL")) {
                     crop = line.substring(0, 13).trim();
-                    cropData = readCropDataAnnual(line);
+                    cropData = readCropDataAnnual(line, crop);
                 } else {
                     crop = line.substring(0, 14).trim();
-                    cropData = readCropDataPerennial(line, br.readLine());
+                    cropData = readCropDataPerennial(line, br.readLine(), crop);
                 }
                 if (crop.length() < 1) {
                     break;
@@ -163,8 +178,8 @@ public class DataUtil {
         return ret;
     }
     
-    private static CropData readCropDataAnnual(String line) {
-        CropDataAnnual ret = new CropDataAnnual();
+    private static CropData readCropDataAnnual(String line, String cropName) {
+        CropDataAnnual ret = new CropDataAnnual(cropName);
         if (line.length() < 12) {
             return ret;
         }
@@ -193,8 +208,8 @@ public class DataUtil {
         return ret;
     }
     
-    private static CropData readCropDataPerennial(String line1, String line2) {
-        CropDataPerennial ret = new CropDataPerennial();
+    private static CropData readCropDataPerennial(String line1, String line2, String cropName) {
+        CropDataPerennial ret = new CropDataPerennial(cropName);
         String data = line1.substring(14);
         String[] arr = data.split(" ");
         int i = 0;

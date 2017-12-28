@@ -26,7 +26,7 @@
     <div class="row">
         <div class="form-group">
             <label class="control-label col-sm-3" for="et_loc">Evapotranspiration Location :</label>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 <select id="et_loc" name="et_loc" class="form-control">
                     <#list climateCityList as et_loc>
                     <option value="${et_loc!}" <#if permit['et_loc']?? && permit['et_loc'] == et_loc>selected</#if>>${et_loc!}</option>
@@ -37,7 +37,7 @@
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="rain_loc">Rainfall Location :</label>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 <select id="rain_loc" name="rain_loc" class="form-control">
                     <#list rainfallCityList as rain_loc>
                     <option value="${rain_loc!}" <#if permit['rain_loc']?? && permit['rain_loc'] == rain_loc>selected</#if>>${rain_loc!}</option>

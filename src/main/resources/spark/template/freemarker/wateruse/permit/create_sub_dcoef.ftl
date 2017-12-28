@@ -30,8 +30,6 @@
             setCropDefValAnnual(isDefault);
         } else if (document.getElementById("crop_type_perennial").checked) {
             setCropDefValPerennial(isDefault);
-        } else {
-
         }
     }
 
@@ -54,11 +52,11 @@
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="crop_type">Crop Data:</label>
-            <div class="row col-md-6">
-                <div class="col-md-4">
+            <div class="row col-sm-6">
+                <div class="col-sm-4">
                     <label><input type="radio" name="coefficent_type" id="coefficent_type_default" class="form-control" value="default" onclick="switchCropData()" <#if !(permit['coefficent_type']??) || permit['coefficent_type'] == "default">checked</#if>>Default</label>
                 </div>
-                <div class="col-md-4">
+                <div class="col-sm-4">
                     <label><input type="radio" name="coefficent_type" id="coefficent_type_mannual" class="form-control" value="mannual" onclick="switchCropData()" <#if permit['coefficent_type']?? && permit['coefficent_type'] == "mannual">checked</#if>>Mannual Input</label>
                 </div>
             </div>

@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
+import org.afsirs.module.AFSIRSModule;
 import org.afsirs.module.Soil;
 import org.afsirs.module.UserInput;
 import org.afsirs.module.util.Util;
@@ -81,6 +82,12 @@ public class WaterUsePermit {
     private String ald2;
     private String ald3;
     private String ald4;
+    // Coefficent for Perennial Crop
+    private String drzirr;
+    private String drztot;
+    private ArrayList<String> akcArr;
+    private ArrayList<String> aldpArr;
+    private String hgt;
 
     public void setDbSoilNames(String[] names) {
         dbSoilNames = new LinkedHashSet<>();
@@ -104,8 +111,23 @@ public class WaterUsePermit {
             this.setAld4(data.getALD()[3] + "");
         } else if (input instanceof CropDataPerennial) {
             CropDataPerennial data = (CropDataPerennial) input;
-            // TODO
+            this.setDrzirr(data.getDRZIRR() + "");
+            this.setDrztot(data.getDRZTOT() + "");
+            this.setAkcArr(toStringArray(data.getAKC()));
+            this.setAldpArr(toStringArray(data.getALDP()));
+            if ((AFSIRSModule.IRCRFL + "").equals(this.getIrr_type())) {
+                this.setHgt(data.getHGT() + "");
+            }
+            
         }
+    }
+    
+    private static ArrayList<String> toStringArray(double[] values) {
+        ArrayList arr = new ArrayList();
+        for (double val : values) {
+            arr.add(val + "");
+        }
+        return arr;
     }
 
     public static WaterUsePermit readFromRequest(Request request) {
@@ -161,7 +183,7 @@ public class WaterUsePermit {
 //                longi = node.get("long").toString();
 //                lat = node.get("lat").toString();
 //                totArea = node.get("TotalArea").toString();
-                // TODO for multiple polygons
+            // TODO for multiple polygons
 //            }
 //            ret.setLatitude(lat);
 //            ret.setLongitude(longi);
@@ -185,20 +207,29 @@ public class WaterUsePermit {
                 }
             }
         } else {
-            ret.setDzn(request.queryParams("dzn"));
-            ret.setDzx(request.queryParams("dzx"));
-            ret.setAkc3(request.queryParams("akc3"));
-            ret.setAkc4(request.queryParams("akc4"));
-            ret.setF1(request.queryParams("f1"));
-            ret.setF2(request.queryParams("f2"));
-            ret.setF3(request.queryParams("f3"));
-            ret.setF4(request.queryParams("f4"));
-            ret.setAld1(request.queryParams("ald1"));
-            ret.setAld2(request.queryParams("ald2"));
-            ret.setAld3(request.queryParams("ald3"));
-            ret.setAld4(request.queryParams("ald4"));
+            if (cropType != null && !cropType.isEmpty()) {
+                if (cropType.equals("annual")) {
+                    ret.setDzn(request.queryParams("dzn"));
+                    ret.setDzx(request.queryParams("dzx"));
+                    ret.setAkc3(request.queryParams("akc3"));
+                    ret.setAkc4(request.queryParams("akc4"));
+                    ret.setF1(request.queryParams("f1"));
+                    ret.setF2(request.queryParams("f2"));
+                    ret.setF3(request.queryParams("f3"));
+                    ret.setF4(request.queryParams("f4"));
+                    ret.setAld1(request.queryParams("ald1"));
+                    ret.setAld2(request.queryParams("ald2"));
+                    ret.setAld3(request.queryParams("ald3"));
+                    ret.setAld4(request.queryParams("ald4"));
+                } else {
+                    ret.setDrzirr(request.queryParams("drzirr"));
+                    ret.setDrztot(request.queryParams("drztot"));
+                    ret.setAkcArr(JsonUtil.parseFrom(request.queryParams("akc_arr")).getArr());
+                    ret.setAldpArr(JsonUtil.parseFrom(request.queryParams("aldp_arr")).getArr());
+                    ret.setHgt(request.queryParams("hgt"));
+                }
+            }
         }
-
         return ret;
     }
 
@@ -275,10 +306,18 @@ public class WaterUsePermit {
         ret.setAld2(data.getOrBlank("ald2"));
         ret.setAld3(data.getOrBlank("ald3"));
         ret.setAld4(data.getOrBlank("ald4"));
+        
+        ret.setDrzirr(data.getOrBlank("drzirr"));
+        ret.setDrztot(data.getOrBlank("drztot"));
+        ret.setAkcArr(data.getArr("akc"));
+        ret.setAldpArr((ArrayList) data.getArr("aldp"));
+        if ((AFSIRSModule.IRCRFL + "").equals(ret.getIrr_type())) {
+            ret.setHgt(data.getOrBlank("hgt"));
+        }
 
         return ret;
     }
-    
+
     private static ArrayList<Soil> readSoilFromPermitJson(JSONObject data, String WHC) {
         ArrayList<Soil> ret = new ArrayList();
         ArrayList<org.json.simple.JSONObject> soilArr = (ArrayList) data.getOrDefault("soils", new ArrayList());
@@ -321,7 +360,7 @@ public class WaterUsePermit {
                 wc[nl] = Util.round(wc[nl], 3);
                 nl++;
             }
-            
+
             Soil soil = new Soil(soilName, soilSeriesKey, compKey, soilSeriesName, nl);
             soil.setValues(wc, wcl, wcu, du, txt);
 
@@ -347,7 +386,7 @@ public class WaterUsePermit {
         } else {
             input.setIrrigationSeason(1, 1, 12, 31);
         }
-        
+
         input.setCodes(2, 0);
 
         input.setIrrOption(irr_option);
@@ -383,7 +422,14 @@ public class WaterUsePermit {
                         new BigDecimal(akc3).doubleValue(),
                         new BigDecimal(akc4).doubleValue());
             } else {
-                
+                input.setDCOEFPerennial(
+                        new BigDecimal(drzirr).doubleValue(),
+                        new BigDecimal(drztot).doubleValue(),
+                        akcArr.stream().mapToDouble(Double::parseDouble).toArray(),
+                        aldpArr.stream().mapToDouble(Double::parseDouble).toArray());
+                if ((AFSIRSModule.IRCRFL + "").equals(irr_type)) {
+                    input.setHGT(new BigDecimal(hgt).doubleValue());
+                }
             }
         }
 

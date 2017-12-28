@@ -33,6 +33,20 @@
         document.getElementById('ald3').disabled = isDefault;
         document.getElementById('ald4').disabled = isDefault;
     }
+    
+    function checkAnnualCropInfo() {
+        
+        var f1 = Number(document.getElementById('f1').value);
+        var f2 = Number(document.getElementById('f2').value);
+        var f3 = Number(document.getElementById('f3').value);
+        var f4 = Number(document.getElementById('f4').value);
+        var sum = f1 + f2 + f3 +  f4;
+        if (sum !== 1) {
+            alert("The sum of Fraction of Growing Season for each stage must be 1!");
+            return false;
+        }
+        return true;
+    }
 </script>
 <div id="decoef_annual">
     <div class="form-group">
@@ -85,7 +99,7 @@
         </div>
         <label class="control-label col-sm-2" for="f4">Growth Stage 4 :</label>
         <div class="col-sm-2">
-            <input type="text" id="f4" name="f4" class="form-control" value="${permit['f3']!}" placeholder="Fraction for growth stage 4" data-toggle="tooltip" title="Fraction of Growing season for growth stage 4">
+            <input type="text" id="f4" name="f4" class="form-control" value="${permit['f4']!}" placeholder="Fraction for growth stage 4" data-toggle="tooltip" title="Fraction of Growing season for growth stage 4">
         </div>
     </div>
     <div class="form-group">

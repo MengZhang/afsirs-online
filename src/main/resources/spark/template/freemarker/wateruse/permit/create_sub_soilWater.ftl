@@ -62,21 +62,21 @@
     <div class="row">
         <div class="form-group">
             <label class="control-label col-sm-3" for="soil_source">Data Source :</label>
-            <div class="col-md-6">
-                <div class="col-md-4">
+            <div class="col-sm-6">
+                <div class="col-sm-4">
                     <label><input type="radio" name="soil_source" id="soil_source_db" class="form-control" value="DB" onclick="switchSoilSource('DB')" <#if permit['soil_source']?? && permit['soil_source'] == "DB">checked</#if>>Soil Database</label>
                 </div>
-                <div class="col-md-4">
+                <div class="col-sm-4">
                     <label><input type="radio" name="soil_source" id="soil_source_map" class="form-control" value="MAP" onclick="switchSoilSource('MAP')" <#if permit['soil_source']?? && permit['soil_source'] == "MAP">checked</#if>>Soil Map</label>
                 </div>
-                <div class="col-md-4">
+                <div class="col-sm-4">
                     <label><input type="radio" name="soil_source" id="soil_source_user" class="form-control" value="USER" onclick="switchSoilSource('USER')" <#if permit['soil_source']?? && permit['soil_source'] == "USER">checked</#if> disabled>User Defined</label>
                 </div>
             </div>
         </div>
         <div id="soilTypeSB_DB" class="form-group soilTypeSB">
             <label class="control-label col-sm-3" for="soil_type_db">Soil Types :</label>
-            <div class="col-md-5">
+            <div class="col-sm-5">
                 <select id="crop_name_annual" name="soil_type_db" class="form-control" onchange="" title="Select soil types for simulation." multiple>
                     <#list soilDBNameList as soilName>
                     <option value="${soilName!}" <#if permit['dbSoilNames']?? && permit['dbSoilNames'].contains(soilName)>selected</#if>>${soilName!}</option>
@@ -107,8 +107,8 @@
             <label class="control-label col-sm-1" for="total_area">(Acres)</label>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-3" for="water_hold_capacity">Water Hold Capacity :</label>
-            <div class="col-md-5">
+            <label class="control-label col-sm-3" for="water_hold_capacity">Water Hold Capacity :</label>
+            <div class="col-sm-5">
                 <select id="water_hold_capacity" name="water_hold_capacity" class="form-control" onchange="" title="Select Water Hold Capacity level">
                     <#list ['Minimum','Average','Maximum'] as x>
                     <option value="${x!}" <#if permit['water_hold_capacity']?? && permit['water_hold_capacity'] == x>selected</#if>>${x!}</option>
