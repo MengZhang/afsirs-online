@@ -45,6 +45,9 @@ public class JsonUtil {
     
     public static JSONObject parseFrom(String jsonString) {
         try {
+            if (jsonString.startsWith("[")) {
+                jsonString = "{\"data\":" + jsonString + "}";
+            }
             return new JSONObject((Map) PARSER.parse(jsonString));
         } catch (ParseException ex) {
             java.util.logging.Logger.getLogger(JsonUtil.class.getName()).log(Level.SEVERE, null, ex);

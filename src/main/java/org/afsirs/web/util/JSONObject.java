@@ -1,6 +1,7 @@
 package org.afsirs.web.util;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -48,5 +49,21 @@ public class JSONObject extends org.json.simple.JSONObject {
             return new BigDecimal(read).doubleValue();
         }
         return null;
+    }
+    
+    public ArrayList<String> getArr() {
+        return getArr("data");
+    }
+    
+    public ArrayList<String> getArr(String key) {
+        if (this.containsKey(key)) {
+            ArrayList<String> ret = new ArrayList();
+            for (Object o : (ArrayList) this.get(key)) {
+                ret.add(o.toString());
+            }
+            return ret;
+        } else {
+            return new ArrayList();
+        }
     }
 }
