@@ -535,18 +535,16 @@ public class DataUtil {
     }
 
     public static Weather toWeather(WeatherData etData, WeatherData rainData) {
-        Weather weather = new Weather();
+        
         int startYear = Math.max(etData.getStartYear(), rainData.getStartYear());
         int endYear = Math.min(etData.getEndYear(), rainData.getEndYear());
-        weather.setStartYear(startYear);
-        weather.setEndYear(endYear);
-        weather.setNYR(endYear - startYear + 1);
+        Weather weather = new Weather(startYear, endYear);
 
         weather.setETLoc(etData.getLocation());
-        weather.setETP(etData.getData());
+        weather.setETP(etData.getData(), etData.getStartYear(), etData.getEndYear());
 
         weather.setRainLoc(rainData.getLocation());
-        weather.setRAIN(rainData.getData());
+        weather.setRAIN(rainData.getData(), rainData.getStartYear(), rainData.getEndYear());
 
         return weather;
     }
