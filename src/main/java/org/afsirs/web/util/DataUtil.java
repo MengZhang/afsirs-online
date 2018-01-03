@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Set;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -37,6 +39,7 @@ public class DataUtil {
     private final static LinkedHashSet<String> SOILTYPE_DB_NAME_LIST = readSoilData();
     private final static LinkedHashMap<String, WeatherData> CLIMATE_DATA_LIST = readWeatherData("CLIMLIST.txt");
     private final static LinkedHashMap<String, WeatherData> RAINFALL_DATA_LIST = readWeatherData("RAINLIST.txt");
+    private final static String LAST_BUILD_TS = readLastBuildTS();
 
     @Data
     public static class WeatherData {
@@ -133,6 +136,23 @@ public class DataUtil {
     
     public static LinkedHashMap<String, CropData> getCropDataPerennial() {
         return CROP_LIST_PERENNIAL;
+    }
+    
+    public static String getLastBuildTS() {
+        return LAST_BUILD_TS;
+    }
+    
+    private static String readLastBuildTS() {
+//        try (InputStream versionFile = DataUtil.class.getClassLoader().getResourceAsStream(Path.Folder.PROPERTY_FILE)) {
+//            Properties versionProperties = new Properties();
+//            versionProperties.load(versionFile);
+//            versionFile.close();
+//            return versionProperties.getProperty("product.buildts");
+//        } catch (IOException ex) {
+//            LOG.error("Unable to load version information, will use system time instead.");
+//            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+//        }
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
 
     private static LinkedHashMap<String, CropData> readCropList(String type) {
