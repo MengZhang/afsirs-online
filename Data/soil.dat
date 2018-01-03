@@ -52,7 +52,7 @@ FLORIDA SOIL SERIES, TEXTURES, AND AVAIL. WATER CAPACITY
  25 ANGIE                VFSL SIL                       
 2  10.13.24 65.12.18                                    
  26 ANGIE VAR.           L    FSL  SL                   
-3   4.15.20  7.10.15 76.10.15                           
+3   4.15.20 7.10.15 76.10.15                           
  27 ANKONA               S    FS                        
 4  38.02.05 48.10.20 57.13.17 80.05.10                  
  28 ANKONA,DP.           S    FS                        
@@ -310,7 +310,7 @@ FLORIDA SOIL SERIES, TEXTURES, AND AVAIL. WATER CAPACITY
 154 CHOBEE VAR.          SCL                            
 4  20.20.20 35.20.20 40.10.20 80.05.15                  
 155 CITRONELLE           FS   S                         
-2   2.05.10  9.05.10                                    
+2   2.05.10 9.05.10                                    
 156 CLARENDON            LS   LFS  S                    
 3  15.08.12 40.10.15 80.08.12                           
 157 CLARENDON            SL   FSL                       
@@ -556,9 +556,9 @@ FLORIDA SOIL SERIES, TEXTURES, AND AVAIL. WATER CAPACITY
 277 GENTRY               S    FS                        
 3  24.10.15 64.10.20 80.05.10                           
 278 GILEAD               LS   LS                        
-4   5.05.09  8.10.15 42.12.16 72.10.15                  
+4   5.05.09 8.10.15 42.12.16 72.10.15                  
 279 GILEAD               SL   SL                        
-4   5.08.12  8.10.15 42.12.16 72.10.15                  
+4   5.08.12 8.10.15 42.12.16 72.10.15                  
 280 GOLDSBORO            SL   FSL                       
 3  15.08.12 45.11.15 65.11.15                           
 281 GOLDSBORO            LS   LFS                       
@@ -1212,9 +1212,9 @@ FLORIDA SOIL SERIES, TEXTURES, AND AVAIL. WATER CAPACITY
 605 ROBERTSDALE          FSL  L                         
 3   6.10.15 21.12.16 74.12.16                           
 606 ROCKDALE             S    FS   S                    
-2   2.02.08  6.15.20                                    
+2   2.02.08 6.15.20                                    
 607 ROCKDALE             FSL  FSL                       
-2   2.12.18  6.15.20                                    
+2   2.12.18 6.15.20                                    
 608 RUSTON               FSL  SL   L                    
 4  16.09.14 41.12.17 47.12.15 80.12.17                  
 609 RUSTON               FSL  SL                        
@@ -1504,7 +1504,7 @@ FLORIDA SOIL SERIES, TEXTURES, AND AVAIL. WATER CAPACITY
 751 WINDER,FL.           LS   LFS                       
 5  12.06.10 17.06.10 31.10.15 47.06.12 65.03.10         
 752 WINDER VAR.          S                              
-6   6.08.12  9.05.08 27.10.15 29.05.10 32.05.08 80.10.15
+6   6.08.12 9.05.08 27.10.15 29.05.10 32.05.08 80.10.15
 753 WULFERT              MK                             
 3  12.20.25 36.10.15 60.02.08                           
 754 YEMASSEE             LS   LFS                       
