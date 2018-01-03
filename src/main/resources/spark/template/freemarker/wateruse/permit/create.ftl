@@ -113,7 +113,7 @@
                 document.getElementById("soil_surface_irr_input").disabled = disableIrr;
                 document.getElementById("et_extracted_input").disabled = disableIrr;
                 document.getElementById("water_table_depth_input").disabled = disableIrr;
-                document.getElementById("total_area_input").disabled = disableSW;
+                document.getElementById("planted_area_input").disabled = disableSW;
                 if (disableCoef) {
                     activeHGT();
                 }

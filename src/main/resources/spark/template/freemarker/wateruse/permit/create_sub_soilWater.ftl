@@ -8,15 +8,18 @@
         document.getElementById("soilTypeSB_" + soilSource).style.display = "block";
         if (soilSource !== "MAP") {
             document.getElementById("total_area").disabled = true;
-            document.getElementById('total_area_input').max = "1000";
+            document.getElementById('planted_area').max = "1000";
+            document.getElementById('planted_area_input').max = "1000";
             document.getElementById('soil_file_content').style.display = "none";
         } else {
             document.getElementById("total_area").disabled = false;
-            var max = Number(document.getElementById('total_area').max);
-            if (document.getElementById('total_area_input').value > max) {
-                document.getElementById('total_area_input').value = max;
+            var max = Number(document.getElementById('total_area').value);
+            if (document.getElementById('planted_area').value > max) {
+                document.getElementById('planted_area').value = max;
+                document.getElementById('planted_area_input').value = max;
             }
-            document.getElementById('total_area_input').max = max;
+            document.getElementById('planted_area').max = max;
+            document.getElementById('planted_area_input').max = max;
             document.getElementById('soil_file_content').style.display = "block";
         }
         
@@ -25,7 +28,7 @@
 
     function readFile() {
         var files = document.getElementById('soil_file').files;
-        if (files.length != 1) {
+        if (files.length !== 1) {
             alert('Please select one file!');
             return;
         }
@@ -44,13 +47,14 @@
                 document.getElementById('soil_file_content').style.display = "block";
                 document.getElementById('soil_file_content').textContent = soilsStr;
                 document.getElementById('soil_file_json').value = jsonStr;
-                var value = document.getElementById('total_area_input').value;
-                document.getElementById('total_area').max = totArea;
-                document.getElementById('total_area_input').max = totArea;
-                if (value === "" || value > totArea) {
-                    document.getElementById('total_area').value = totArea;
-                    document.getElementById('total_area_input').value = totArea;
-                }
+                var value = document.getElementById('planted_area_input').value;
+                document.getElementById('total_area').value = totArea;
+                document.getElementById('planted_area').max = totArea;
+                document.getElementById('planted_area_input').max = totArea;
+                //if (value === "" || value > totArea) {
+                    document.getElementById('planted_area').value = totArea;
+                    document.getElementById('planted_area_input').value = totArea;
+                //}
             }
         };
 
@@ -92,19 +96,20 @@
                 <input type="hidden" id="soil_unit_name" name="soil_unit_name" value="${permit['soil_unit_name']!}">
             </div>
             <div class="col-sm-4">
-                <button type="button" class="btn btn-primary text-right" onclick="window.open('http://abe.ufl.edu/bmpmodel/arcGIS/Test/index_5CountyMerge.html')">View Soil Map</button>
+                <button type="button" class="btn btn-primary text-right" onclick="window.open('http://abe.ufl.edu/bmpmodel/arcGIS/Test')">View Soil Map</button>
                 <button type="button" class="btn btn-primary text-right" onclick="" disabled>Show Soil Data</button>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-3" for="total_area">Planted Area :</label>
+            <label class="control-label col-sm-3" for="planted_area">Planted Area :</label>
             <div class="col-sm-4">
-                <input type="range" id="total_area" name="total_area" step="0.001" max="1000" min="0.001" class="form-control" value="${permit['totalArea']!}" placeholder="Enter Planted Area" data-toggle="tooltip" title="Planted Area" onchange="showValue('total_area')" disabled>
+                <input type="range" id="planted_area" name="planted_area" step="0.001" max="${permit['plantedArea']!'1000'}" min="0.001" class="form-control" value="${permit['plantedArea']!}" placeholder="Enter Planted Area" data-toggle="tooltip" title="Planted Area" onchange="showValue('planted_area')">
+                <input type="hidden" id="total_area" name="total_area" value="${permit['totalArea']!}">
             </div>
             <div class="col-sm-3">
-                <input type="number" id="total_area_input" step="10" max="1000" min="0.1" class="form-control" value="${permit['totalArea']!}" placeholder="Enter Planted Area" data-toggle="tooltip" title="Planted Area" onchange="showRange('total_area')" formnovalidate="formnovalidate">
+                <input type="number" id="planted_area_input" step="10" max="${permit['plantedArea']!'1000'}" min="0.1" class="form-control" value="${permit['plantedArea']!}" placeholder="Enter Planted Area" data-toggle="tooltip" title="Planted Area" onchange="showRange('planted_area')">
             </div>
-            <label class="control-label col-sm-1" for="total_area">(Acres)</label>
+            <label class="control-label col-sm-1" for="planted_area">(Acres)</label>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="water_hold_capacity">Water Hold Capacity :</label>
