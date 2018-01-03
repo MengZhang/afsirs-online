@@ -10,6 +10,7 @@ import org.afsirs.web.controller.DataToolsPageController;
 import org.afsirs.web.controller.PageController;
 import org.afsirs.web.controller.SimulationPageController;
 import org.afsirs.web.controller.WaterUsePageController;
+import org.afsirs.web.util.DataUtil;
 import org.afsirs.web.util.Filters;
 import org.afsirs.web.util.Path;
 import org.slf4j.LoggerFactory;
@@ -80,7 +81,7 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
-        System.out.println("System start @ " + port);
+        System.out.println("System start @ " + port + " on " + DataUtil.getLastBuildTS());
         if(Desktop.isDesktopSupported())
         {
             try {

@@ -61,6 +61,7 @@ public class WaterUsePermit {
     private String water_hold_capacity;
 //    private String latitude;
 //    private String longitude;
+    private String plantedArea;
     private String totalArea;
 
     // Climate
@@ -182,6 +183,10 @@ public class WaterUsePermit {
         ret.setSoil_unit_name(request.queryParams("soil_unit_name"));
         ret.setWater_hold_capacity(request.queryParams("water_hold_capacity"));
         ret.setTotalArea(request.queryParams("total_area"));
+        if (ret.getTotalArea() == null) {
+            ret.setTotalArea(request.queryParams("planted_area"));
+        }
+        ret.setPlantedArea(request.queryParams("planted_area"));
         ret.setSoil_json(request.queryParams("soil_file_json"));
         if (soilSource.equalsIgnoreCase("DB")) {
             ret.setDbSoilNames(request.queryParamsValues("soil_type_db"));
@@ -305,7 +310,8 @@ public class WaterUsePermit {
         ret.setSoil_source(data.getOrDefault("soil_source", null));
         ret.setSoil_unit_name(data.getOrBlank("soil_unit_name"));
         ret.setWater_hold_capacity(data.getOrBlank("water_hold_capacity"));
-        ret.setTotalArea(data.getOrBlank("planted_area"));
+        ret.setTotalArea(data.getOrBlank("total_area"));
+        ret.setPlantedArea(data.getOrBlank("planted_area"));
         ret.setSoil_json(((JSONArray) data.getOrDefault("soils", new JSONArray())).toJSONString());
         ret.setSoils(readSoilFromPermitJson(data, ret.getWater_hold_capacity()));
 
@@ -363,10 +369,9 @@ public class WaterUsePermit {
             for (org.json.simple.JSONObject nodeJS : soilLayersNodes) {
                 //System.out.println ("NL we are looking for: " + NL);
                 JSONObject node = new JSONObject(nodeJS);
-                wcu[nl] = node.getAsDouble("sldul") / 100.00;
-                du[nl] = node.getAsDouble("sllb") * 0.39370;
-                du[nl] = Util.round(du[nl], 3);
-                wcl[nl] = node.getAsDouble("slll") / 100.00;
+                wcu[nl] = node.getAsDouble("sldul");
+                du[nl] = node.getAsDouble("sllb");
+                wcl[nl] = node.getAsDouble("slll");
 
                 if (WHC.equalsIgnoreCase("Minimum")) {
                     wc[nl] = wcl[nl];
@@ -419,7 +424,8 @@ public class WaterUsePermit {
         input.setUNIT(soil_unit_name);
         input.setSoils(soils);
         input.setWATERHOLDINGCAPACITY(water_hold_capacity);
-        input.setPlantedAcres(new BigDecimal(totalArea).doubleValue());
+        input.setMapArea(new BigDecimal(totalArea).doubleValue());
+        input.setPlantedAcres(new BigDecimal(plantedArea).doubleValue());
 
         input.setWeather(DataUtil.toWeather(et_loc, rain_loc));
 
