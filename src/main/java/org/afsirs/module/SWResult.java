@@ -2,6 +2,7 @@ package org.afsirs.module;
 
 import java.util.Arrays;
 import lombok.Data;
+import static org.afsirs.module.util.Util.deepCopy;
 
 /**
  * The container for SW calculation result
@@ -49,13 +50,5 @@ public class SWResult {
         this.EXIR = input.getEXIR();
         this.RAIN = deepCopy(input.getRAIN());
         this.ETP = deepCopy(input.getETP());
-    }
-    
-    private double[][] deepCopy(double[][] original) {
-        double[][] ret = new double[original.length][];
-        for (int i = 0; i < original.length; i++) {
-            ret[i] = Arrays.copyOf(original[i], original[i].length);
-        }
-        return ret;
     }
 }

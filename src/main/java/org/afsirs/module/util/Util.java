@@ -151,4 +151,12 @@ public class Util {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
+    
+    public static double[][] deepCopy(double[][] original) {
+        double[][] ret = new double[original.length][];
+        for (int i = 0; i < original.length; i++) {
+            ret[i] = Arrays.copyOf(original[i], original[i].length);
+        }
+        return ret;
+    }
 }

@@ -44,7 +44,7 @@ public class UserInput {
 
     String outFile, summaryFile, summaryFileExcel, calculationExcel;
     String cropName, IRNAME, CLIMFIL;
-    Weather weather = new Weather();
+    Weather weather = null;
     private String SITE, UNIT, OWNER; //Name changed in desktop to Permit ID, Map Name, Output file name
 
 //    private boolean perennial, IVERS, net = false;
@@ -52,15 +52,15 @@ public class UserInput {
     private String cropType;
     private String irrOption = "GROSS";
 
-    public boolean isIVERS() {
+    public boolean isIVERSChecked() {
         return "true".equals(IVERS);
     }
 
-    public boolean isPerennial() {
+    public boolean isPerennialCrop() {
         return cropType.equalsIgnoreCase("perennial");
     }
 
-    public boolean isNet() {
+    public boolean isNetCalc() {
         return irrOption.equalsIgnoreCase("NET");
     }
 
@@ -471,9 +471,11 @@ public class UserInput {
     public void setStartEndYear(InputStreamReader irET, InputStreamReader irRF) throws IOException {
         BufferedReader brRF;
         BufferedReader brET;
-        int startYear = weather.getStartYear();
-        int endYear = weather.getEndYear();
-        int NYR = weather.getNYR();
+        int startYear = 0;
+        int endYear = 0;
+//        int NYR = weather.getNYR();
+        String etLoc = null;
+        String rainLoc = null;
         try {
             //getting start year and end year from ET data
 
@@ -481,7 +483,7 @@ public class UserInput {
 
             String lineET = brET.readLine();
             //brET.mark(10000);
-            weather.setETLoc(lineET.split(" ")[0]);
+            etLoc = lineET.split(" ")[0];
             lineET = brET.readLine();
             int i = 0;
             int year = 0;
@@ -515,7 +517,7 @@ public class UserInput {
             //getting start year and end year from Rainfall data
             brRF = new BufferedReader(irRF);
             String lineRF = brRF.readLine();
-            weather.setRainLoc(lineRF.split(" ")[0]);
+            rainLoc = lineRF.split(" ")[0];
             lineRF = brRF.readLine();
             i = 0;
             year = 0;
@@ -551,14 +553,17 @@ public class UserInput {
                 endYear = year;
             }
 
-            NYR = endYear - startYear + 1;
+//            NYR = endYear - startYear + 1;
 
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace(System.err);
         } finally {
-            weather.setStartYear(startYear);
-            weather.setEndYear(endYear);
-            weather.setNYR(NYR);
+            this.weather = new Weather(startYear, endYear);
+            weather.setETLoc(etLoc);
+            weather.setRainLoc(rainLoc);
+//            weather.setStartYear(startYear);
+//            weather.setEndYear(endYear);
+//            weather.setNYR(NYR);
         }
 
     }

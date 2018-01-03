@@ -22,7 +22,7 @@ public class SoilData {
     private static String WHC = "Minimum";
  
     public SoilData () {
-        completeSoilData = new HashMap<String, ArrayList<Soil>>();
+        completeSoilData = new HashMap<>();
 
     }
     
@@ -49,13 +49,13 @@ public class SoilData {
     }
    
     public void addSoil (String key, Soil soil) {
-        ArrayList<Soil> list = null;
+        ArrayList<Soil> list;
         currentKey = key;
         if (completeSoilData.containsKey(key)) {
             list = completeSoilData.get(key);
             list.add(soil);
         } else {
-            list = new ArrayList<Soil> ();
+            list = new ArrayList<> ();
             list.add(soil);
             completeSoilData.put (key, list);
         }

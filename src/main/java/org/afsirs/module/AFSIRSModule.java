@@ -1,5 +1,7 @@
 package org.afsirs.module;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -254,7 +256,7 @@ public class AFSIRSModule {
                      Do not increase crop coefficient for rain if RKC = 0.0 (No crop being grown)
                      Modifies KC based on days since last rain or irrigation during growth stages 1 and 2
                      */
-                    if (!input.isPerennial() && KC[j] >= EPS && j < NF[1]) {
+                    if (!input.isPerennialCrop() && KC[j] >= EPS && j < NF[1]) {
                         RKCS = 1.0 / Math.sqrt(REWAT);
                     }
                     if (KC[j] >= EPS) {
@@ -718,7 +720,7 @@ public class AFSIRSModule {
 
         //Calculate maximum firstSoil water-holding capacities
         //For perennial crops
-        if (input.isPerennial()) {
+        if (input.isPerennialCrop()) {
             //Check for high water table limiting irrigated root zone
 
             if (DRZI[J1 - 1] >= DWT) {
@@ -1011,7 +1013,7 @@ public class AFSIRSModule {
         final int J1 = input.getJ1();
         final int JN = input.getJN();
 
-        if (input.isPerennial()) {
+        if (input.isPerennialCrop()) {
             //Calculate daily root depths and allowable firstSoil water depletions
             for (int i = 0; i < 365; i++) {
                 DRZI[i] = input.getDRZIRR();
@@ -1230,7 +1232,7 @@ public class AFSIRSModule {
         final int JNSAVE = input.getJNSAVE();
         final int J1SAVE = input.getJ1SAVE();
         final int ICODE = input.getICODE();
-        final boolean isNet = input.isNet();
+        final boolean isNet = input.isNetCalc();
         final double IEFF = input.getIEFF();
         final double EPS = input.getEPS();
         final int MO1 = input.getMO1();
@@ -1691,6 +1693,7 @@ public class AFSIRSModule {
 
     public static SimResult run(UserInput input, File outputDir) {
 
+//        saveInputData(outputDir, input);
         SimResult ret = new SimResult();
         ret.setOutFile(new File(input.getOutFile()));
         ret.setSummaryFile(new File(input.getSummaryFile()));
@@ -1781,7 +1784,7 @@ public class AFSIRSModule {
             double[] DRZ = deCoefRet.getDRZ();
             double[] RKC = deCoefRet.getRKC();
             double[] AWD = deCoefRet.getAWD();
-            if (input.isPerennial()) {
+            if (input.isPerennialCrop()) {
                 double DRZIRR = input.getDRZIRR();
                 double DRZTOT = input.getDRZTOT();
                 double[] AKC = input.getAKC();
@@ -1957,7 +1960,7 @@ public class AFSIRSModule {
                 i++;
             }
             //Write the permit file.
-            savePermitFile(new File("Permit/"), input);
+//            savePermitFile(new File("Permit/"), input);
 
 //            excelCal = new SummaryReportExcelFormat(input.getCalculationExcel());
             excelCal = buildCalculationExcel(input, ret, summaryList);
@@ -2104,7 +2107,7 @@ public class AFSIRSModule {
             t = new PdfPTable(1);
 
             String KC = "";
-            if (input.isPerennial()) {
+            if (input.isPerennialCrop()) {
                 for (int i = 0; i < 12; i++) {
 
                     KC = KC + " " + input.getAKC()[i] + " ";
@@ -3525,26 +3528,27 @@ public class AFSIRSModule {
         obj.put("owner_name", input.getOWNER());
         obj.put("et_loc", input.getCLIMATESTATION());
         obj.put("rain_loc", input.getRAINFALLSTATION());
-        obj.put("planted_area", input.getPlantedAcres());
+        obj.put("planted_area", input.getPlantedAcres() + "");
+        obj.put("total_area", input.getMapArea() + "");
         obj.put("crop_type", input.getCropType());
         obj.put("crop_name", input.getCropName());
-        obj.put("beg_date_month", input.getMO1());
-        obj.put("beg_date_day", input.getDAY1());
-        obj.put("end_date_month", input.getMON());
-        obj.put("end_date_day", input.getDAYN());
-        obj.put("irr_type", input.getIR());
+        obj.put("beg_date_month", input.getMO1() + "");
+        obj.put("beg_date_day", input.getDAY1() + "");
+        obj.put("end_date_month", input.getMON() + "");
+        obj.put("end_date_day", input.getDAYN() + "");
+        obj.put("irr_type", input.getIR() + "");
         obj.put("irr_option", input.getIrrOption());
-        obj.put("irr_depth_type", input.getIDCODE());
+        obj.put("irr_depth_type", input.getIDCODE() + "");
         if (input.getIDCODE() == 1) {
-            obj.put("irr_depth", input.getFIX());
+            obj.put("irr_depth", input.getFIX()+ "");
         } else if (input.getIDCODE() == 2) {
-            obj.put("irr_depth", input.getPIR());
+            obj.put("irr_depth", input.getPIR() + "");
         }
-        obj.put("irr_efficiency", input.getIEFF());
-        obj.put("soil_surface_irr", input.getARZI());
-        obj.put("et_extracted", input.getEXIR());
-        obj.put("ir_dat", input.getIVERS());
-        obj.put("water_table_depth", input.getDWT());
+        obj.put("irr_efficiency", input.getIEFF() + "");
+        obj.put("soil_surface_irr", input.getARZI() + "");
+        obj.put("et_extracted", input.getEXIR() + "");
+        obj.put("ir_dat", input.getIVERS() + "");
+        obj.put("water_table_depth", input.getDWT() + "");
         obj.put("water_hold_capacity", input.getWATERHOLDINGCAPACITY());
         obj.put("soil_source", input.getSoilSource());
         obj.put("soil_unit_name", input.getUNIT());
@@ -3555,13 +3559,13 @@ public class AFSIRSModule {
             soilData.put("mukeyName", soil.getSERIESNAME());
             soilData.put("cokey", soil.getCOMPKEY());
             soilData.put("soilName", soil.getSNAME());
-            soilData.put("compArea", soil.getSoilTypeArea());
+            soilData.put("compArea", soil.getSoilTypeArea() + "");
             ArrayList soilLayers = new ArrayList();
             for (int i = 0; i < soil.getNL(); i++) {
                 HashMap soilLayer = new HashMap();
-                soilLayer.put("sllb", soil.getDU()[i]);
-                soilLayer.put("slll", soil.getWCL()[i]);
-                soilLayer.put("sldul", soil.getWCU()[i]);
+                soilLayer.put("sllb", soil.getDU()[i] + "");
+                soilLayer.put("slll", soil.getWCL()[i] + "");
+                soilLayer.put("sldul", soil.getWCU()[i] + "");
                 soilLayers.add(soilLayer);
             }
             soilData.put("soilLayer", soilLayers);
@@ -3570,23 +3574,24 @@ public class AFSIRSModule {
         obj.put("soils", soils);
         obj.put("coefficent_type", input.getCoefficentType());
         if ("annual".equalsIgnoreCase(input.getCropType())) {
-            obj.put("dzn", input.getDZN());
-            obj.put("dzx", input.getDZX());
-            obj.put("akc3", input.getAKC3());
-            obj.put("akc4", input.getAKC4());
-            obj.put("f1", input.getF()[0]);
-            obj.put("f2", input.getF()[1]);
-            obj.put("f3", input.getF()[2]);
-            obj.put("f4", input.getF()[3]);
-            obj.put("ald1", input.getALD()[0]);
-            obj.put("ald2", input.getALD()[1]);
-            obj.put("ald3", input.getALD()[2]);
-            obj.put("ald4", input.getALD()[3]);
+            obj.put("dzn", input.getDZN() + "");
+            obj.put("dzx", input.getDZX() + "");
+            obj.put("akc3", input.getAKC3() + "");
+            obj.put("akc4", input.getAKC4() + "");
+            obj.put("f1", input.getF()[0] + "");
+            obj.put("f2", input.getF()[1] + "");
+            obj.put("f3", input.getF()[2] + "");
+            obj.put("f4", input.getF()[3] + "");
+            obj.put("ald1", input.getALD()[0] + "");
+            obj.put("ald2", input.getALD()[1] + "");
+            obj.put("ald3", input.getALD()[2] + "");
+            obj.put("ald4", input.getALD()[3] + "");
         } else {
-            obj.put("drzirr", input.getDRZIRR());
-            obj.put("drztot", input.getDRZTOT());
-            obj.put("akc", Arrays.stream(input.getAKC()).boxed().collect(Collectors.toList()));
-            obj.put("aldp", Arrays.stream(input.getALDP()).boxed().collect(Collectors.toList()));
+            obj.put("drzirr", input.getDRZIRR() + "");
+            obj.put("drztot", input.getDRZTOT() + "");
+            
+            obj.put("akc", Arrays.stream(input.getAKC()).mapToObj(String::valueOf).collect(Collectors.toList()));
+            obj.put("aldp", Arrays.stream(input.getALDP()).mapToObj(String::valueOf).collect(Collectors.toList()));
             if (input.getIR() == IRCRFL) {
                 obj.put("hgt", input.getHGT() + "");
             }
@@ -3595,6 +3600,28 @@ public class AFSIRSModule {
         try (FileWriter file = new FileWriter(Paths.get(outputDir.getPath(),  input.getSITE() + ".json").toFile())) {
 
             file.write(obj.toJSONString());
+            file.flush();
+
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+            return false;
+        }
+
+    }
+    
+    public static boolean saveInputData(File outputDir, UserInput input) {
+        ObjectMapper mapperObj = new ObjectMapper();
+        String jsonStr = "";
+        try {
+            jsonStr = mapperObj.writeValueAsString(input);
+        } catch (JsonProcessingException ex) {
+            java.util.logging.Logger.getLogger(AFSIRSModule.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try (FileWriter file = new FileWriter(Paths.get(outputDir.getPath(),  input.getSITE() + "_input.json").toFile())) {
+
+            file.write(jsonStr);
             file.flush();
 
             return true;
