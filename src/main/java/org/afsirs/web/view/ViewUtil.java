@@ -3,6 +3,7 @@ package org.afsirs.web.view;
 import java.util.Map;
 import org.afsirs.web.util.Path;
 import static org.afsirs.web.Main.LOG;
+import org.afsirs.web.util.DataUtil;
 import spark.ModelAndView;
 import spark.Request;
 import spark.template.freemarker.FreeMarkerEngine;
@@ -15,6 +16,7 @@ public class ViewUtil {
         if (!attributes.containsKey("operation_result")) {
             attributes.put("operation_result", "");
         }
+        attributes.put("lastBuildTS", DataUtil.getLastBuildTS());
         attributes.put("WebPath", Path.Web.class); // Access application URLs from templates
 //        return strictVelocityEngine().render(new ModelAndView(model, templatePath));
     }
