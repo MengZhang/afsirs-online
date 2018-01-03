@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -36,7 +35,7 @@ public class DataUtil {
     private final static LinkedHashMap<String, CropData> CROP_LIST_PERENNIAL = readCropList("PERENNIAL");
     private final static ArrayList<Irrigation> IR_SYS_LIST = new ArrayList();
     private final static ArrayList<String> IR_NAME_LIST = readIrrigationList();
-    private final static LinkedHashSet<String> SOILTYPE_DB_NAME_LIST = readSoilData();
+    private final static LinkedHashMap<String, Soil> SOILTYPE_DB_DATA_LIST = readSoilData();
     private final static LinkedHashMap<String, WeatherData> CLIMATE_DATA_LIST = readWeatherData("CLIMLIST.txt");
     private final static LinkedHashMap<String, WeatherData> RAINFALL_DATA_LIST = readWeatherData("RAINLIST.txt");
     private final static String LAST_BUILD_TS = readLastBuildTS();
@@ -110,8 +109,8 @@ public class DataUtil {
         return IR_SYS_LIST;
     }
 
-    public static LinkedHashSet<String> getSoilTypeDBNameList() {
-        return SOILTYPE_DB_NAME_LIST;
+    public static Set<String> getSoilTypeDBNameList() {
+        return SOILTYPE_DB_DATA_LIST.keySet();
     }
 
     public static ArrayList<String> getClimateCityList() {
@@ -291,8 +290,8 @@ public class DataUtil {
         return ret;
     }
 
-    private static LinkedHashSet<String> readSoilData() {
-        LinkedHashSet<String> ret = new LinkedHashSet();
+    private static LinkedHashMap<String, Soil> readSoilData() {
+        LinkedHashMap<String, Soil> ret = new LinkedHashMap();
         try (BufferedReader br = new BufferedReader(new FileReader(Path.Folder.getDataFile("soil.dat")))) {
             String line;
             br.readLine(); //Ignore first line
@@ -308,26 +307,81 @@ public class DataUtil {
             br.readLine();//Ignore Line
 
             int N = Integer.parseInt(line.substring(start, end));
+            String item = "";
 
             for (int i = 0; i < N; i++) {
                 line = br.readLine();
-                String item = line.substring(4, 24).trim() + "    ";
+                if (line == null || line.isEmpty()) {
+                    System.out.println("detect empty line after " + item);
+                    continue;
+                }
+                item = line.substring(4, 24).trim() + "    ";
 
                 String[] parts = line.substring(24).split(" ");
-                int k = 0;
+//                int k = 0;
                 for (String x : parts) {
                     if (x.length() < 1) {
                         continue;
                     }
-                    k++;
+//                    k++;
                     item += x + "    ";
                 }
-                if (ret.contains(item)) {
+                
+                String line2 = br.readLine();//Read data line
+                int NL = Integer.parseInt(line2.substring(0, 1));
+                Soil soil = new Soil(i, item, null, null, item, NL);
+                int k = 0;
+                int j = 1;
+                while (line2.charAt(j) == ' ') {
+                    j++;
+                }
+                line2 = line2.substring(j);
+                parts = line2.split(" ");
+                double[] wc = new double[6];
+                double[] wcl = new double[6];
+                double[] wcu = new double[6];
+                double[] du = new double[6];
+                String[] txt = new String[3];
+                
+                while (k < NL) {
+                    if (parts.length == 0 || parts[0].isEmpty()) {
+                        System.out.println(item + " Style broken");
+                        k++;
+                        continue;
+                    } else {
+                        boolean errFlg = false;
+                        for (String part : parts) {
+                            if (part.isEmpty()) {
+                                System.out.println(item + " Style broken");
+                                k++;
+                                errFlg = true;
+                                break;
+                            }
+                        }
+                        if (errFlg) {
+                            continue;
+                        }
+                    }
+                    String[] fields = parts[k].split("[.]");
+//                    System.out.print(item + " Fields : ");
+//                    for (String field : fields) {
+//                        System.out.print(field + " ");
+//                    }
+//                    System.out.println();
+//                    System.out.println("Fields : " + fields[0] + " " + fields[1] + " " + fields[2]);
+                    du[k] = Double.parseDouble(fields[0]);
+                    wcl[k] = Double.parseDouble(fields[1]) / 100.0;
+                    wcu[k] = Double.parseDouble(fields[2]) / 100.0;
+                    wc[k] = new BigDecimal(wcl[k]).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+                    k++;
+                }
+                soil.setValues(wc, wcl, wcu, du, txt);
+                
+                if (ret.containsKey(item)) {
                     LOG.warn("[{}] is repeated! Please check soil.dat file!", item);
                 } else {
-                    ret.add(item);
+                    ret.put(item, soil);
                 }
-                br.readLine();//Ignore next line
             }
             br.close();
 
@@ -398,7 +452,18 @@ public class DataUtil {
 
     public static ArrayList<Soil> readSoils(Set<String> dbSoilNames) {
         ArrayList<Soil> ret = new ArrayList();
-        //TODO
+        for (String soilName : dbSoilNames) {
+            Soil s = SOILTYPE_DB_DATA_LIST.get(soilName);
+            Soil sCopy = new Soil(s.getSNAME(), s.getSOILSERIESKEY(), s.getCOMPKEY(), s.getSERIESNAME(), s.getNL());
+            sCopy.setValues(copyArr(s.getWC()), copyArr(s.getWCL()), copyArr(s.getWCU()), copyArr(s.getDU()), s.getTXT());
+            ret.add(sCopy);
+        }
+        return ret;
+    }
+    
+    private static double[] copyArr(double[] in) {
+        double[] ret = new double[in.length];
+        System.arraycopy(in, 0, ret, 0, in.length);
         return ret;
     }
 

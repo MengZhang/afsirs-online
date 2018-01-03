@@ -369,10 +369,9 @@ public class WaterUsePermit {
             for (org.json.simple.JSONObject nodeJS : soilLayersNodes) {
                 //System.out.println ("NL we are looking for: " + NL);
                 JSONObject node = new JSONObject(nodeJS);
-                wcu[nl] = node.getAsDouble("sldul") / 100.00;
-                du[nl] = node.getAsDouble("sllb") * 0.39370;
-                du[nl] = Util.round(du[nl], 3);
-                wcl[nl] = node.getAsDouble("slll") / 100.00;
+                wcu[nl] = node.getAsDouble("sldul");
+                du[nl] = node.getAsDouble("sllb");
+                wcl[nl] = node.getAsDouble("slll");
 
                 if (WHC.equalsIgnoreCase("Minimum")) {
                     wc[nl] = wcl[nl];
