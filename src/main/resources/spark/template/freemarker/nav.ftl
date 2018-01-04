@@ -24,7 +24,7 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-briefcase"></span> Data Tools <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="/datatools/soilmap"><span class="glyphicon glyphicon-globe"></span> Soil Map</a></li>
+                    <li><a href="#" onClick="window.open('http://abe.ufl.edu/bmpmodel/arcGIS/Test/?zoom=9', 'Soil Map',width=1200,height=300)"><span class="glyphicon glyphicon-globe"></span> Soil Map</a></li>
                 </ul>
             </li>
         </ul>

@@ -96,7 +96,7 @@
                 <input type="hidden" id="soil_unit_name" name="soil_unit_name" value="${permit['soil_unit_name']!}">
             </div>
             <div class="col-sm-4">
-                <button type="button" class="btn btn-primary text-right" onclick="window.open('http://abe.ufl.edu/bmpmodel/arcGIS/Test')">View Soil Map</button>
+                <button type="button" class="btn btn-primary text-right" onclick="window.open('http://abe.ufl.edu/bmpmodel/arcGIS/Test?zoom=9')">View Soil Map</button>
                 <button type="button" class="btn btn-primary text-right" onclick="" disabled>Show Soil Data</button>
             </div>
         </div>
