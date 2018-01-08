@@ -222,10 +222,10 @@ public class WaterUsePermit {
         if ("default".equalsIgnoreCase(coeffType)) {
             if (cropType != null && !cropType.isEmpty()) {
                 if (cropType.equals("annual")) {
-                    CropData cropData = DataUtil.getCropDataAnnual().get(ret.getCrop_name());
+                    CropData cropData = DataUtil.getCropDataAnnual().get(ret.getCrop_name()).cloneData();
                     ret.setCropData(cropData);
                 } else {
-                    CropData cropData = DataUtil.getCropDataPerennial().get(ret.getCrop_name());
+                    CropData cropData = DataUtil.getCropDataPerennial().get(ret.getCrop_name()).cloneData();
                     ret.setCropData(cropData);
                     ret.setHgt(request.queryParams("hgt"));
                 }
