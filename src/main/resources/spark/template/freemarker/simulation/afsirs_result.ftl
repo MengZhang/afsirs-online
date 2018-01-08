@@ -142,13 +142,13 @@
                                 yAxis: {
                                     min: 0,
                                     title: {
-                                        text: 'Irrigation (mm)'
+                                        text: 'Irrigation (inches)'
                                     }
                                 },
                                 tooltip: {
                                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                                     pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                                            '<td style="padding:0"><b>{point.y:.1f} inches</b></td></tr>',
                                     footerFormat: '</table>',
                                     shared: true,
                                     useHTML: true
@@ -204,13 +204,13 @@
                                 yAxis: {
                                     min: 0,
                                     title: {
-                                        text: 'Irrigation (mm)'
+                                        text: 'Irrigation (inches)'
                                     }
                                 },
                                 tooltip: {
                                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                                     pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                                            '<td style="padding:0"><b>{point.y:.1f} inches</b></td></tr>',
                                     footerFormat: '</table>',
                                     shared: true,
                                     useHTML: true
@@ -266,13 +266,13 @@
                                 yAxis: {
                                     min: 0,
                                     title: {
-                                        text: 'Irrigation (mm)'
+                                        text: 'Irrigation (inches)'
                                     }
                                 },
                                 tooltip: {
                                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                                     pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                                            '<td style="padding:0"><b>{point.y:.1f} inches</b></td></tr>',
                                     footerFormat: '</table>',
                                     shared: true,
                                     useHTML: true
@@ -334,7 +334,7 @@
                                 tooltip: {
                                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                                     pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                                            '<td style="padding:0"><b>{point.y:.1f} inches</b></td></tr>',
                                     footerFormat: '</table>',
                                     shared: true,
                                     useHTML: true
@@ -390,13 +390,13 @@
                                 yAxis: {
                                     min: 0,
                                     title: {
-                                        text: 'Inches'
+                                        text: 'Amount(inches)'
                                     }
                                 },
                                 tooltip: {
                                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                                     pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                                            '<td style="padding:0"><b>{point.y:.1f} inches</b></td></tr>',
                                     footerFormat: '</table>',
                                     shared: true,
                                     useHTML: true
@@ -434,7 +434,7 @@
             <div class="text-right col-md-4">
                 <div>
                     <button type="button" class="btn btn-primary text-right" onclick="window.location.href = '/wateruse/permit/list'">Back to list</button>
-                    <button type="button" class="btn btn-primary text-right" onclick="window.location.href = '/wateruse/permit/create?permit_id=${permit_id!}'">Edit Permit</button>
+                    <button type="button" class="btn btn-primary text-right" onclick="window.location.href = '/wateruse/permit/find?permit_id=${permit_id!}'">Edit Permit</button>
                 </div>
             </div>
         </div>
