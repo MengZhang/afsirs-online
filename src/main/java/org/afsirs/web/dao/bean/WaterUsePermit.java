@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
 import lombok.Data;
 import org.afsirs.module.AFSIRSModule;
 import org.afsirs.module.Soil;
@@ -57,6 +55,8 @@ public class WaterUsePermit {
     private LinkedHashSet<String> dbSoilNames;
     private ArrayList<Soil> soils;
     private String soil_json;
+    private String polygon_info;
+    private String total_area;
     private String mapSoilJsonFile;
     private String water_hold_capacity;
 //    private String latitude;
@@ -192,7 +192,7 @@ public class WaterUsePermit {
             ret.setDbSoilNames(request.queryParamsValues("soil_type_db"));
             ret.setSoils(DataUtil.readSoils(ret.getDbSoilNames()));
         } else if (soilSource.equalsIgnoreCase("MAP")) {
-            String jsonStr = request.queryParams("soil_file_json");
+            String jsonStr = ret.getSoil_json();
             ret.setSoils(DataUtil.toSoils(jsonStr));
 //            JSONObject data = JsonUtil.parseFrom(jsonStr);
 //            List<Map> asfirs = (List) data.get("asfirs");
@@ -214,8 +214,8 @@ public class WaterUsePermit {
 //            ret.setTotalArea(totArea);
         }
 
-        ret.setEt_loc(calculateNearestStation(request.queryParams("et_loc"), "CLIMATE", request));
-        ret.setRain_loc(calculateNearestStation(request.queryParams("rain_loc"), "RAIN", request));
+        ret.setEt_loc(calculateNearestStation(request.queryParams("et_loc"), "CLIMATE", ret));
+        ret.setRain_loc(calculateNearestStation(request.queryParams("rain_loc"), "RAIN", ret));
 
         String coeffType = request.queryParams("coefficent_type");
         ret.setCoefficent_type(coeffType);
@@ -257,24 +257,10 @@ public class WaterUsePermit {
         return ret;
     }
 
-    private static String calculateNearestStation(String loc, String type, Request request) {
+    private static String calculateNearestStation(String loc, String type, WaterUsePermit permit) {
         if ("Nearest Station".equalsIgnoreCase(loc)) {
-            String jsonStr = request.queryParams("soil_file_json");
-            JSONObject data = JsonUtil.parseFrom(jsonStr);
-            List<Map> asfirs = (List) data.get("asfirs");
-            if (asfirs == null) {
-                return null;
-            }
-            String longi = null;
-            String lat = null;
-//            String totArea = null;
-            for (Map node : asfirs) {
-                longi = node.get("long").toString();
-                lat = node.get("lat").toString();
-//                totArea = node.get("TotalArea").toString();
-                // TODO for multiple polygons
-            }
-            loc = DataUtil.calculateNearestStation(type, lat, longi);
+            String jsonStr = permit.getSoil_json();
+            loc = DataUtil.calculateNearestStation(type, jsonStr);
         }
         return loc;
     }
@@ -313,6 +299,10 @@ public class WaterUsePermit {
         ret.setTotalArea(data.getOrBlank("total_area"));
         ret.setPlantedArea(data.getOrBlank("planted_area"));
         ret.setSoil_json(((JSONArray) data.getOrDefault("soils", new JSONArray())).toJSONString());
+        JSONArray polygonInfo = (JSONArray) data.getOrDefault("polygon", new JSONArray());
+        if (!polygonInfo.isEmpty()) {
+            ret.setPolygon_info(((org.json.simple.JSONObject) polygonInfo.get(0)).toJSONString());
+        }
         ret.setSoils(readSoilFromPermitJson(data, ret.getWater_hold_capacity()));
 
         ret.setEt_loc(data.getOrBlank("et_loc"));
@@ -426,6 +416,7 @@ public class WaterUsePermit {
         input.setWATERHOLDINGCAPACITY(water_hold_capacity);
         input.setMapArea(new BigDecimal(totalArea).doubleValue());
         input.setPlantedAcres(new BigDecimal(plantedArea).doubleValue());
+        input.setPolygonInfo(soil_json);
 
         input.setWeather(DataUtil.toWeather(et_loc, rain_loc));
 

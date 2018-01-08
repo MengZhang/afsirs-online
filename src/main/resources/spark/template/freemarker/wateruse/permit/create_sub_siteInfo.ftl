@@ -78,10 +78,10 @@
             <label class="control-label col-sm-3" for="permit_id">Permit ID :</label>
             <div class="col-sm-6">
                 <#if permit['permit_id']??>
-                <input type="text" name="permit_id" class="form-control" value="${permit['permit_id']!}" placeholder="Enter Permit ID" data-toggle="tooltip" title="This field accepts alphanumeric characters without spaces" disabled>
+                <input type="text" id="permit_id" class="form-control" value="${permit['permit_id']!}" placeholder="Enter Permit ID" data-toggle="tooltip" title="This field accepts alphanumeric characters without spaces" disabled>
                 <input type="hidden" name="permit_id" value="${permit['permit_id']!}" >
                 <#else>
-                <input type="text" name="permit_id" class="form-control" value="${permit['permit_id']!}" placeholder="Enter Permit ID" data-toggle="tooltip" title="This field accepts alphanumeric characters without spaces">
+                <input type="text" id="permit_id" name="permit_id" class="form-control" value="${permit['permit_id']!}" placeholder="Enter Permit ID" data-toggle="tooltip" title="This field accepts alphanumeric characters without spaces">
                 </#if>
             </div>
         </div>

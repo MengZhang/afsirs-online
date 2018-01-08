@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.ServletOutputStream;
 import org.afsirs.module.AFSIRSModule;
 import org.afsirs.module.SimResult;
+import org.afsirs.module.SoilSeriesSummaryReport;
 import org.afsirs.module.SoilSpecificPeriodData;
 import org.afsirs.module.SummaryReport;
 import org.afsirs.module.UserInput;
@@ -66,8 +67,9 @@ public class SimulationViewUtil {
 //        double areaSum = simRet.getTotalArea();
 
         ArrayList<SoilSpecificPeriodData> PDATA = AFSIRSModule.getGraphData(simRet, 0);
-        for (int j = 0; j < simRet.getSummaryList().size(); j++) {
-            String soilName = simRet.getSummaryList().get(j).soilName;
+        ArrayList<SoilSeriesSummaryReport> summaryList = simRet.getSummaryList();
+        for (SoilSeriesSummaryReport report : summaryList) {
+            String soilName = report.getSoilName();
             irrReqData.put(soilName, new double[12]);
             twoIn10Data.put(soilName, new double[12]);
             oneIn10Data.put(soilName, new double[12]);
@@ -75,9 +77,8 @@ public class SimulationViewUtil {
 
         for (int i = 0; i < PDATA.get(0).getSoilDataPoints().length; i++) {
 
-            for (int j = 0; j < simRet.getSummaryList().size(); j++) {
-                String soilName = simRet.getSummaryList().get(j).soilName;
-                SummaryReport report = simRet.getSummaryList().get(j);
+            for (SoilSeriesSummaryReport report : summaryList) {
+                String soilName = report.getSoilName();
 
                 irrReqAvg += report.getWeightedAvgIrrRequired(i + 1);
                 twoIn10Avg += report.getWeighted2In10IrrRequired((i + 1));
@@ -123,14 +124,14 @@ public class SimulationViewUtil {
         LinkedHashMap<String, double[]> climateData = new LinkedHashMap();
         climateData.put("Mean RainFall", new double[12]);
         climateData.put("Mean ET (Crop)", new double[12]);
-        for (SummaryReport summaryReport : simRet.getSummaryList()) {
+        for (SoilSeriesSummaryReport summaryReport : summaryList) {
             for (int i = 0; i < 12; i++) {
                 double val = summaryReport.getTotalRainFallByMonth(i + 1);
                 climateData.get("Mean RainFall")[i] = val;
             }
         }
 
-        for (SummaryReport summaryReport : simRet.getSummaryList()) {
+        for (SoilSeriesSummaryReport summaryReport : summaryList) {
             for (int i = 0; i < 12; i++) {
                 double val = summaryReport.getEvaporationCropByMonth(i + 1);
                 climateData.get("Mean ET (Crop)")[i] = val;
