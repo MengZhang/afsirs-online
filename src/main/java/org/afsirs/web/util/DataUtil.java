@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
 import java.util.LinkedHashMap;
@@ -42,38 +43,79 @@ public class DataUtil {
 
     @Data
     public static class WeatherData {
+
         private double[][] data = new double[64][365];
         private String location;
         private int startYear;
         private int endYear;
+
+        public WeatherData cloneData() {
+            WeatherData ret = new WeatherData();
+            ret.setLocation(location);
+            ret.setStartYear(startYear);
+            ret.setEndYear(endYear);
+            ret.setData(Util.deepCopy(data));
+            return ret;
+        }
     }
-    
-    public interface CropData {}
-    
+
+    public interface CropData {
+
+        public CropData cloneData();
+    }
+
     @Data
     public static class CropDataAnnual implements CropData {
+
         private String cropName;
         private double DZN, DZX;
         private double AKC3, AKC4;
         private double[] F = new double[4];
         private double[] ALD = new double[4];
+
         public double[] getFR() {
             return F;
         }
+
         public CropDataAnnual(String cropName) {
             this.cropName = cropName;
         }
+
+        @Override
+        public CropDataAnnual cloneData() {
+            CropDataAnnual ret = new CropDataAnnual(cropName);
+            ret.setDZN(DZN);
+            ret.setDZX(DZX);
+            ret.setAKC3(AKC3);
+            ret.setAKC4(AKC4);
+            ret.setF(Arrays.copyOf(F, F.length));
+            ret.setALD(Arrays.copyOf(ALD, ALD.length));
+            return ret;
+        }
     }
-    
+
     @Data
     public static class CropDataPerennial implements CropData {
+
         private String cropName;
         private double DRZIRR, DRZTOT;
         private double[] AKC = new double[12];
         private double[] ALDP = new double[12];
         private double HGT;
+
         public CropDataPerennial(String cropName) {
             this.cropName = cropName;
+        }
+
+        @Override
+        public CropDataPerennial cloneData() {
+            CropDataPerennial ret = new CropDataPerennial(cropName);
+            ret.setDRZIRR(DRZIRR);
+            ret.setDRZTOT(DRZTOT);
+            ret.setHGT(HGT);
+            ret.setAKC(Arrays.copyOf(AKC, AKC.length));
+            ret.setALDP(Arrays.copyOf(ALDP, ALDP.length));
+            return ret;
         }
     }
 
@@ -91,7 +133,7 @@ public class DataUtil {
             return new ArrayList();
         }
     }
-    
+
     public static int getCropIndexCode(String type, String cropName) {
         if ("ANNUAL".equalsIgnoreCase(type)) {
             return new ArrayList(CROP_LIST_ANNUAL.keySet()).indexOf(cropName);
@@ -118,7 +160,7 @@ public class DataUtil {
     }
 
     public static WeatherData getClimateData(String etLoc) {
-        return CLIMATE_DATA_LIST.get(etLoc);
+        return CLIMATE_DATA_LIST.get(etLoc).cloneData();
     }
 
     public static ArrayList<String> getRainfallCityList() {
@@ -126,21 +168,21 @@ public class DataUtil {
     }
 
     public static WeatherData getRainfallData(String rainLoc) {
-        return RAINFALL_DATA_LIST.get(rainLoc);
+        return RAINFALL_DATA_LIST.get(rainLoc).cloneData();
     }
-    
+
     public static LinkedHashMap<String, CropData> getCropDataAnnual() {
         return CROP_LIST_ANNUAL;
     }
-    
+
     public static LinkedHashMap<String, CropData> getCropDataPerennial() {
         return CROP_LIST_PERENNIAL;
     }
-    
+
     public static String getLastBuildTS() {
         return LAST_BUILD_TS;
     }
-    
+
     private static String readLastBuildTS() {
 //        try (InputStream versionFile = DataUtil.class.getClassLoader().getResourceAsStream(Path.Folder.PROPERTY_FILE)) {
 //            Properties versionProperties = new Properties();
@@ -189,7 +231,7 @@ public class DataUtil {
         }
         return ret;
     }
-    
+
     private static CropData readCropDataAnnual(String line, String cropName) {
         CropDataAnnual ret = new CropDataAnnual(cropName);
         if (line.length() < 12) {
@@ -219,7 +261,7 @@ public class DataUtil {
         }
         return ret;
     }
-    
+
     private static CropData readCropDataPerennial(String line1, String line2, String cropName) {
         CropDataPerennial ret = new CropDataPerennial(cropName);
         String data = line1.substring(14);
@@ -326,7 +368,7 @@ public class DataUtil {
 //                    k++;
                     item += x + "    ";
                 }
-                
+
                 String line2 = br.readLine();//Read data line
                 int NL = Integer.parseInt(line2.substring(0, 1));
                 Soil soil = new Soil(i, item, null, null, item, NL);
@@ -342,7 +384,7 @@ public class DataUtil {
                 double[] wcu = new double[6];
                 double[] du = new double[6];
                 String[] txt = new String[3];
-                
+
                 while (k < NL) {
                     if (parts.length == 0 || parts[0].isEmpty()) {
                         System.out.println(item + " Style broken");
@@ -376,7 +418,7 @@ public class DataUtil {
                     k++;
                 }
                 soil.setValues(wc, wcl, wcu, du, txt);
-                
+
                 if (ret.containsKey(item)) {
                     LOG.warn("[{}] is repeated! Please check soil.dat file!", item);
                 } else {
@@ -453,14 +495,11 @@ public class DataUtil {
     public static ArrayList<Soil> readSoils(Set<String> dbSoilNames) {
         ArrayList<Soil> ret = new ArrayList();
         for (String soilName : dbSoilNames) {
-            Soil s = SOILTYPE_DB_DATA_LIST.get(soilName);
-            Soil sCopy = new Soil(s.getSNAME(), s.getSOILSERIESKEY(), s.getCOMPKEY(), s.getSERIESNAME(), s.getNL());
-            sCopy.setValues(copyArr(s.getWC()), copyArr(s.getWCL()), copyArr(s.getWCU()), copyArr(s.getDU()), s.getTXT());
-            ret.add(sCopy);
+            ret.add(SOILTYPE_DB_DATA_LIST.get(soilName).cloneData());
         }
         return ret;
     }
-    
+
     private static double[] copyArr(double[] in) {
         double[] ret = new double[in.length];
         System.arraycopy(in, 0, ret, 0, in.length);
@@ -535,7 +574,7 @@ public class DataUtil {
     }
 
     public static Weather toWeather(WeatherData etData, WeatherData rainData) {
-        
+
         int startYear = Math.max(etData.getStartYear(), rainData.getStartYear());
         int endYear = Math.min(etData.getEndYear(), rainData.getEndYear());
         Weather weather = new Weather(startYear, endYear);
@@ -578,7 +617,6 @@ public class DataUtil {
 //        HashMap<String, Object> ret = mapper.readValue(reqJson, HashMap.class);
 //        return ret;
 //    }
-
     public static String revisePath(String path) {
         if (!path.trim().isEmpty()) {
             File f = new File(path);
@@ -595,7 +633,7 @@ public class DataUtil {
         }
         return path;
     }
-    
+
     public static String getTotalArea(String jsonStr) {
         JSONObject data = JsonUtil.parseFrom(jsonStr);
         List<Map> afsirs = (List) data.get("afsirs");
@@ -614,7 +652,7 @@ public class DataUtil {
         }
         return ret;
     }
-    
+
     public static String calculateNearestStation(String type, String jsonStr) {
         JSONObject data = JsonUtil.parseFrom(jsonStr);
         List<Map> afsirs = (List) data.get("afsirs");
@@ -640,7 +678,7 @@ public class DataUtil {
     public static String calculateNearestStation(String type, String lat, String longi) {
 
         String finalFile = null;
-        
+
         double longitude = Double.parseDouble(longi);
         double latitude = Double.parseDouble(lat);
         //System.out.println("longitude and lat :" +longitude +" " +latitude);
