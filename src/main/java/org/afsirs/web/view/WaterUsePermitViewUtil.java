@@ -2,6 +2,7 @@ package org.afsirs.web.view;
 
 import java.util.ArrayList;
 import java.util.Map;
+import org.afsirs.module.util.Util;
 import org.afsirs.web.dao.WaterUsePermitDAO;
 import org.afsirs.web.dao.bean.WaterUsePermit;
 import org.afsirs.web.util.DataUtil;
@@ -22,6 +23,7 @@ public class WaterUsePermitViewUtil {
 //        if (!attributes.containsKey("xxx") && attributes.containsKey("xxx")) {
 //            attributes.put("xxx", attributes.get("xxx"));
 //        }
+        attributes.put("soil_map_url", Util.SOIL_MAP_BASE_URL);
     }
     
     public static String getCreatePage(Request request, Map<String, Object> attributes) {

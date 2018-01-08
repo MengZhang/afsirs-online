@@ -34,7 +34,8 @@
         }
 
         var file = files[0];
-        document.getElementById('soil_unit_name').value = file.name.slice(0, -5);
+        var unitName = file.name.slice(0, -5);
+        document.getElementById('soil_unit_name').value = unitName;
         var start = 0;
         var stop = file.size - 1;
         var reader = new FileReader();
@@ -43,11 +44,13 @@
                 var jsonStr = evt.target.result;
                 var obj = JSON.parse(jsonStr);
                 var soilsStr = JSON.stringify(obj["soils"]);
+                var plygonStr = JSON.stringify(obj["polygon"][0]);
                 var totArea = Number(obj["asfirs"][0].TotalArea);
                 document.getElementById('soil_file_content').style.display = "block";
                 document.getElementById('soil_file_content').textContent = soilsStr;
                 document.getElementById('soil_file_json').value = jsonStr;
-                var value = document.getElementById('planted_area_input').value;
+                document.getElementById('polygon_info').value = plygonStr;
+//                var value = document.getElementById('planted_area_input').value;
                 document.getElementById('total_area').value = totArea;
                 document.getElementById('planted_area').max = totArea;
                 document.getElementById('planted_area_input').max = totArea;
@@ -60,6 +63,38 @@
 
         var blob = file.slice(start, stop + 1);
         reader.readAsBinaryString(blob);
+    }
+    
+    function openSoilMap() {
+        var base = document.getElementById('soil_map_url').value;
+        var site = document.getElementById('permit_id').value;
+        var unit = document.getElementById('soil_unit_name').value;
+        var json = document.getElementById('polygon_info').value;
+        var totalArea = document.getElementById('total_area').value;
+        var zoom = 9;
+        if (totalArea !== "") {
+            zoom = 17 - (Math.log(Number(totalArea))/Math.log(8)).toFixed(0);
+            if (zoom > 16) {
+                zoom = 16;
+            } else if (zoom < 1) {
+                zoom = 1;
+            }
+        }
+        var url;
+        if (json !== "") {
+            if (base.indexOf("?") > 0) {
+                base = base.substring(0, base.indexOf("?"));
+            }
+            url = base + "?site=" + site + "&unit=" + unit + "&zoom=" + zoom + "&json=" + encodeURIComponent(json);
+        } else {
+            if (base.indexOf("?") > 0) {
+                url = base + "&site=" + site + "&unit=" + unit + "&zoom=" + zoom;
+            } else {
+                url = base + "?site=" + site + "&unit=" + unit + "&zoom=" + zoom;
+            }
+            
+        }
+        window.open(url);
     }
 </script>
 <div class="subcontainer">
@@ -93,11 +128,19 @@
             <div class="col-sm-5">
                 <input type="file" id="soil_file" name="soil_file" class="form-control" value="" accept=".json" onchange="readFile()" placeholder="Browse Soil File (.json)" data-toggle="tooltip" title="Browse Soil File (.json)">
                 <input type="hidden" id="soil_file_json" name="soil_file_json" value='{"soils":${permit["soil_json"]!}}'>
-                <input type="hidden" id="soil_unit_name" name="soil_unit_name" value="${permit['soil_unit_name']!}">
+                
             </div>
             <div class="col-sm-4">
-                <button type="button" class="btn btn-primary text-right" onclick="window.open('http://abe.ufl.edu/bmpmodel/arcGIS/Test?zoom=9')">View Soil Map</button>
+                <input type="hidden" id="polygon_info" value='${permit["polygon_info"]!}'>
+                <input type="hidden" id="soil_map_url" value="${soil_map_url!'http://abe.ufl.edu/bmpmodel/arcGIS/Test'}">
+                <button type="button" class="btn btn-primary text-right" onclick="openSoilMap()">View Soil Map</button>
                 <button type="button" class="btn btn-primary text-right" onclick="" disabled>Show Soil Data</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-3" for="soil_unit_name">Soil Name :</label>
+            <div class="col-sm-5">
+                <input type="text" id="soil_unit_name" name="soil_unit_name" value="${permit['soil_unit_name']!'Unspecified'}" class="form-control" placeholder="Enter Soil Name" data-toggle="tooltip" title="This field accepts characters without spaces">
             </div>
         </div>
         <div class="form-group">
