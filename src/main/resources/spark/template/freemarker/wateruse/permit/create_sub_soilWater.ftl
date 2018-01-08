@@ -45,7 +45,11 @@
                 var obj = JSON.parse(jsonStr);
                 var soilsStr = JSON.stringify(obj["soils"]);
                 var plygonStr = JSON.stringify(obj["polygon"][0]);
-                var totArea = Number(obj["asfirs"][0].TotalArea);
+                var afsirsInfo = obj["afsirs"];
+                if (afsirsInfo === null) {
+                    afsirsInfo = obj["asfirs"];
+                }
+                var totArea = Number(afsirsInfo[0].TotalArea);
                 document.getElementById('soil_file_content').style.display = "block";
                 document.getElementById('soil_file_content').textContent = soilsStr;
                 document.getElementById('soil_file_json').value = jsonStr;
