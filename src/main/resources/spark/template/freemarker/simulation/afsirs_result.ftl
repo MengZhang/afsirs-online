@@ -434,7 +434,7 @@
             <div class="text-right col-md-4">
                 <div>
                     <button type="button" class="btn btn-primary text-right" onclick="window.location.href = '/wateruse/permit/list'">Back to list</button>
-                    <button type="button" class="btn btn-primary text-right" onclick="window.location.href = '/wateruse/permit/create?permit_id=${permit_id!}'">Edit Permit</button>
+                    <button type="button" class="btn btn-primary text-right" onclick="window.location.href = '/wateruse/permit/find?permit_id=${permit_id!}'">Edit Permit</button>
                 </div>
             </div>
         </div>
