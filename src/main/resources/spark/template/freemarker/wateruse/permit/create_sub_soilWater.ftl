@@ -46,7 +46,7 @@
                 var soilsStr = JSON.stringify(obj["soils"]);
                 var plygonStr = JSON.stringify(obj["polygon"][0]);
                 var afsirsInfo = obj["afsirs"];
-                if (afsirsInfo === null) {
+                if (afsirsInfo === undefined) {
                     afsirsInfo = obj["asfirs"];
                 }
                 var totArea = Number(afsirsInfo[0].TotalArea);
