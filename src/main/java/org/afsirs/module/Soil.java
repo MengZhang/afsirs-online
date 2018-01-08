@@ -23,7 +23,7 @@ public class Soil {
         private double[] WCU;
         private double[] DU;
         private double soilTypeArea;
-        private double totalAvgIrrReq;
+//        private double totalAvgIrrReq;
 
         public Soil(int id, String soilCompName, String soilSeriesKey, String compKey, String seriesName, int nl){
             

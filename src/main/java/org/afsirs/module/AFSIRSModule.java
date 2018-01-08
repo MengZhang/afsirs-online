@@ -21,9 +21,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -39,38 +37,34 @@ import static org.afsirs.module.DateUtil.NKC;
 import static org.afsirs.module.Messages.DOC_HEADER;
 import static org.afsirs.module.Messages.USER_DETAILS;
 import static org.afsirs.module.Messages.USER_DETAILS_EXCEL;
-import org.apache.log4j.Appender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
+import org.afsirs.module.util.Util;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
- *
+ * DEFINITIONS....
+ * 
+ * IR = IRRIGATION SYSTEM IDENTIFICATION CODE
+ * IRCRFL = CROWN FLOOD IRRIGATION SYSTEM CODE
+ * IRNSCY = CONTAINER NURSERY IRRIGATION SYSTEM CODE
+ * IRRICE = RICE FLOOD IRRIGATION SYSTEM CODE
+ * IRSEEP = SEEPAGE (SUBIRRIGATION) IRRIGATION SYSTEM CODE
+ * ISIM = COUNTER FOR MULTIPLE SIMULATIONS
+ * JDAY = CALENDAR DAY OF CROP IRRIGATION SEASON
+ * J1SAVE = CALENDAR DAY OF FIRST DAY OF IRRIGATION SEASON FOR
+ * PREVIOUS SIMULATION
+ * JNSAVE = CALENDAR DAY OF LAST DAY OF IRRIGATION SEASON FOR
+ * PREVIOUS SIMULATION
+ * SITE = DESCRIPTION OF LOCATION OF THE PRODUCTION SYSTEM SIMULATED
+ * 
  * @author rkmalik
  * @author Meng Zhang
  */
-
-/*
- DEFINITIONS....
-
- IR = IRRIGATION SYSTEM IDENTIFICATION CODE
- IRCRFL = CROWN FLOOD IRRIGATION SYSTEM CODE
- IRNSCY = CONTAINER NURSERY IRRIGATION SYSTEM CODE
- IRRICE = RICE FLOOD IRRIGATION SYSTEM CODE
- IRSEEP = SEEPAGE (SUBIRRIGATION) IRRIGATION SYSTEM CODE
- ISIM = COUNTER FOR MULTIPLE SIMULATIONS
- JDAY = CALENDAR DAY OF CROP IRRIGATION SEASON
- J1SAVE = CALENDAR DAY OF FIRST DAY OF IRRIGATION SEASON FOR
- PREVIOUS SIMULATION
- JNSAVE = CALENDAR DAY OF LAST DAY OF IRRIGATION SEASON FOR
- PREVIOUS SIMULATION
- SITE = DESCRIPTION OF LOCATION OF THE PRODUCTION SYSTEM SIMULATED
-
- */
 public class AFSIRSModule {
 
-    static Logger logger = Logger.getLogger(AFSIRSModule.class.getName());
+    static Logger LOG = LoggerFactory.getLogger(AFSIRSModule.class);
 
     private static final Font BLACK_NORMAL = new Font(FontFamily.HELVETICA, 7, Font.NORMAL, BaseColor.BLACK);
     private static final Font BLACK_BOLD = new Font(FontFamily.HELVETICA, 7, Font.BOLD, BaseColor.BLACK);
@@ -98,24 +92,23 @@ public class AFSIRSModule {
 
     private static final String EOL = Messages.EOL;
 
-    private AFSIRSModule() {
-        Appender fh;
-        try {
-            SimpleDateFormat format = new SimpleDateFormat("M-d_HHmmss");
-            fh = new FileAppender(new SimpleLayout(), "AFSIRS_" + format.format(Calendar.getInstance().getTime()) + ".log");
-            logger.addAppender(fh);
-            fh.setLayout(new SimpleLayout());
-            logger.info("AFSIRS log file");
-        } catch (SecurityException | IOException e) {
-            e.printStackTrace(System.err);
-        }
-    }
-
+//    private AFSIRSModule() {
+//        Appender fh;
+//        try {
+//            SimpleDateFormat format = new SimpleDateFormat("M-d_HHmmss");
+//            fh = new FileAppender(new SimpleLayout(), "AFSIRS_" + format.format(Calendar.getInstance().getTime()) + ".log");
+//            LOG.addAppender(fh);
+//            fh.setLayout(new SimpleLayout());
+//            LOG.info("AFSIRS log file");
+//        } catch (SecurityException | IOException e) {
+//            e.printStackTrace(System.err);
+//        }
+//    }
     /**
      * Reorganize data for graph output
-     * 
+     *
      * @param simRet
-     * @param type  0, Monthly; 1, Bi-Weekly; 2, Weekly
+     * @param type 0, Monthly; 1, Bi-Weekly; 2, Weekly
      * @return Time-series output value by soil in a list
      */
     public static ArrayList<SoilSpecificPeriodData> getGraphData(SimResult simRet, int type) {
@@ -155,9 +148,8 @@ public class AFSIRSModule {
         return null;
     }
 
-
     //BAL.for
-    private static void calculateBalance(SummaryReport report, UserInput input, SWResult swRet, BufferedWriter bwOutputFile) throws IOException {
+    private static void calculateBalance(SoilSeriesSummaryReport report, UserInput input, SWResult swRet, BufferedWriter bwOutputFile) throws IOException {
 
         //Initialize parameters
         final int NYR = input.getNYR();
@@ -175,7 +167,7 @@ public class AFSIRSModule {
         final int MO1 = input.getMO1();
         final int MON = input.getMON();
         int[] JDAY = input.getJDAY();
-        
+
         double[][] RAIN = swRet.getRAIN();
         double[][] ETP = swRet.getETP();
         final double EXIR = swRet.getEXIR();
@@ -183,7 +175,7 @@ public class AFSIRSModule {
         double[] DRZ = swRet.getDRZ();
         double[] RKC = swRet.getRKC();
         int[] NF = swRet.getNF();
-        
+
         final double SWCN1 = swRet.getSWCN1();
         final double SWCI1 = swRet.getSWCI1();
         double[] SWCIX = swRet.getSWCIX();
@@ -195,7 +187,7 @@ public class AFSIRSModule {
 //        double[] SET = swRet.getSET();
 //        double[] SETP = swRet.getSETP();
 //        double[] SRAIN = swRet.getSRAIN();
-        
+
         double SWCISV = 0.0, SWCNSV = 0.0, WCISAVE, WCNSAVE;
         int NYX = NYR;
         double REWAT = 1.0;
@@ -668,7 +660,7 @@ public class AFSIRSModule {
     }
 
     private static SWResult SW(UserInput input, DeCoefResult deCoefRet, Soil soil, BufferedWriter bwOutputFile) throws IOException {
-        
+
         SWResult ret = new SWResult(input, deCoefRet);
         double[] SWIRR = ret.getSWIRR();
         double[] SWMAX = ret.getSWMAX();
@@ -679,7 +671,7 @@ public class AFSIRSModule {
         double[] RKC = ret.getRKC();
         double[] AWD = ret.getAWD();
         int[] NF = ret.getNF();
-        
+
         final double DWT = input.getDWT();
         final int J1 = input.getJ1();
         final int JN = input.getJN();
@@ -689,7 +681,7 @@ public class AFSIRSModule {
         final double EPS = input.getEPS();
         final double AKC3 = input.getAKC3();
         int[] JDAY = input.getJDAY();
-        
+
 //        String SSERIESNAME = soil.getSERIESNAME();
 //        String SOILSMAPUNITCODE = soil.getSOILSERIESKEY();
 //        String SNAME = soil.getName();
@@ -700,7 +692,7 @@ public class AFSIRSModule {
         double[] WCU = soil.getWCU();
         double[] WC = soil.getWC();
         int NL = soil.getNL();
-        
+
         double SWX = 0.0;
         double SWN;
 
@@ -1224,8 +1216,8 @@ public class AFSIRSModule {
         return result;
     }
 
-    private static void SUMX(SummaryReport report, UserInput input, SWResult swRet, Soil soil, SimResult simRet, BufferedWriter bwOutputFile) throws IOException {
-        
+    private static void SUMX(SoilSeriesSummaryReport report, UserInput input, SWResult swRet, Soil soil, SimResult simRet, BufferedWriter bwOutputFile) throws IOException {
+
         final int NYR = input.getNYR();
         final int JN = input.getJN();
         final int J1 = input.getJ1();
@@ -1237,7 +1229,7 @@ public class AFSIRSModule {
         final double EPS = input.getEPS();
         final int MO1 = input.getMO1();
         final int MON = input.getMON();
-        
+
         double[][] ETP = swRet.getETP();
         double[][] RAIN = swRet.getRAIN();
         double[][] IRR = swRet.getIRR();
@@ -1245,14 +1237,14 @@ public class AFSIRSModule {
         double[] SET = swRet.getSET();
         double[] SETP = swRet.getSETP();
         double[] SRAIN = swRet.getSRAIN();
-        
+
         double[][] RAIN_S = swRet.getRAIN_S();
         double[][] ETP_S = swRet.getETP_S();
         double[][] IRR_S = swRet.getIRR_S();
 //        double[] PDATBW = swRet.getPDATBW();
 //        double[] PDATM = swRet.getPDATM();
 //        double[] PDATW = swRet.getPDATW();
-        
+
         double[][] AETP = new double[64][52];
         double[][] ARAIN = new double[64][52];
         double[][] AIRR = new double[64][52];
@@ -1451,10 +1443,10 @@ public class AFSIRSModule {
              summaryReport.setOnein10IrrigationRequired(imo+1, probResult.X90);
              summaryList.set(reportCounter,summaryReport);*/
             //System.out.println("imo::TRAIN::statResult.XMEAN"+(imo+1)+":"+TRAIN[imo]+":"+statResult.XMEAN);
-            int startMonth = 11;
-            report.reset();
-            report.setTotalRainFall(imo + 1 + startMonth, TRAIN[imo]);
-            report.setTotalEvaporation(imo + 1 + startMonth, TETP[imo]);
+//            int startMonth = 11;
+//            report.reset();
+            report.setTotalRainFall(imo + 1, TRAIN[imo]);
+            report.setTotalEvaporation(imo + 1, TETP[imo]);
             report.addTotalIrrigationRequiredByMonth(imo + 1, 0.0);
             report.setAverageIrrigationRequired(imo + 1, statResult.XMEAN);
             report.setTwoin10IrrigationRequired(imo + 1, probResult.X80);
@@ -1700,13 +1692,13 @@ public class AFSIRSModule {
         ret.setSummaryFileExcel(new File(input.getSummaryFileExcel()));
         ret.setCalculationExcel(new File(input.getCalculationExcel()));
         ret.setTotalArea(input.getPlantedAcres());
-        
+
         SummaryReportExcelFormat excelSummary, excelCal;
         Document bwOutputSummaryFile = new Document();
         DeCoefResult deCoefRet;
 
         //to replace total area by planted area -- Hiranava Das
-        if(ret.getTotalArea() == 0.0){
+        if (ret.getTotalArea() == 0.0) {
             ret.setTotalArea(input.getPlantedAcres());
         }
         try (BufferedWriter bwOutputFile = new BufferedWriter(new FileWriter(ret.getOutFile(), true))) {
@@ -1722,7 +1714,7 @@ public class AFSIRSModule {
             bwOutputSummaryFile.open();
             //formatSummaryOutputFile ();
             excelSummary.insertEmptyLine(12);
-        ///excelCal.insertEmptyLine(12);
+            ///excelCal.insertEmptyLine(12);
 
             int MONTH = input.getMONTH();
             int IIDAY = input.getIIDAY();
@@ -1738,13 +1730,13 @@ public class AFSIRSModule {
             String RAINFALLLOC = input.getRAINFALLLOC();
             int NYR = input.getNYR();
             int NDAYS = input.getNDAYS();
-            
+
             bwOutputFile.append("PERMIT ID = " + input.getSITE() + "     MAP NAME = " + input.getUNIT() + "     OUTPUT FILE = " + input.getOWNER() + "     DATE = " + MONTH + "-" + IIDAY + "-" + IYEAR + "" + EOL);
             bwOutputFile.append(EOL + "                      CROP TYPE = " + CTYPE + EOL);
             bwOutputFile.append(EOL + " IRRIGATION SEASON = " + MO1 + "-" + DAY1 + " TO " + MON + "-" + DAYN + "                LENGTH = " + NDAYS + " DAYS" + EOL);
             bwOutputFile.append(EOL + " ET DATA BASE: LOCATION = " + CLIMATELOC + " LENGTH = " + NYR + " YEARS" + "(" + startYear + "-" + endYear + ")" + EOL);
             bwOutputFile.append(EOL + " RAINFALL DATA BASE: LOCATION = " + RAINFALLLOC + " LENGTH = " + NYR + " YEARS" + "(" + startYear + "-" + endYear + ")" + EOL);
-            
+
             double FIX = input.getFIX();
             double PIR = input.getPIR();
             switch (input.getIDCODE()) {
@@ -1762,7 +1754,7 @@ public class AFSIRSModule {
                 default:
                     bwOutputFile.append(EOL);
             }
-            
+
             String IRNAME = input.getIRNAME();
             double IEFF = input.getIEFF();
             double ARZI = input.getARZI();
@@ -1849,47 +1841,38 @@ public class AFSIRSModule {
 
         //Don'tIn Delete the below commented code. This is very important for reference
         /*SW();
-         String txt = "";
-         for (String tIn : TXT) {
-         if (tIn != null) {
-         txt += tIn + " ";
-         }
-         }
-         writeOutput(EOL + EOL + "     SOIL :  SERIES = " + SNAME + "         TEXTURE = " + txt + EOL + EOL);
-         writeOutput(EOL + "               SOIL LAYER DEPTHS (INCHES) AND WATER CONTENTS" + EOL);
-         String str = "";
-         str += "                   Depth(I)        WCON(Min)    WCON(Max)\r\n";
-         for (int i = 0; i < NL; i++) {
-         str += String.format("                %2d%8.1f%18.2f%12.2f" + EOL, i + 1, DU[i], Math.round(WCL[i] * 100.0) / 100.0, Math.round(WCU[i] * 100.0) / 100.0);
-         }
-         writeOutput(str);
+             String txt = "";
+             for (String tIn : TXT) {
+             if (tIn != null) {
+             txt += tIn + " ";
+             }
+             }
+             writeOutput(EOL + EOL + "     SOIL :  SERIES = " + SNAME + "         TEXTURE = " + txt + EOL + EOL);
+             writeOutput(EOL + "               SOIL LAYER DEPTHS (INCHES) AND WATER CONTENTS" + EOL);
+             String str = "";
+             str += "                   Depth(I)        WCON(Min)    WCON(Max)\r\n";
+             for (int i = 0; i < NL; i++) {
+             str += String.format("                %2d%8.1f%18.2f%12.2f" + EOL, i + 1, DU[i], Math.round(WCL[i] * 100.0) / 100.0, Math.round(WCU[i] * 100.0) / 100.0);
+             }
+             writeOutput(str);
         
-         writeOutput(EOL + "                DEPTH TO WATER TABLE ENTERED =  " + DWT / 12.0 + " FEET" + EOL + EOL);
+             writeOutput(EOL + "                DEPTH TO WATER TABLE ENTERED =  " + DWT / 12.0 + " FEET" + EOL + EOL);
         
-         if (ICODE >= 1) {
-         writeOutput(EOL + "     OUTPUT PARAMETERS - ROOT DEPTHS, KCs, AND SOIL WATER CONTENTS" + EOL);
-         writeOutput("       CDAY JDAY   DRZ    DRZI   RKC   SWMAX  SWCIX  SWCNX  SWIRR" + EOL + "       ");
-         for (int i = J1 - 1; i < JN; i++) {
-         String row = String.format("%4d %4d %6.1f %6.1f %6.3f %6.2f %6.2f %6.2f %6.2f", (i + 1), JDAY[i], DRZ[i], DRZI[i], RKC[i], SWMAX[i], SWCIX[i], SWCNX[i], SWIRR[i]);
-         writeOutput(row + EOL + "       ");
-         }
-         }
-         calculateBalance();
-         SUMX();*/
-//            // Get data copied
-//            double EXIR_1 = input.getEXIR();
-//            double[][] RAIN_1 = Arrays.copyOf(input.getRAIN(), input.getRAIN().length);
-//            double[][] ETP_1 = Arrays.copyOf(input.getETP(), input.getETP().length);
-//            DeCoefResult deCoefRet_1 = new DeCoefResult(deCoefRet);
-
+             if (ICODE >= 1) {
+             writeOutput(EOL + "     OUTPUT PARAMETERS - ROOT DEPTHS, KCs, AND SOIL WATER CONTENTS" + EOL);
+             writeOutput("       CDAY JDAY   DRZ    DRZI   RKC   SWMAX  SWCIX  SWCNX  SWIRR" + EOL + "       ");
+             for (int i = J1 - 1; i < JN; i++) {
+             String row = String.format("%4d %4d %6.1f %6.1f %6.3f %6.2f %6.2f %6.2f %6.2f", (i + 1), JDAY[i], DRZ[i], DRZI[i], RKC[i], SWMAX[i], SWCIX[i], SWCNX[i], SWIRR[i]);
+             writeOutput(row + EOL + "       ");
+             }
+             }
+             calculateBalance();
+             SUMX();*/
+            
             ArrayList<PdfPTable> summaryTables = ret.getSummaryTables();
-            ArrayList<SummaryReport> summaryList = ret.getSummaryList();
-        
 
             ArrayList<Soil> soils = input.getSoils();
-            ArrayList<Soil> soilsFS = soils;
             double[] soilFractions = new double[soils.size()];
-//            double[] soilArea = new double[soils.size()];
             double totalArea = 0.0;
             int i = 0;
 
@@ -1897,77 +1880,49 @@ public class AFSIRSModule {
                 totalArea += s.getSoilTypeArea();
                 i++;
             }
-//            ret.setSoilArea(soilArea);
             if (totalArea == 0) {
                 totalArea = input.getPlantedAcres();
-
             }
             ret.setTotalArea(totalArea);
+            ret.setPlantedArea(input.getPlantedAcres());
             formatSummaryOutputFile(input, ret, excelSummary, bwOutputSummaryFile);
             i = 0;
             //05 Sep 2016: H Das: Need to sort here
             //Hiranava Das:16 Sep 2015:New function call to sort the output before printing
 //            boolean isSorted = false;
-//            ArrayList<SWResult> swRets = new ArrayList();
             for (Soil soil : soils) {
-                //setSoilData(soil);
-//                this.soil = s;
                 if (i > 0) {
                     soilFractions[i] = soilFractions[i - 1];
                 }
                 soilFractions[i] += soil.getSoilTypeArea();
 
-//                SSERIESNAME = soil.getSERIESNAME();
-//                SOILSMAPUNITCODE = soil.getSOILSERIESKEY();
-//                String SNAME = soil.getName();
-//                SOILCOMPCODE = soil.getCOMPKEY();
-//                String[] TXT = soil.getTXT();
-//                double[] DU = soil.getDU();
-//                double[] WCL = soil.getWCL();
-//                double[] WCU = soil.getWCU();
-//                double[] WC = soil.getWC();
-//                int NL = soil.getNL();
 //                resetAllocate(input, EXIR_1, RAIN_1, ETP_1, deCoefRet, deCoefRet_1);
                 SWResult swRet = SW(input, deCoefRet, soil, bwOutputFile);
-                SummaryReport report = new SummaryReport();
-                summaryList.add(report);
-                report.soilName = soil.getSNAME();
+//                SummaryReport report = new SummaryReport(soil);
+                SoilSeriesSummaryReport report = ret.getSoilSeriesSummaryReport(soil);
                 calculateBalance(report, input, swRet, bwOutputFile);
                 SUMX(report, input, swRet, soil, ret, bwOutputFile);
                 storeTotalIrr(report, soil, ret);
 //                swRets.add(swRet);
                 i++;
             }
-            soils = sortOutput(soils, summaryList);
-            i = 0;
-            for (Soil soil : soils) {
-//                this.soil = s;
-//
-//                SSERIESNAME = soil.getSERIESNAME();
-//                SOILSMAPUNITCODE = soil.getSOILSERIESKEY();
-//
-//                SNAME = soil.getName();
-//                SOILCOMPCODE = soil.getCOMPKEY();
-//
-//                TXT = soil.getTXT();
-//                DU = soil.getDU();
-//                WCL = soil.getWCL();
-//                WCU = soil.getWCU();
-//                WC = soil.getWC();
-//                NL = soil.getNL();
-
-                finalSummaryOutput(summaryList.get(i), excelSummary, bwOutputSummaryFile, soil, ret, input, summaryTables);
-                i++;
+//            sortOutput(soils, ret);
+//            for (Soil soil : soils) {
+//                finalSummaryOutput(ret.getSoilTypeSummaryReport(soil), excelSummary, bwOutputSummaryFile, soil, ret, input, summaryTables);
+//            }
+            for (SoilSeriesSummaryReport report : ret.getSoilSeriesSummaryList()) {
+                finalSummaryOutput(report, excelSummary, bwOutputSummaryFile, ret, summaryTables);
             }
+            
             //Write the permit file.
 //            savePermitFile(new File("Permit/"), input);
 
 //            excelCal = new SummaryReportExcelFormat(input.getCalculationExcel());
-            excelCal = buildCalculationExcel(input, ret, summaryList);
+            excelCal = buildCalculationExcel(input, ret, ret.getSoilTypeSummaryList());
             // Set the foot note here in the excel file and the pdf
             excelSummary.setFootNoteExcelFile(Messages.FOOTNOTE[0]);
-            setIrrigationWeightedAverageExcel(input, excelSummary, summaryList);
-            setIrrigationWeightedAverage(summaryTables, summaryList, input);
+            setIrrigationWeightedAverageExcel(ret, excelSummary, ret.getSoilTypeSummaryList());
+            setIrrigationWeightedAverage(summaryTables, ret.getSoilTypeSummaryList(), input);
             bwOutputSummaryFile.add(new Paragraph("\r\n"));
             if (summaryTables.size() >= 2) {
                 bwOutputSummaryFile.add(summaryTables.get(0));
@@ -2000,7 +1955,7 @@ public class AFSIRSModule {
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
-        
+
         return ret;
     }
 
@@ -2059,13 +2014,12 @@ public class AFSIRSModule {
     }
 
     //Hiranava Das: 21 Sep 2016: Heading of the PDF Report file
-
     private static void formatSummaryOutputFile(UserInput input, SimResult ret, SummaryReportExcelFormat excelSummary, Document bwOutputSummaryFile) {
-        
-            int MO1 = input.getMO1();
-            int MON = input.getMON();
-            int DAY1 = input.getDAY1();
-            int DAYN = input.getDAYN();
+
+        int MO1 = input.getMO1();
+        int MON = input.getMON();
+        int DAY1 = input.getDAY1();
+        int DAYN = input.getDAYN();
         try {
             PdfPTable t = new PdfPTable(1);
             for (String s : DOC_HEADER) {
@@ -2177,7 +2131,7 @@ public class AFSIRSModule {
         summaryTables.add(tableWeightedGallon);
     }
 
-    private static void setIrrigationWeightedAverageExcel(UserInput input, SummaryReportExcelFormat excelSummary, ArrayList<SummaryReport> summaryList) throws DocumentException {
+    private static void setIrrigationWeightedAverageExcel(SimResult simRet, SummaryReportExcelFormat excelSummary, ArrayList<SoilTypeSummaryReport> summaryList) throws DocumentException {
         excelSummary.setRowNum(7);
         excelSummary.insertEmptyLine(1);
 
@@ -2276,7 +2230,7 @@ public class AFSIRSModule {
             for (SummaryReport summaryReport : summaryList) {
                 irr = irr + summaryReport.getWeightedAvgIrrRequired(i);
             }
-            double irrGa = irr * input.getPlantedAcres() * 27154;
+            double irrGa = irr * simRet.getPlantedArea() * 27154;
             irrGa = irrGa / 1000000;
 
             str = String.format("%6.2f", irrGa);
@@ -2300,7 +2254,7 @@ public class AFSIRSModule {
             for (SummaryReport summaryReport : summaryList) {
                 irr = irr + summaryReport.getWeighted2In10IrrRequired(i);
             }
-            double irrGa = irr * input.getPlantedAcres() * 27154;
+            double irrGa = irr * simRet.getPlantedArea() * 27154;
             irrGa = irrGa / 1000000;
             str = String.format("%6.2f", irrGa);
             excelSummary.insertDataWithStyle(irrGa, 0, false, true);
@@ -2324,7 +2278,7 @@ public class AFSIRSModule {
                 irr = irr + summaryReport.getWeighted1In10IrrRequired(i);
             }
             str = String.format("%6.2f", irr);
-            double irrGa = irr * input.getPlantedAcres() * 27154;
+            double irrGa = irr * simRet.getPlantedArea() * 27154;
             irrGa = irrGa / 1000000;
             str = String.format("%6.2f", irrGa);
             excelSummary.insertDataWithStyle(irrGa, 0, false, true);
@@ -2338,7 +2292,7 @@ public class AFSIRSModule {
         excelSummary.insertEmptyLine(1);
     }
 
-    private static void setIrrigationWeightedAverage(ArrayList<PdfPTable> summaryTables, ArrayList<SummaryReport> summaryList, UserInput input) throws DocumentException {
+    private static void setIrrigationWeightedAverage(ArrayList<PdfPTable> summaryTables, ArrayList<SoilTypeSummaryReport> summaryList, UserInput input) throws DocumentException {
         PdfPTable tIn = summaryTables.get(1);
         PdfPTable tGa = summaryTables.get(2);
 
@@ -2470,12 +2424,10 @@ public class AFSIRSModule {
         designDataCell(tGa, str);
     }
 
-    private static void finalSummaryOutput(SummaryReport summaryReport, SummaryReportExcelFormat excelSummary, Document bwOutputSummaryFile, Soil soil, SimResult ret, UserInput input, ArrayList<PdfPTable> summaryTables) {
+    private static void finalSummaryOutput(SoilTypeSummaryReport summaryReport, SummaryReportExcelFormat excelSummary, SimResult ret, ArrayList<PdfPTable> summaryTables) {
         try {
-//            String str = "";
-//            String str1 = "";
 
-            double area = input.getPlantedAcres();
+            double area = ret.getPlantedArea();
 
             if (summaryTables.size() < 2) {
                 PdfPTable excel = generalInformation(summaryReport, excelSummary);
@@ -2492,27 +2444,27 @@ public class AFSIRSModule {
             double soilPercent = 0.0;
 
             if (ret.getTotalArea() != 0) {
-                soilPercent = ((soil.getSoilTypeArea() * 100) / ret.getTotalArea());
+                soilPercent = ((summaryReport.getSoilArea() * 100) / ret.getTotalArea());
             }
 
-            addParagraphToTableSoilName(t, "Soil : ", soil.getSNAME());
-            addParagraphToTableSoilName(t, "Soil Component Code : ", soil.getCOMPKEY());
+            addParagraphToTableSoilName(t, "Soil : ", summaryReport.getSoilName());
+            addParagraphToTableSoilName(t, "Soil Component Code : ", summaryReport.getSoilKey());
             addParagraphToTableSoilName(t, "Soil Percentage : ", String.format("%6.2f", soilPercent));
-            addParagraphToTableSoilName(t, "Soil Area(ACRES) : ", String.format("%6.2f", soil.getSoilTypeArea()));
+            addParagraphToTableSoilName(t, "Soil Area(ACRES) : ", String.format("%6.2f", summaryReport.getSoilArea()));
 
             excelSummary.insertDataWithStyle("Soil", 0, false, true);
-            excelSummary.insertDataWithStyle(soil.getSNAME(), 0, false, true);
+            excelSummary.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
             excelSummary.insertDataWithStyle("Soil Component Code", 0, false, true);
-            excelSummary.insertDataWithStyle(soil.getCOMPKEY(), 0, false, true);
+            excelSummary.insertDataWithStyle(summaryReport.getSoilKey(), 0, false, true);
             excelSummary.insertDataWithStyle("Soil Percentage", 0, false, true);
             excelSummary.insertDataWithStyle(String.format("%6.2f", soilPercent), 0, false, true);
             excelSummary.insertDataWithStyle("Soil Series Name", 0, false, true);
-            excelSummary.insertDataWithStyle(soil.getSERIESNAME(), 0, false, true);
+            excelSummary.insertDataWithStyle(summaryReport.getSoilSeriesName(), 0, false, true);
             excelSummary.insertDataWithStyle("Soil Map Unit Code", 0, false, true);
-            excelSummary.insertDataWithStyle(soil.getSOILSERIESKEY(), 0, true, true);
+            excelSummary.insertDataWithStyle(summaryReport.getSoilSeriesKey(), 0, true, true);
 
-            addParagraphToTableSoilName(t, "Soil Series Name : ", soil.getSERIESNAME());
-            addParagraphToTableSoilName(t, "Soil Map Unit Code : ", soil.getSOILSERIESKEY());
+            addParagraphToTableSoilName(t, "Soil Series Name : ", summaryReport.getSoilSeriesName());
+            addParagraphToTableSoilName(t, "Soil Map Unit Code : ", summaryReport.getSoilSeriesKey());
             addParagraphToTableSoilName(t, " ", " ");
 
             summaryTables.add(t);
@@ -2522,12 +2474,65 @@ public class AFSIRSModule {
                 summaryTables.add(error);
 
             }
-            //bwOutputSummaryFile.add(tIn);
-            //Hiranava Das:16 Sep 2015:New function call to sort the output before printing
-            //sortOutput(bwOutputSummaryFile,summaryReport);
-            PdfPTable table = infoInInches(bwOutputSummaryFile, summaryReport, summaryReport, excelSummary, soil, ret);
+            PdfPTable table = infoInInches(summaryReport, excelSummary, ret);
             summaryTables.add(table);
-            probablityInfoInGallons(bwOutputSummaryFile, summaryReport, excelSummary, summaryTables, area);
+            probablityInfoInGallons(summaryReport, excelSummary, summaryTables, area);
+
+        } catch (DocumentException e) {
+            // Logger.getLogger(AFSIRSUtils.class.getName()).log(Level.SEVERE, null, ex);
+            e.printStackTrace(System.err);
+        }
+    }
+    
+    private static void finalSummaryOutput(SoilSeriesSummaryReport summaryReport, SummaryReportExcelFormat excelSummary, Document bwOutputSummaryFile, SimResult ret, ArrayList<PdfPTable> summaryTables) {
+        try {
+            
+            double area = ret.getPlantedArea();
+
+            if (summaryTables.size() < 2) {
+                PdfPTable excel = generalInformation(summaryReport, excelSummary);
+                summaryTables.add(excel);
+                prepareWeightedAverageTable(summaryTables);
+            }
+
+            PdfPTable t = new PdfPTable(3);
+            for (int i = 0; i < 6; i++) {
+                addParagraphToTableSoilName(t, " ", " ");
+                addParagraphToTableSoilName(t, " ", " ");
+            }
+
+            double soilPercent = 0.0;
+
+            if (ret.getTotalArea() != 0) {
+                soilPercent = ((summaryReport.getSoilArea() * 100) / ret.getTotalArea());
+            }
+
+            
+
+            addParagraphToTableSoilName(t, "Soil Series Name : ", summaryReport.getSoilName());
+            addParagraphToTableSoilName(t, "Soil Map Unit Code : ", summaryReport.getSoilKey());
+            addParagraphToTableSoilName(t, "Soil Percentage : ", String.format("%6.2f", soilPercent));
+            addParagraphToTableSoilName(t, "Soil Area(ACRES) : ", String.format("%6.2f", summaryReport.getSoilArea()));
+            addParagraphToTableSoilName(t, " ", " ");
+
+            
+            excelSummary.insertDataWithStyle("Soil Series Name", 0, false, true);
+            excelSummary.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
+            excelSummary.insertDataWithStyle("Soil Map Unit Code", 0, false, true);
+            excelSummary.insertDataWithStyle(summaryReport.getSoilKey(), 0, false, true);
+            excelSummary.insertDataWithStyle("Soil Percentage", 0, false, true);
+            excelSummary.insertDataWithStyle(String.format("%6.2f", soilPercent), 0, true, true);
+
+            summaryTables.add(t);
+            if (summaryReport.getTotalOneinTen() == -99.0 || summaryReport.getTotalTwoinTen() == -99.0) {
+                PdfPTable error = new PdfPTable(1);
+                addParagraphToTable(error, Messages.AFSIRS_ERROR);
+                summaryTables.add(error);
+
+            }
+            PdfPTable table = infoInInches(summaryReport, excelSummary, ret);
+            summaryTables.add(table);
+            probablityInfoInGallons(summaryReport, excelSummary, summaryTables, area);
 
         } catch (DocumentException e) {
             // Logger.getLogger(AFSIRSUtils.class.getName()).log(Level.SEVERE, null, ex);
@@ -2713,15 +2718,14 @@ public class AFSIRSModule {
     }
 
     //Hiranava Das: 16 Sep 2016: New function call to sort the output
-
-    private static void storeTotalIrr(SummaryReport report, Soil soil, SimResult ret) throws DocumentException {
+    private static void storeTotalIrr(SoilSeriesSummaryReport report, Soil soil, SimResult ret) throws DocumentException {
 
         double areaSum = ret.getTotalArea();
 
         double totalVal = 0.0;
         //System.out.print(SNAME);
         for (int i = 1; i <= 12; i++) {
-            
+
             double val = report.getAverageIrrigationRequired(i);
             if (val >= 0) {
                 double wIrr = (val * soil.getSoilTypeArea()) / areaSum;
@@ -2731,30 +2735,31 @@ public class AFSIRSModule {
             }
         }
 //        SNAME = soil.getName();
-        soil.setTotalAvgIrrReq(totalVal);
+//        soil.setTotalAvgIrrReq(totalVal);
+        ret.getSoilSeriesSummaryReport(soil).setTotalAvgIrr(totalVal);
 
     }
 
-    private static ArrayList<Soil> sortOutput(ArrayList<Soil> soils, ArrayList<SummaryReport> summaryList) throws DocumentException {
-        //need to change to merge sort or other efficient sorting methods
-        for (int i = 0; i < soils.size() - 1; i++) {
-            for (int j = 0; j < soils.size() - 1; j++) {
-                if (soils.get(j).getTotalAvgIrrReq() < soils.get(j + 1).getTotalAvgIrrReq()) {
-                    Soil temp = soils.get(j);
-                    soils.set(j, soils.get(j + 1));
-                    soils.set(j + 1, temp);
-                    SummaryReport tempReport = summaryList.get(j);
-                    summaryList.set(j, summaryList.get(j + 1));
-                    summaryList.set(j + 1, tempReport);
+//    private static void sortOutput(ArrayList<Soil> soils, SimResult ret) throws DocumentException {
+//        ArrayList<SoilSeriesSummaryReport> summaryList = ret.getSummaryList();
+//        //need to change to merge sort or other efficient sorting methods
+//        for (int i = 0; i < soils.size() - 1; i++) {
+//            for (int j = 0; j < soils.size() - 1; j++) {
+//                if (soils.get(j).getTotalAvgIrrReq() < soils.get(j + 1).getTotalAvgIrrReq()) {
+//                    Soil temp = soils.get(j);
+//                    soils.set(j, soils.get(j + 1));
+//                    soils.set(j + 1, temp);
+//                    SoilSeriesSummaryReport tempReport = summaryList.get(j);
+//                    tempReport.setTotalAvgIrr(1);
+//                    summaryList.set(j, summaryList.get(j + 1));
+//                    summaryList.set(j + 1, tempReport);
+//
+//                }
+//            }
+//        }
+//    }
 
-                }
-            }
-        }
-
-        return soils;
-    }
-
-    private static PdfPTable infoInInches(Document bwOutputSummaryFile1, SummaryReport summaryReport1, SummaryReport summaryReport, SummaryReportExcelFormat excelSummary, Soil soil, SimResult ret) throws DocumentException {
+    private static PdfPTable infoInInches(SummaryReport summaryReport, SummaryReportExcelFormat excelSummary, SimResult ret) throws DocumentException {
         PdfPTable table;
         PdfPCell cell;
         double totalVal;
@@ -2785,18 +2790,18 @@ public class AFSIRSModule {
          */
         designRowTitleCell(table, "Mean Irr Req");
         excelSummary.insertDataWithStyle("Mean Irr Req", 0, false, true);
-        logger.info("Soil Name :" + soil.getSNAME());
-        logger.info("Soil Area :" + soil.getSoilTypeArea());
-        logger.info("Total Area :" + ret.getTotalArea());
-        logger.info("****Mean Irr Required ******");
+        LOG.debug("Soil Name :" + summaryReport.getSoilName());
+        LOG.debug("Soil Area :" + summaryReport.getSoilArea());
+        LOG.debug("Total Area :" + ret.getTotalArea());
+        LOG.debug("****Mean Irr Required ******");
 
         totalVal = 0.0;
         for (int i = 1; i <= 12; i++) {
-            double val = summaryReport1.getAverageIrrigationRequired(i);
-            logger.info("Average Irrigation Required :" + val + " for month no " + i);
-            double wIrr = (val * soil.getSoilTypeArea()) / ret.getTotalArea();
+            double val = summaryReport.getAverageIrrigationRequired(i);
+            LOG.debug("Average Irrigation Required :" + val + " for month no " + i);
+            double wIrr = (val * summaryReport.getSoilArea()) / ret.getTotalArea();
             if (val >= 0) {
-                logger.info("Weighted Irrigation :" + wIrr + " for month no " + i);
+                LOG.debug("Weighted Irrigation :" + wIrr + " for month no " + i);
                 summaryReport.setWeightedAvgIrrRequired(i, wIrr);
                 totalVal += val;
                 str = String.format("%6.2f", val);
@@ -2810,39 +2815,39 @@ public class AFSIRSModule {
         str = String.format("%6.2f", totalVal);
         summaryReport.setTotalAvgIrr(totalVal);
         double totalAvgIrrVal = totalVal;
-        logger.info("Total Avg  Irrigation value " + totalAvgIrrVal);
+        LOG.debug("Total Avg  Irrigation value " + totalAvgIrrVal);
         designDataCell(table, str);
         excelSummary.insertDataWithStyle(str, 0, false, true);
         excelSummary.insertEmptyLine(1);
         /**
          * *********2-in-10 Irrigation Required************
          */
-        logger.info("**** 2-in-10 Irr Req ******");
+        LOG.debug("**** 2-in-10 Irr Req ******");
         designRowTitleCell(table, "2-in-10 Irr Req");
         excelSummary.insertDataWithStyle("2-in-10 Irr Req", 0, false, true);
         totalVal = summaryReport.getTotalTwoinTen();
-        logger.info("Total 2-in-10 irrigation :" + totalVal);
+        LOG.debug("Total 2-in-10 irrigation :" + totalVal);
         for (int i = 1; i <= 12; i++) {
-            double val = summaryReport1.getAverageIrrigationRequired(i);
-            logger.info("Average Irrigation Required :" + val + " for month no " + i);
+            double val = summaryReport.getAverageIrrigationRequired(i);
+            LOG.debug("Average Irrigation Required :" + val + " for month no " + i);
             val = (val / totalAvgIrrVal) * totalVal;
             if (val > 0) {
-                logger.info("2 - 10 irrigation required :" + val + " for month no " + i);
-                logger.info("Total Avg  Irrigation value " + totalAvgIrrVal);
-                summaryReport1.setTwoin10IrrigationRequired(i, val);
+                LOG.debug("2 - 10 irrigation required :" + val + " for month no " + i);
+                LOG.debug("Total Avg  Irrigation value " + totalAvgIrrVal);
+                summaryReport.setTwoin10IrrigationRequired(i, val);
                 str = String.format("%6.2f", val);
             } else {
                 str = "NA";
             }
-            val = summaryReport1.getTwoin10IrrigationRequired(i);
+            val = summaryReport.getTwoin10IrrigationRequired(i);
             if (val > 0) {
-                logger.info("2 - 10 irrigation required :" + val + " for month no " + i);
-                double wIrr = (val * soil.getSoilTypeArea()) / ret.getTotalArea();
-                logger.info("Weighted 2In10 Irr Required for this soil" + String.valueOf(wIrr));
+                LOG.debug("2 - 10 irrigation required :" + val + " for month no " + i);
+                double wIrr = (val * summaryReport.getSoilArea()) / ret.getTotalArea();
+                LOG.debug("Weighted 2In10 Irr Required for this soil" + String.valueOf(wIrr));
                 summaryReport.setWeighted2In10IrrRequired(i, wIrr);
             } else if (val == 0.00) {
-                logger.info("1 - 10 Irrigation Required :" + val + "for month no " + i);
-                summaryReport1.setOnein10IrrigationRequired(i, val);
+                LOG.debug("1 - 10 Irrigation Required :" + val + "for month no " + i);
+                summaryReport.setOnein10IrrigationRequired(i, val);
                 str = "0.00";
             } else {
                 str = "NA";
@@ -2861,35 +2866,35 @@ public class AFSIRSModule {
         /**
          * *********1-in-10 Irrigation Required************
          */
-        logger.info("****1-in-10 Irr Req ******");
+        LOG.debug("****1-in-10 Irr Req ******");
         designRowTitleCell(table, "1-in-10 Irr Req");
         excelSummary.insertDataWithStyle("1-in-10 Irr Req", 0, false, true);
         totalVal = summaryReport.getTotalOneinTen();
         if (totalVal == -99.0) {
-            ret.getSoilNames().add(soil.getSNAME());
+            ret.getSoilNames().add(summaryReport.getSoilName());
         }
 
-        logger.info("Total 1-in-10 irrigation :" + totalVal);
+        LOG.debug("Total 1-in-10 irrigation :" + totalVal);
         for (int i = 1; i <= 12; i++) {
-            double val = summaryReport1.getAverageIrrigationRequired(i);
-            logger.info("Average Irrigation Required :" + val + "for month no " + i);
+            double val = summaryReport.getAverageIrrigationRequired(i);
+            LOG.debug("Average Irrigation Required :" + val + "for month no " + i);
             val = (val / totalAvgIrrVal) * totalVal;
             if (val > 0.00) {
-                logger.info("1 - 10 Irrigation Required :" + val + "for month no " + i);
-                summaryReport1.setOnein10IrrigationRequired(i, val);
+                LOG.debug("1 - 10 Irrigation Required :" + val + "for month no " + i);
+                summaryReport.setOnein10IrrigationRequired(i, val);
                 str = String.format("%6.2f", val);
             } else if (val == 0.00) {
-                logger.info("1 - 10 Irrigation Required :" + val + "for month no " + i);
-                summaryReport1.setOnein10IrrigationRequired(i, val);
+                LOG.debug("1 - 10 Irrigation Required :" + val + "for month no " + i);
+                summaryReport.setOnein10IrrigationRequired(i, val);
                 str = "0.00";
             } else {
                 str = "NA";
 
             }
             designDataCell(table, str);
-            val = summaryReport1.getOnein10IrrigationRequired(i);
+            val = summaryReport.getOnein10IrrigationRequired(i);
             if (val >= 0) {
-                double wIrr = (val * soil.getSoilTypeArea()) / ret.getTotalArea();
+                double wIrr = (val * summaryReport.getSoilArea()) / ret.getTotalArea();
                 summaryReport.setWeighted1In10IrrRequired(i, wIrr);
 
             }
@@ -2924,7 +2929,7 @@ public class AFSIRSModule {
         excelSummary.insertEmptyLine(1);
     }
 
-    private static PdfPTable probablityInfoInGallons(Document bwOutputSummaryFile1, SummaryReport summaryReport1, SummaryReportExcelFormat excelSummary, ArrayList<PdfPTable> summaryTables, double area) throws DocumentException {
+    private static PdfPTable probablityInfoInGallons(SummaryReport summaryReport, SummaryReportExcelFormat excelSummary, ArrayList<PdfPTable> summaryTables, double area) throws DocumentException {
         PdfPTable table;
         PdfPCell cell;
         double totalVal;
@@ -2949,7 +2954,7 @@ public class AFSIRSModule {
         excelSummary.insertDataWithStyle("Mean Irr Req", 0, false, true);
         totalVal = 0.0;
         for (int i = 1; i <= 12; i++) {
-            double val = summaryReport1.getAverageIrrigationRequired(i);
+            double val = summaryReport.getAverageIrrigationRequired(i);
 //            str = "";
             if (val >= 0) {
                 val = (val * area * 27154);
@@ -2978,7 +2983,7 @@ public class AFSIRSModule {
         excelSummary.insertDataWithStyle("2-in-10 Irr Req", 0, false, true);
         totalVal = 0.0;
         for (int i = 1; i <= 12; i++) {
-            double val = summaryReport1.getTwoin10IrrigationRequired(i);
+            double val = summaryReport.getTwoin10IrrigationRequired(i);
             //double val = (summaryReport1.getAverageIrrigationRequired(i)/totalAvgIrr) * summaryReport1.getTotalTwoinTen();
 //            str = "";
             if (val > 0) {
@@ -3008,7 +3013,7 @@ public class AFSIRSModule {
         excelSummary.insertDataWithStyle("1-in-10 Irr Req", 0, false, true);
         totalVal = 0.0;
         for (int i = 1; i <= 12; i++) {
-            double val = summaryReport1.getOnein10IrrigationRequired(i);
+            double val = summaryReport.getOnein10IrrigationRequired(i);
             //double val = (summaryReport1.getAverageIrrigationRequired(i)/totalAvgIrr) * summaryReport1.getTotalOneinTen();
 //            str = "";
             if (val > 0) {
@@ -3051,7 +3056,7 @@ public class AFSIRSModule {
         Paragraph p;
         Chunk imdb = new Chunk("View Map");
         try {
-            imdb.setAnchor(new URL("http://abe.ufl.edu/bmpmodel/arcGIS/Hiranava/index.html?site=test123&unit=test8&json=%7B%22rings%22%3A%5B%5B%5B-9074755.428262126%2C3243513.702381273%5D%2C%5B-9074774.537519196%2C3243499.370438469%5D%2C%5B-9074105.713521684%2C3243556.6982096843%5D%2C%5B-9073580.208952209%2C3243322.609810555%5D%2C%5B-9073699.641808908%2C3242840.101069492%5D%2C%5B-9073976.72603645%2C3242887.8742121714%5D%2C%5B-9074043.6084362%2C3242825.769126688%5D%2C%5B-9074225.146378383%2C3242887.8742121714%5D%2C%5B-9074497.453291656%2C3242744.5547841326%5D%2C%5B-9074870.083804555%2C3242758.886726937%5D%2C%5B-9074870.083804555%2C3243093.298725693%5D%2C%5B-9074760.205576394%2C3243313.055182019%5D%2C%5B-9074755.428262126%2C3243513.702381273%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A102100%2C%22latestWkid%22%3A3857%7D%7D#"));
+            imdb.setAnchor(Util.getSoilMapUrl(input));
         } catch (MalformedURLException ex) {
             java.util.logging.Logger.getLogger(AFSIRSModule.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -3080,7 +3085,7 @@ public class AFSIRSModule {
         bwOutputSummaryFile.add(t);
     }
 
-    private static SummaryReportExcelFormat buildCalculationExcel(UserInput input, SimResult ret, ArrayList<SummaryReport> summaryList) {
+    private static SummaryReportExcelFormat buildCalculationExcel(UserInput input, SimResult ret, ArrayList<SoilTypeSummaryReport> summaryList) {
         SummaryReportExcelFormat excelCal = new SummaryReportExcelFormat(ret.getCalculationExcel());
         ArrayList<Soil> soils = input.getSoils();
         excelCal.setRowNum(2);
@@ -3516,7 +3521,7 @@ public class AFSIRSModule {
         excelCal.insertEmptyLine(1);
         excelCal.mergeCells();
         excelCal.insertDataWithStyle("Irrigation in  million gallons = Irrigation in inches * PLANTEDACRES * 27154/1000000; ", 4, true, true);
-        
+
         return excelCal;
     }
 
@@ -3540,7 +3545,7 @@ public class AFSIRSModule {
         obj.put("irr_option", input.getIrrOption());
         obj.put("irr_depth_type", input.getIDCODE() + "");
         if (input.getIDCODE() == 1) {
-            obj.put("irr_depth", input.getFIX()+ "");
+            obj.put("irr_depth", input.getFIX() + "");
         } else if (input.getIDCODE() == 2) {
             obj.put("irr_depth", input.getPIR() + "");
         }
@@ -3572,6 +3577,10 @@ public class AFSIRSModule {
             soils.add(soilData);
         }
         obj.put("soils", soils);
+        JSONObject polygonInfo = input.getPolygonInfoJSONObject();
+        if (polygonInfo != null && !polygonInfo.isEmpty()) {
+            obj.put("polygon", polygonInfo.get("polygon"));
+        }
         obj.put("coefficent_type", input.getCoefficentType());
         if ("annual".equalsIgnoreCase(input.getCropType())) {
             obj.put("dzn", input.getDZN() + "");
@@ -3589,15 +3598,15 @@ public class AFSIRSModule {
         } else {
             obj.put("drzirr", input.getDRZIRR() + "");
             obj.put("drztot", input.getDRZTOT() + "");
-            
+
             obj.put("akc", Arrays.stream(input.getAKC()).mapToObj(String::valueOf).collect(Collectors.toList()));
             obj.put("aldp", Arrays.stream(input.getALDP()).mapToObj(String::valueOf).collect(Collectors.toList()));
             if (input.getIR() == IRCRFL) {
                 obj.put("hgt", input.getHGT() + "");
             }
         }
-        
-        try (FileWriter file = new FileWriter(Paths.get(outputDir.getPath(),  input.getSITE() + ".json").toFile())) {
+
+        try (FileWriter file = new FileWriter(Paths.get(outputDir.getPath(), input.getSITE() + ".json").toFile())) {
 
             file.write(obj.toJSONString());
             file.flush();
@@ -3609,7 +3618,7 @@ public class AFSIRSModule {
         }
 
     }
-    
+
     public static boolean saveInputData(File outputDir, UserInput input) {
         ObjectMapper mapperObj = new ObjectMapper();
         String jsonStr = "";
@@ -3618,8 +3627,8 @@ public class AFSIRSModule {
         } catch (JsonProcessingException ex) {
             java.util.logging.Logger.getLogger(AFSIRSModule.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        try (FileWriter file = new FileWriter(Paths.get(outputDir.getPath(),  input.getSITE() + "_input.json").toFile())) {
+
+        try (FileWriter file = new FileWriter(Paths.get(outputDir.getPath(), input.getSITE() + "_input.json").toFile())) {
 
             file.write(jsonStr);
             file.flush();

@@ -8,8 +8,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Data;
 import static org.afsirs.module.DateUtil.MDAY;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * The container class for user input data
@@ -68,6 +74,7 @@ public class UserInput {
 
 //    private SoilData soilData;
     private ArrayList<Soil> soils = new ArrayList();
+    private String polygonInfo;
     private String WATERHOLDINGCAPACITY;
     private String soilSource;
     private String CLIMATESTATION;
@@ -281,6 +288,41 @@ public class UserInput {
     public void setSoils(ArrayList<Soil> soils, String WHC) {
         this.soils = soils;
         setWATERHOLDINGCAPACITY(WATERHOLDINGCAPACITY);
+    }
+    
+    public void setPolygonInfo(String jsonStr) {
+        if (jsonStr == null || jsonStr.isEmpty()) {
+            this.polygonInfo = "";
+            return;
+        }
+        if (jsonStr.contains("soils") || jsonStr.contains("afsirs") || jsonStr.contains("asfirs")) {
+            try {
+                JSONParser parser = new JSONParser();
+                JSONObject soilData = new JSONObject((Map) parser.parse(jsonStr));
+                soilData.remove("soils");
+                soilData.remove("afsirs");
+                soilData.remove("asfirs");
+                jsonStr = soilData.toJSONString();
+            } catch (ParseException ex) {
+                Logger.getLogger(UserInput.class.getName()).log(Level.SEVERE, null, ex);
+                this.polygonInfo = "";
+                return;
+            }
+        }
+        polygonInfo = jsonStr;
+    }
+    
+    public JSONObject getPolygonInfoJSONObject() {
+        if (this.polygonInfo == null || this.polygonInfo.isEmpty()) {
+            return null;
+        }
+        JSONParser parser = new JSONParser();
+        try {
+            return new JSONObject((Map) parser.parse(this.polygonInfo));
+        } catch (ParseException ex) {
+            Logger.getLogger(UserInput.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     //read the file for climate data and set it to a array

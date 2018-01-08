@@ -7,11 +7,19 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.afsirs.module.SummaryReport;
+import org.afsirs.module.UserInput;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
@@ -20,6 +28,8 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
  * @author Meng Zhang
  */
 public class Util {
+
+    public static final String SOIL_MAP_BASE_URL = "http://abe.ufl.edu/bmpmodel/arcGIS/Test";
 
     public static String calculateNearestStation(String type, File jsonFile) throws IOException {
 //        String station;
@@ -39,15 +49,18 @@ public class Util {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(jsonFile);
 
-        JsonNode asfirs = root.path("asfirs");
-        if (asfirs == null) {
+        JsonNode afsirs = root.path("afsirs");
+        if (afsirs == null || afsirs.isMissingNode()) {
 //            JPanel inputFilePanel = new JPanel();
 //            JOptionPane.showMessageDialog(inputFilePanel, "The JSON file \"" +jsonName+"\" is not valid!", "Warning", JOptionPane.WARNING_MESSAGE);
+            afsirs = root.path("asfirs");
+        }
+        if (afsirs == null) {
             return null;
         }
         String longi = null;
         String lat = null;
-        for (JsonNode node : asfirs) {
+        for (JsonNode node : afsirs) {
             longi = node.path("long").toString();
             lat = node.path("lat").toString();
 
@@ -151,12 +164,96 @@ public class Util {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
-    
+
     public static double[][] deepCopy(double[][] original) {
         double[][] ret = new double[original.length][];
         for (int i = 0; i < original.length; i++) {
             ret[i] = Arrays.copyOf(original[i], original[i].length);
         }
         return ret;
+    }
+
+    public static URL getSoilMapUrl(String siteName, String unitName) throws MalformedURLException {
+        return getSoilMapUrl(siteName, unitName, null, null, null);
+    }
+
+    public static URL getSoilMapUrl(String siteName, String unitName, String longitude, String latitude) throws MalformedURLException {
+        return getSoilMapUrl(siteName, unitName, longitude, latitude, null);
+    }
+
+    public static URL getSoilMapUrl(String siteName, String unitName, String jsonStr) throws MalformedURLException {
+        return getSoilMapUrl(siteName, unitName, null, null, jsonStr);
+    }
+
+    public static URL getSoilMapUrl(UserInput input) throws MalformedURLException {
+        return getSoilMapUrl(input.getSITE(), input.getUNIT(), null, null, input.getPolygonInfo());
+    }
+
+    public static URL getSoilMapUrl(String siteName, String unitName, String longitude, String latitude, String jsonStr) throws MalformedURLException {
+        StringBuilder sb = new StringBuilder();
+        if (siteName != null && !siteName.isEmpty()) {
+            sb.append("&site=").append(siteName);
+        }
+        if (unitName != null && !unitName.isEmpty()) {
+            sb.append("&unit=").append(unitName);
+        }
+        if (longitude != null && !longitude.isEmpty()) {
+            sb.append("&long=").append(longitude);
+        }
+        if (latitude != null && !latitude.isEmpty()) {
+            sb.append("&lat=").append(latitude);
+        }
+        if (jsonStr != null && !jsonStr.isEmpty() && jsonStr.contains("polygon")) {
+            String[] jsonParts = jsonStr.split("polygon");
+            String content = jsonParts[1];
+            content = content.substring(3);
+            int len = content.length();
+            content = content.substring(0, len - 2);
+            try {
+                sb.append("&json=").append(URLEncoder.encode(content, "UTF-8"));
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        String params = sb.toString();
+        if (!params.isEmpty()) {
+            sb = new StringBuilder();
+            sb.append(SOIL_MAP_BASE_URL).append("?").append(params.substring(1)).append("#");
+            return new URL(sb.toString());
+        } else {
+            return new URL(SOIL_MAP_BASE_URL);
+        }
+
+    }
+
+    public static Comparator getSummaryReportComparetor() {
+        return new Comparator<SummaryReport>() {
+
+            @Override
+            public int compare(SummaryReport o1, SummaryReport o2) {
+                double compare = o1.getTotalAvgIrr() - o2.getTotalAvgIrr();
+                if (compare > 0) {
+                    return 1;
+                } else if (compare < 0) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        };
+    }
+
+    public static boolean isSorted(ArrayList reports) {
+        if (reports == null || reports.isEmpty()) {
+            return true;
+        }
+        double preVal = ((SummaryReport) reports.get(0)).getTotalAvgIrr();
+        for (Object report : reports) {
+            if (preVal < ((SummaryReport) report).getTotalAvgIrr()) {
+
+                return false;
+            }
+        }
+        return true;
     }
 }
