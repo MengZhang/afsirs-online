@@ -94,7 +94,7 @@
                     <label><input type="radio" name="irr_option" id="irr_option_net" class="form-control" value="NET" onclick="setDefIrrParams()" <#if permit['irr_option']?? && permit['irr_option'] == "NET">checked</#if>>&nbsp;Net&nbsp;</label>
                 </div>
                 <div class="col-sm-6">
-                    <label><input type="radio" name="irr_option" id="irr_option_gross" class="form-control" value="GROSS" onclick="setDefIrrParams()" <#if permit['irr_option']?? && permit['irr_option'] == "GROSS">checked</#if>>Gross</label>
+                    <label><input type="radio" name="irr_option" id="irr_option_gross" class="form-control" value="GROSS" onclick="setDefIrrParams()" <#if permit['irr_option']?? && permit['irr_option'] == "GROSS">checked<#elseif !permit['irr_option']??>checked</#if>>Gross</label>
                 </div>
             </div>
         </div>
