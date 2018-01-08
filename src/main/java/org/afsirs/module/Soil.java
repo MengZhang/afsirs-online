@@ -1,5 +1,6 @@
 package org.afsirs.module;
 
+import java.util.Arrays;
 import lombok.Data;
 import static org.afsirs.module.util.Util.round;
 
@@ -24,6 +25,18 @@ public class Soil {
         private double[] DU;
         private double soilTypeArea;
 //        private double totalAvgIrrReq;
+        
+        public Soil cloneData() {
+            Soil ret = new Soil(SNAME, SOILSERIESKEY, COMPKEY, SERIESNAME, NL);
+            ret.setValues(
+                    Arrays.copyOf(WC, WC.length),
+                    Arrays.copyOf(WCL, WCL.length),
+                    Arrays.copyOf(WCU, WCU.length),
+                    Arrays.copyOf(DU, DU.length),
+                    Arrays.copyOf(TXT, TXT.length));
+            ret.setSoilTypeArea(soilTypeArea);
+            return ret;
+        }
 
         public Soil(int id, String soilCompName, String soilSeriesKey, String compKey, String seriesName, int nl){
             
