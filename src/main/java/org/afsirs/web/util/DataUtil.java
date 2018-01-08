@@ -596,15 +596,37 @@ public class DataUtil {
         return path;
     }
     
+    public static String getTotalArea(String jsonStr) {
+        JSONObject data = JsonUtil.parseFrom(jsonStr);
+        List<Map> afsirs = (List) data.get("afsirs");
+        if (afsirs == null) {
+            afsirs = (List) data.get("asfirs");
+        }
+        if (afsirs == null) {
+            return null;
+        }
+        String ret = "0";
+        for (Map node : afsirs) {
+            ret = (String) node.get("TotalArea");
+            if (ret != null) {
+                break;
+            }
+        }
+        return ret;
+    }
+    
     public static String calculateNearestStation(String type, String jsonStr) {
         JSONObject data = JsonUtil.parseFrom(jsonStr);
-        List<Map> asfirs = (List) data.get("asfirs");
-        if (asfirs == null) {
+        List<Map> afsirs = (List) data.get("afsirs");
+        if (afsirs == null) {
+            afsirs = (List) data.get("asfirs");
+        }
+        if (afsirs == null) {
             return null;
         }
         String longi = null;
         String lat = null;
-        for (Map node : asfirs) {
+        for (Map node : afsirs) {
             longi = node.get("long").toString();
             lat = node.get("lat").toString();
             // TODO for multiple polygons

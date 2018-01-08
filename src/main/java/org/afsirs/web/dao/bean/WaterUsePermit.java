@@ -214,8 +214,8 @@ public class WaterUsePermit {
 //            ret.setTotalArea(totArea);
         }
 
-        ret.setEt_loc(calculateNearestStation(request.queryParams("et_loc"), "CLIMATE", request));
-        ret.setRain_loc(calculateNearestStation(request.queryParams("rain_loc"), "RAIN", request));
+        ret.setEt_loc(calculateNearestStation(request.queryParams("et_loc"), "CLIMATE", ret));
+        ret.setRain_loc(calculateNearestStation(request.queryParams("rain_loc"), "RAIN", ret));
 
         String coeffType = request.queryParams("coefficent_type");
         ret.setCoefficent_type(coeffType);
@@ -257,24 +257,10 @@ public class WaterUsePermit {
         return ret;
     }
 
-    private static String calculateNearestStation(String loc, String type, Request request) {
+    private static String calculateNearestStation(String loc, String type, WaterUsePermit permit) {
         if ("Nearest Station".equalsIgnoreCase(loc)) {
-            String jsonStr = request.queryParams("soil_file_json");
-            JSONObject data = JsonUtil.parseFrom(jsonStr);
-            List<Map> asfirs = (List) data.get("asfirs");
-            if (asfirs == null) {
-                return null;
-            }
-            String longi = null;
-            String lat = null;
-//            String totArea = null;
-            for (Map node : asfirs) {
-                longi = node.get("long").toString();
-                lat = node.get("lat").toString();
-//                totArea = node.get("TotalArea").toString();
-                // TODO for multiple polygons
-            }
-            loc = DataUtil.calculateNearestStation(type, lat, longi);
+            String jsonStr = permit.getSoil_json();
+            loc = DataUtil.calculateNearestStation(type, jsonStr);
         }
         return loc;
     }
