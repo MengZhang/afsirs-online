@@ -500,12 +500,6 @@ public class DataUtil {
         return ret;
     }
 
-    private static double[] copyArr(double[] in) {
-        double[] ret = new double[in.length];
-        System.arraycopy(in, 0, ret, 0, in.length);
-        return ret;
-    }
-
     public static ArrayList<Soil> toSoils(String jsonStr) {
         JSONObject data = JsonUtil.parseFrom(jsonStr);
         return toSoils(data);
