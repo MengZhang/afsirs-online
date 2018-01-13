@@ -48,14 +48,27 @@
         var irrDepInput = document.getElementById("irr_depth_input");
         if (irrDepType.value === "1") {
             var str = "inches, Depth of water to apply per irrigation (>= 0.1)";
-            setStatus(irrDep, false, 300, 0.1, 0.1, 30, str);
-            setStatus(irrDepInput, false, 300, 0.1, 10, 30, str);
-            document.getElementById("irr_depth_unit").innerHTML = "(inches)";
+            if(irrDep.disabled == true && irrDepInput.disabled == true){
+	            setStatus(irrDep, false, 300, 0.1, 0.1, 30, str);
+	            setStatus(irrDepInput, false, 300, 0.1, 10, 30, str);
+	            document.getElementById("irr_depth_unit").innerHTML = "(inches)";
+	         }
+	         else{
+	         	irrDep.disabled = false;
+	        	irrDepInput.disabled = false;
+	         }
         } else if (irrDepType.value === "2") {
             var str = "%, of field capacity for deficit irrigation (50-100)";
-            setStatus(irrDep, false, 100, 50, 0.1, 75, str);
-            setStatus(irrDepInput, false, 100, 50, 5, 75, str);
-            document.getElementById("irr_depth_unit").innerHTML = "(%)";
+            if(irrDep.disabled == true && irrDepInput.disabled == true){
+	            setStatus(irrDep, false, 100, 50, 0.1, 75, str);
+	            setStatus(irrDepInput, false, 100, 50, 5, 75, str);
+	            document.getElementById("irr_depth_unit").innerHTML = "(%)";
+	        }
+	        else{
+	        	irrDep.disabled = false;
+	        	irrDepInput.disabled = false;
+	        }
+
         } else {
             var str = "";
             setStatus(irrDep, true, 100, 50, 0.1, "", str);
