@@ -42,33 +42,32 @@
         setDecoefLabels();
     }
 
-    function changeIrrDepDefinition() {
+    function changeIrrDepDefinition(flag) {
         var irrDepType = document.getElementById("irr_depth_type");
         var irrDep = document.getElementById("irr_depth");
         var irrDepInput = document.getElementById("irr_depth_input");
         if (irrDepType.value === "1") {
             var str = "inches, Depth of water to apply per irrigation (>= 0.1)";
-            if(irrDep.disabled == true && irrDepInput.disabled == true){
-	            setStatus(irrDep, false, 300, 0.1, 0.1, 30, str);
-	            setStatus(irrDepInput, false, 300, 0.1, 10, 30, str);
-	            document.getElementById("irr_depth_unit").innerHTML = "(inches)";
-	         }
-	         else{
-	         	irrDep.disabled = false;
-	        	irrDepInput.disabled = false;
-	         }
+            if(document.getElementById("irr_depth_input").value != 75 && document.getElementById("irr_depth_input").value != "" && flag != 'yes'){
+            	setStatus(irrDep, false, 300, 0.1, 0.1, document.getElementById("irr_depth_input").value, str);
+	        	setStatus(irrDepInput, false, 300, 0.1, 10, document.getElementById("irr_depth_input").value, str);            
+	        }
+            else{
+            	setStatus(irrDep, false, 300, 0.1, 0.1, 30, str);
+	        	setStatus(irrDepInput, false, 300, 0.1, 10, 30, str);
+            }
+	        document.getElementById("irr_depth_unit").innerHTML = "(inches)";
         } else if (irrDepType.value === "2") {
             var str = "%, of field capacity for deficit irrigation (50-100)";
-            if(irrDep.disabled == true && irrDepInput.disabled == true){
-	            setStatus(irrDep, false, 100, 50, 0.1, 75, str);
-	            setStatus(irrDepInput, false, 100, 50, 5, 75, str);
-	            document.getElementById("irr_depth_unit").innerHTML = "(%)";
-	        }
-	        else{
-	        	irrDep.disabled = false;
-	        	irrDepInput.disabled = false;
-	        }
-
+            if(document.getElementById("irr_depth_input").value != 75 && document.getElementById("irr_depth_input").value != "" && flag != 'yes'){
+            	setStatus(irrDep, false, 100, 50, 0.1, document.getElementById("irr_depth_input").value, str);
+	        	setStatus(irrDepInput, false, 100, 50, 5, document.getElementById("irr_depth_input").value, str);
+            }
+            else{
+            	setStatus(irrDep, false, 100, 50, 0.1, 75, str);
+	        	setStatus(irrDepInput, false, 100, 50, 5, 75, str);
+            }
+	        document.getElementById("irr_depth_unit").innerHTML = "(%)";
         } else {
             var str = "";
             setStatus(irrDep, true, 100, 50, 0.1, "", str);
@@ -117,7 +116,7 @@
         <div class="form-group">
             <label class="control-label col-sm-3" for="irr_depth_type">Definition :</label>
             <div class="col-sm-6">
-                <select id="irr_depth_type" name="irr_depth_type" class="form-control" onchange="changeIrrDepDefinition();" title="Define Irrigation Water depths per application">
+                <select id="irr_depth_type" name="irr_depth_type" class="form-control" onchange="changeIrrDepDefinition('yes');" title="Define Irrigation Water depths per application">
                     <#list ['Irrigate to field capacity','Apply a fixed depth per application(>0.1)','Deficit Irrigation application'] as x>
                     <option value="${x?index}" <#if permit['irr_depth_type']?? && permit['irr_depth_type']?number == x?index>selected</#if>>${x!}</option>
                     </#list>
