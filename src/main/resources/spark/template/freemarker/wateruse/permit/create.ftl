@@ -107,7 +107,7 @@
                 if (disableIrr) {
                     document.getElementById("irr_depth_input").disabled = disableIrr;
                 } else {
-                    changeIrrDepDefinition();
+                    changeIrrDepDefinition(true);
                 }
                 document.getElementById("irr_efficiency_input").disabled = disableIrr;
                 document.getElementById("soil_surface_irr_input").disabled = disableIrr;
