@@ -38,6 +38,7 @@ public abstract class SummaryReport {
     @Getter @Setter private String soilName;
     @Getter @Setter private String soilKey;
     @Getter @Setter private double soilArea;
+    @Getter @Setter private String soilSymbolNum;
 
     private SummaryReport() {
         curMonth = 1;
@@ -81,17 +82,16 @@ public abstract class SummaryReport {
 
     }
     
-    public SummaryReport(String soilKey, String soilName, double soilArea) {
-        this();
-        this.soilKey = soilKey;
-        this.soilName = soilName;
+    public SummaryReport(String soilKey, String soilName, String soilSymbolNum, double soilArea) {
+        this(soilKey, soilName, soilSymbolNum);
         this.soilArea = soilArea;
     }
     
-    public SummaryReport(String soilKey, String soilName) {
+    public SummaryReport(String soilKey, String soilName, String soilSymbolNum) {
         this();
         this.soilKey = soilKey;
         this.soilName = soilName;
+        this.soilSymbolNum = soilSymbolNum;
     }
     
 //    public void reset() {

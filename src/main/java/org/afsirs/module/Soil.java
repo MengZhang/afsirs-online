@@ -14,6 +14,7 @@ public class Soil {
 //        private int ID;
         private String SNAME;
         private String SOILSERIESKEY;
+        private String soilSymbolNum;
 
         private String COMPKEY;
         private String SERIESNAME;
@@ -27,7 +28,7 @@ public class Soil {
 //        private double totalAvgIrrReq;
         
         public Soil cloneData() {
-            Soil ret = new Soil(SNAME, SOILSERIESKEY, COMPKEY, SERIESNAME, NL);
+            Soil ret = new Soil(SNAME, SOILSERIESKEY, COMPKEY, SERIESNAME, soilSymbolNum, NL);
             ret.setValues(
                     Arrays.copyOf(WC, WC.length),
                     Arrays.copyOf(WCL, WCL.length),
@@ -40,6 +41,11 @@ public class Soil {
 
         public Soil(int id, String soilCompName, String soilSeriesKey, String compKey, String seriesName, int nl){
             
+            this(id, soilCompName, soilSeriesKey, compKey, seriesName, "", nl);
+        }
+
+        public Soil(int id, String soilCompName, String soilSeriesKey, String compKey, String seriesName,String soilSymbolNum, int nl){
+            
             // SOil Series Name and the Soil Map Unit Code
             SERIESNAME = seriesName;
             SOILSERIESKEY = soilSeriesKey;
@@ -47,13 +53,17 @@ public class Soil {
             // Soil Name and the Soil Code
             SNAME = soilCompName;
             COMPKEY = compKey;
-
+            this.soilSymbolNum = soilSymbolNum;
             
 //            ID = id;
             NL = nl;
         }
+        
+//        public Soil(String soilCompName, String soilSeriesKey, String compKey, String seriesName, int nl){
+//            this(soilCompName, soilSeriesKey, compKey, seriesName, "", nl);
+//        }
 
-        public Soil(String soilCompName, String soilSeriesKey, String compKey, String seriesName, int nl){
+        public Soil(String soilCompName, String soilSeriesKey, String compKey, String seriesName, String soilSymbolNum, int nl){
             
             // SOil Series Name and the Soil Map Unit Code
             SERIESNAME = seriesName;
@@ -62,6 +72,7 @@ public class Soil {
             // Soil Name and the Soil Code
             SNAME = soilCompName;
             COMPKEY = compKey;
+            this.soilSymbolNum = soilSymbolNum;
             NL = nl;
         }
 

@@ -2510,6 +2510,7 @@ public class AFSIRSModule {
             
 
             addParagraphToTableSoilName(t, "Soil Series Name : ", summaryReport.getSoilName());
+            addParagraphToTableSoilName(t, "Soil Map Unit Symbol# : ", summaryReport.getSoilSymbolNum());
             addParagraphToTableSoilName(t, "Soil Map Unit Code : ", summaryReport.getSoilKey());
             addParagraphToTableSoilName(t, "Soil Percentage : ", String.format("%6.2f", soilPercent));
             addParagraphToTableSoilName(t, "Soil Area(ACRES) : ", String.format("%6.2f", summaryReport.getSoilArea()));
@@ -3561,6 +3562,7 @@ public class AFSIRSModule {
         for (Soil soil : input.getSoils()) {
             HashMap soilData = new HashMap();
             soilData.put("mukey", soil.getSOILSERIESKEY());
+            soilData.put("musym", soil.getSoilSymbolNum());
             soilData.put("mukeyName", soil.getSERIESNAME());
             soilData.put("cokey", soil.getCOMPKEY());
             soilData.put("soilName", soil.getSNAME());

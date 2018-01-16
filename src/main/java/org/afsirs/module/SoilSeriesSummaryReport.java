@@ -34,12 +34,12 @@ public class SoilSeriesSummaryReport extends SummaryReport {
     private SummaryReport curReport;
 
     public SoilSeriesSummaryReport(SoilTypeSummaryReport firstSoilTypeReport) {
-        super(firstSoilTypeReport.getSoilSeriesKey(), firstSoilTypeReport.getSoilSeriesName());
+        super(firstSoilTypeReport.getSoilSeriesKey(), firstSoilTypeReport.getSoilSeriesName(), firstSoilTypeReport.getSoilSymbolNum());
         addSoilTypeSummaryReport(firstSoilTypeReport);
     }
     
     public SoilSeriesSummaryReport(Soil soil) {
-        super(soil.getSOILSERIESKEY(), soil.getSERIESNAME());
+        super(soil.getSOILSERIESKEY(), soil.getSERIESNAME(), soil.getSoilSymbolNum());
         addSoilTypeSummaryReport(new SoilTypeSummaryReport(soil));
     }
     

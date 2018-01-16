@@ -12,7 +12,7 @@ public class SoilTypeSummaryReport extends SummaryReport {
     @Getter @Setter private String soilSeriesKey;
     
     public SoilTypeSummaryReport(Soil soil) {
-        super(soil.getCOMPKEY(), soil.getSNAME(), soil.getSoilTypeArea());
+        super(soil.getCOMPKEY(), soil.getSNAME(), soil.getSoilSymbolNum(), soil.getSoilTypeArea());
         this.soilSeriesKey = soil.getSOILSERIESKEY();
         this.soilSeriesName = soil.getSERIESNAME();
     }
