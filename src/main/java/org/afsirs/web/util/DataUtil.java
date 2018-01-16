@@ -520,6 +520,7 @@ public class DataUtil {
 
             String soilSeriesName = soil.get("mukeyName").toString();
             String soilSeriesKey = soil.get("mukey").toString();
+            String soilSymbolNum = soil.getOrDefault("musym", "").toString();
             String soilName = soil.get("soilName").toString();
             String compKey = soil.get("cokey").toString();
             String soilTypeArea = soil.get("compArea").toString();
@@ -550,7 +551,7 @@ public class DataUtil {
                 nl++;
             }
             // soilSeriesKey
-            Soil soilData = new Soil(soilName, soilSeriesKey, compKey, soilSeriesName, nl);
+            Soil soilData = new Soil(soilName, soilSeriesKey, compKey, soilSeriesName, soilSymbolNum, nl);
             soilData.setValues("Average", wcl, wcu, du, txt);
 
             if (soilTypeArea != null) {

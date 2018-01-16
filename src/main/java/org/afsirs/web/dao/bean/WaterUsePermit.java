@@ -340,6 +340,7 @@ public class WaterUsePermit {
             JSONObject soilJ = new JSONObject(soilJS);
             String soilSeriesName = soilJ.getOrBlank("mukeyName");
             String soilSeriesKey = soilJ.getOrBlank("mukey");
+            String soilSymbolNum = soilJ.getOrBlank("musym");
 
             String soilName = soilJ.getOrBlank("soilName");
             String compKey = soilJ.getOrBlank("cokey");
@@ -375,7 +376,7 @@ public class WaterUsePermit {
                 nl++;
             }
 
-            Soil soil = new Soil(soilName, soilSeriesKey, compKey, soilSeriesName, nl);
+            Soil soil = new Soil(soilName, soilSeriesKey, compKey, soilSeriesName, soilSymbolNum, nl);
             soil.setValues(wc, wcl, wcu, du, txt);
 
             if (soilTypeArea != null) {
