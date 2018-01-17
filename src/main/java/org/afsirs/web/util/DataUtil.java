@@ -72,6 +72,9 @@ public class DataUtil {
         private double AKC3, AKC4;
         private double[] F = new double[4];
         private double[] ALD = new double[4];
+        private int maxDays;
+        private int minDays;
+        private int defDays;
 
         public double[] getFR() {
             return F;
@@ -254,8 +257,14 @@ public class DataUtil {
                 ret.setAKC4(new BigDecimal(str).doubleValue());
             } else if (i < 8) {
                 ret.getF()[i - 4] = new BigDecimal(str).doubleValue();
-            } else {
+            } else if (i < 12) {
                 ret.getALD()[i - 8] = new BigDecimal(str).doubleValue();
+            } else if (i == 12) {
+                ret.setMinDays(new BigDecimal(str).intValue());
+            } else if (i == 13) {
+                ret.setMaxDays(new BigDecimal(str).intValue());
+            } else if (i == 14) {
+                ret.setDefDays(new BigDecimal(str).intValue());
             }
             i++;
         }

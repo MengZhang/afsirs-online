@@ -52,6 +52,89 @@
             select.append(option);
         }
     }
+    
+    function setDefEndDate() {
+        
+        var startMonth = document.getElementById("startMonthSB").selectedIndex - 1;
+        var startDay = document.getElementById("startDaySB").selectedIndex;
+        if (startMonth < 0 || startDay === 0 || !document.getElementById("crop_type_annual").checked) {
+            return;
+        }
+        
+        var def = 80;
+        var crop = getSelectedText("crop_name_annual");
+//      <#list cropDataAnnual?keys as cropName>
+        if (crop === "${cropName}") {
+            def = Number("${cropDataAnnual[cropName]['defDays']}");
+        } else
+//      </#list>
+        {}
+        
+        var endDate = new Date();
+        endDate.setFullYear(2002, startMonth, startDay);
+        endDate.setDate(endDate.getDate() + def);
+        document.getElementById("endMonthSB").selectedIndex = endDate.getMonth() + 1;
+        switchMonthDayList("endMonthSB", "endDaySB");
+        document.getElementById("endDaySB").selectedIndex = endDate.getDate();
+        setDateRange();
+    }
+    
+    function setDateRange() {
+        var startMonth = document.getElementById("startMonthSB").selectedIndex - 1;
+        var startDay = document.getElementById("startDaySB").selectedIndex;
+        if (startMonth < 0 || startDay === 0 || !document.getElementById("crop_type_annual").checked) {
+            return;
+        }
+        
+        var max = 70;
+        var min = 90;
+        var crop = getSelectedText("crop_name_annual");
+//      <#list cropDataAnnual?keys as cropName>
+        if (crop === "${cropName}") {
+            max = Number("${cropDataAnnual[cropName]['maxDays']}");
+            min = Number("${cropDataAnnual[cropName]['minDays']}");
+        } else
+//      </#list>
+        {}
+        
+        var maxEndDate = new Date();
+        maxEndDate.setFullYear(2002, startMonth, startDay);
+        maxEndDate.setDate(maxEndDate.getDate() + max);
+        var minEndDate = new Date();
+        minEndDate.setFullYear(2002, startMonth, startDay);
+        minEndDate.setDate(minEndDate.getDate() + min);
+        setRange("endMonthSB", maxEndDate.getMonth() + 1, minEndDate.getMonth() + 1);
+        var endMonth = document.getElementById("endMonthSB").selectedIndex - 1;
+        var maxDay = 31;
+        var minDay = 1;
+        if (endMonth === maxEndDate.getMonth()) {
+            maxDay = maxEndDate.getDate();
+        }
+        if (endMonth === minEndDate.getMonth()) {
+            minDay = minEndDate.getDate();
+        }
+        setRange("endDaySB", maxDay, minDay);
+    }
+    
+    function setRange(SBID, max, min) {
+        var select = document.getElementById(SBID);
+        var length = select.options.length;
+        for (i = 1; i < length; i++) {
+            if (i < min || i > max) {
+                select.options[i].style.display = "none";
+            } else {
+                select.options[i].style.display = "block";
+            }
+            //select.options[i].disabled = i < min || i > max;
+        }
+        //if (select.options[select.selectedIndex].disabled) {
+        if (select.options[select.selectedIndex].style.display === "none") {
+            select.selectedIndex = 0;
+            document.getElementById("endDaySB").selectedIndex = 0;
+        }
+    }
+    
+    
 
     function changeIrrSysListByCrop(cropTypeSBId) {
         var crop = document.getElementById(cropTypeSBId).value;
@@ -105,7 +188,7 @@
         <div id="cropNameAnnualSB" class="form-group cropNameSB">
             <label class="control-label col-sm-3" for="crop_name_annual"></label>
             <div class="col-sm-6">
-                <select id="crop_name_annual" name="crop_name_annual" class="form-control" onchange="changeIrrSysListByCrop('crop_name_annual')">
+                <select id="crop_name_annual" name="crop_name_annual" class="form-control" onchange="changeIrrSysListByCrop('crop_name_annual');setDefEndDate();">
                     <#list cropListAnnual as cropName>
                     <option value="${cropName!}" <#if permit['crop_name']?? && permit['crop_name'] == cropName>selected</#if>>${cropName!}</option>
                     </#list>
@@ -126,7 +209,7 @@
             <label class="control-label col-sm-3" for="beg_date_month">Start Date :</label>
             <div class="row col-sm-6">
                 <div class="col-sm-4">
-                    <select id="startMonthSB"  name="beg_date_month" id="beg_date_month" class="form-control" onchange="switchMonthDayList('startMonthSB', 'startDaySB')">
+                    <select id="startMonthSB"  name="beg_date_month" id="beg_date_month" class="form-control" onchange="switchMonthDayList('startMonthSB', 'startDaySB');setDefEndDate()">
                         <option value="0" >Month</option>
                         <#list ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as x>
                         <option value="${x?counter}" <#if permit['beg_date_month']?? && permit['beg_date_month']?number == x?counter>selected</#if>>${x!}</option>
@@ -134,7 +217,7 @@
                     </select>
                 </div>
                 <div class="col-sm-4">
-                    <select id="startDaySB" name="beg_date_day" id="beg_date_day" class="form-control">
+                    <select id="startDaySB" name="beg_date_day" id="beg_date_day" class="form-control" onchange="setDefEndDate();">
                         <option value="0" >Day</option>
                         <#list 1..31 as x>
                         <option value="${x?counter}" <#if permit['beg_date_day']?? && permit['beg_date_day']?number == x?counter>selected</#if>>${x!}</option>
@@ -147,10 +230,10 @@
             <label class="control-label col-sm-3" for="end_date_month">End Date :</label>
             <div class="row col-sm-6">
                 <div class="col-sm-4">
-                    <select id="endMonthSB" name="end_date_month" class="form-control" onchange="switchMonthDayList('endMonthSB', 'endDaySB')">
+                    <select id="endMonthSB" name="end_date_month" class="form-control" onchange="switchMonthDayList('endMonthSB', 'endDaySB');setDateRange();">
                         <option value ="0">Month</option>
                         <#list ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as x>
-                        <option value="${x?counter}" <#if permit['end_date_month']?? && permit['end_date_month']?number == x?counter>selected</#if>>${x!}</option>
+                        <option value="${x?counter}" <#if permit['end_date_month']?? && permit['end_date_month']?number == x?counter>selected<#elseif !(permit['end_date_month']??)>style="display:none"</#if>>${x!}</option>
                         </#list>
                     </select>
                 </div>
@@ -158,7 +241,7 @@
                     <select id="endDaySB" name="end_date_day" class="form-control">
                         <option value="0" >Day</option>
                         <#list 1..31 as x>
-                        <option value="${x?counter}" <#if permit['end_date_day']?? && permit['end_date_day']?number == x?counter>selected</#if>>${x!}</option>
+                        <option value="${x?counter}" <#if permit['end_date_day']?? && permit['end_date_day']?number == x?counter>selected<#elseif !(permit['end_date_day']??)>style="display:none"</#if>>${x!}</option>
                         </#list>
                     </select>
                 </div>

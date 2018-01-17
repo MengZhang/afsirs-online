@@ -64,6 +64,7 @@
                 hideComp("cropNameSB");
                 if (document.getElementById("crop_type_annual").checked) {
                     switchCropType('annual');
+                    setDateRange();
                 } else if (document.getElementById("crop_type_perennial").checked) {
                     switchCropType('perennial');
                 }
