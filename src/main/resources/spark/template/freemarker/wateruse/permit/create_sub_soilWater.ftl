@@ -62,6 +62,7 @@
                     document.getElementById('planted_area').value = totArea;
                     document.getElementById('planted_area_input').value = totArea;
                 //}
+                showError("soil_file", "", false);
             }
         };
 
@@ -71,7 +72,7 @@
     
     function openSoilMap() {
         var base = document.getElementById('soil_map_url').value;
-        var site = document.getElementById('permit_id').value;
+        var site = document.getElementById('permitId').value;
         var unit = document.getElementById('soil_unit_name').value;
         var json = document.getElementById('polygon_info').value;
         var totalArea = document.getElementById('total_area').value;
@@ -99,6 +100,17 @@
             
         }
         window.open(url);
+    }
+    
+    function validateSoilWater() {
+        var jsonStr = document.getElementById('soil_file_json').value;
+        if (jsonStr === "" || jsonStr === '{"soils":}') {
+            showError("soil_file", "Please upload your soil file", true);
+            return false;
+        } else {
+            showError("soil_file", "", false);
+            return true;
+        }
     }
 </script>
 <div class="subcontainer">
@@ -139,6 +151,10 @@
                 <input type="hidden" id="soil_map_url" value="${soil_map_url!'http://abe.ufl.edu/bmpmodel/arcGIS/Test'}">
                 <button type="button" class="btn btn-primary text-right" onclick="openSoilMap()">View Soil Map</button>
                 <button type="button" class="btn btn-primary text-right" onclick="" disabled>Show Soil Data</button>
+            </div>
+            <div id="soil_fileWarning" class="row col-sm-12 hidden">
+                <div class="col-sm-3 text-left"></div>
+                <div class="col-sm-9 text-left"><label id="soil_fileWarningMsg"></label></div>
             </div>
         </div>
         <div class="form-group">
