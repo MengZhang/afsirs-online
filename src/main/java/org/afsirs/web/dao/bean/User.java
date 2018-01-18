@@ -21,6 +21,9 @@ public class User extends HashMap<String, Object>{
     public String getSalt() {
         return (String) this.get("salt");
     }
+    public String getPassword() {
+        return (String) this.get("password");
+    }
     public String getHashedPassword() {
         return (String) this.get("hashedPassword");
     }
