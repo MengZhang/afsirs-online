@@ -258,9 +258,9 @@
                             <th colspan="3"><span data-toggle="tooltip" title="Soil layer info of a soil type">Soil layer info</span></th>
                         </tr>
                         <tr class="info">
-                            <th style="width:10%"><span data-toggle="tooltip" title="Soil layer base depth(in)">SLLB</span></th>
-                            <th style="width:10%"><span data-toggle="tooltip" title="Soil water, drained lower limit(in3/in3)">SLLL</span></th>
-                            <th style="width:10%"><span data-toggle="tooltip" title="Soil water, drained upper limit(in3/in3)">SLDUL</span></th>
+                            <th style="width:10%"><span data-toggle="tooltip" title="Soil layer base depth(cm)">SLLB</span></th>
+                            <th style="width:10%"><span data-toggle="tooltip" title="Soil water, drained lower limit(cm3/cm3)">SLLL</span></th>
+                            <th style="width:10%"><span data-toggle="tooltip" title="Soil water, drained upper limit(cm3/cm3)">SLDUL</span></th>
                         </tr>
                     </thead>
                     <tbody id="tblBody"></tbody>
