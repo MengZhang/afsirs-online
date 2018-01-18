@@ -67,6 +67,9 @@
                     setDateRange();
                 } else if (document.getElementById("crop_type_perennial").checked) {
                     switchCropType('perennial');
+                } else {
+                    document.getElementById("crop_type_perennial").checked = true;
+                    switchCropType('perennial');
                 }
                 hideComp("soilTypeSB");
                 if (document.getElementById("soil_source_db").checked) {
@@ -80,6 +83,7 @@
                     selectNeareast("et_loc");
                     selectNeareast("rain_loc");
                 }
+                document.getElementById('tblBody').innerHTML = toTableHtml(JSON.parse(document.getElementById('soil_file_json').value)["soils"]);
             }
 
             function openTab(tabName) {
@@ -142,6 +146,43 @@
                     savePerennialCropInfo();
                 }
                 return true;
+            }
+            
+            function showWarning(id, msg, flg) {
+                if (flg) {
+                    document.getElementById(id + "Warning").classList.remove("hidden");
+                    var warnMsg = document.getElementById(id + "WarningMsg");
+                    warnMsg.innerHTML = "<span class='glyphicon glyphicon-exclamation-sign'></span> " + msg;
+                    warnMsg.className = "text-warning";
+                } else {
+                    document.getElementById(id + "Warning").classList.add("hidden");
+                }
+            }
+            
+            function showError(id, msg, flg) {
+                if (flg) {
+                    document.getElementById(id + "Warning").classList.remove("hidden");
+                    var warnMsg = document.getElementById(id + "WarningMsg");
+                    warnMsg.innerHTML = "<span class='glyphicon glyphicon-remove-sign'></span> " + msg;
+                    warnMsg.className = "text-danger";
+                } else {
+                    document.getElementById(id + "Warning").classList.add("hidden");
+                }
+            }
+            
+            function validateInput() {
+                var errTab = "";
+                if (!validateSoilWater()) {
+                    errTab = "SoilWater";
+                }
+                if (!validateSiteInfo()) {
+                    errTab = "SiteInfo";
+                }
+                if (errTab === "") {
+                    document.getElementById("createPermitForm").submit();
+                } else {
+                    openTab(errTab);
+                }
             }
         </script>
 

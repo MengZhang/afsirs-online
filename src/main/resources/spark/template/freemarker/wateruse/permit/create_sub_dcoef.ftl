@@ -67,7 +67,7 @@
         <div class="text-center">
             <div>
                 <button type="button" class="btn btn-primary text-left" onclick="openTab('Climate')">Back</button>&nbsp;&nbsp;&nbsp;
-                <button type="submit" class="btn btn-primary text-right" value="Submit">Save</button>
+                <button type="button" class="btn btn-primary text-right" value="Submit" onclick="validateInput()">Save</button>
             </div>
         </div>
     </div>

@@ -109,11 +109,16 @@
         var minDay = 1;
         if (endMonth === maxEndDate.getMonth()) {
             maxDay = maxEndDate.getDate();
+        } else if (endMonth > maxEndDate.getMonth()) {
+            maxDay = 0;
         }
         if (endMonth === minEndDate.getMonth()) {
             minDay = minEndDate.getDate();
+        } else if (endMonth < minEndDate.getMonth()) {
+            minDay = 32;
         }
         setRange("endDaySB", maxDay, minDay);
+        checkRange(document.getElementById("endDaySB"));
     }
     
     function setRange(SBID, max, min) {
@@ -121,20 +126,30 @@
         var length = select.options.length;
         for (i = 1; i < length; i++) {
             if (i < min || i > max) {
-                select.options[i].style.display = "none";
+                //select.options[i].style.display = "none";
+                select.options[i].classList.add("text-danger");
             } else {
-                select.options[i].style.display = "block";
+                //select.options[i].style.display = "block";
+                select.options[i].classList.remove("text-danger");
             }
             //select.options[i].disabled = i < min || i > max;
         }
         //if (select.options[select.selectedIndex].disabled) {
-        if (select.options[select.selectedIndex].style.display === "none") {
-            select.selectedIndex = 0;
-            document.getElementById("endDaySB").selectedIndex = 0;
-        }
+        // if (select.options[select.selectedIndex].style.display === "none") {
+//        if (select.options[select.selectedIndex].classList.contains("text-danger")) {
+//            select.selectedIndex = 0;
+//            document.getElementById("endDaySB").selectedIndex = 0;
+//        }
     }
     
-    
+    function checkRange(select) {
+        if (select.options[select.selectedIndex].classList.contains("text-danger")) {
+            showWarning(select.id, "End date is outside normal range", true);
+        } else {
+            showWarning(select.id, "", false);
+            showWarning("endMonthSB", "", false);
+        }
+    }
 
     function changeIrrSysListByCrop(cropTypeSBId) {
         var crop = document.getElementById(cropTypeSBId).value;
@@ -154,6 +169,41 @@
             setDefIrrParams();
         }
     }
+    
+    function validateSiteInfo() {
+        var checklist = ["permitId", "ownerName", "startMonthSB", "startDaySB", "endMonthSB", "endDaySB"];
+//        var checkItem = ["Permit ID", "Owner Name", "Start Month", "Start Day", "End Month", "End Day"];
+        var ret = true;
+        for (var i = 0; i < checklist.length; i++) {
+            var comp = document.getElementById(checklist[i]);
+            var errFlg = false;
+            if (checklist[i].endsWith("SB")) {
+                errFlg = !comp.disabled && comp.selectedIndex === 0;
+            } else {
+                errFlg = comp.value === "";
+            }
+            if (errFlg) {
+                showError(checklist[i], "Please provide " + comp.title, true);
+                ret = false;
+            } else {
+                showError(checklist[i], "", false);
+            }
+        }
+        return ret;
+    }
+    
+    function revalidate(comp) {
+        var errFlg = false;
+        var id = comp.id;
+        if (id.endsWith("SB")) {
+            errFlg = !comp.disabled && comp.selectedIndex === 0;
+        } else {
+            errFlg = comp.value === "";
+        }
+        if (!errFlg) {
+            showError(id, "", false);
+        }
+    }
 </script>
 <div class="subcontainer">
     <div class="row">
@@ -161,17 +211,25 @@
             <label class="control-label col-sm-3" for="permit_id">Permit ID :</label>
             <div class="col-sm-6">
                 <#if permit['permit_id']??>
-                <input type="text" id="permit_id" class="form-control" value="${permit['permit_id']!}" placeholder="Enter Permit ID" data-toggle="tooltip" title="This field accepts alphanumeric characters without spaces" disabled>
+                <input type="text" id="permitId" class="form-control" value="${permit['permit_id']!}" placeholder="Enter Permit ID" data-toggle="tooltip" title="Permit ID" onchange="revalidate(this)" label="Permit ID" disabled>
                 <input type="hidden" name="permit_id" value="${permit['permit_id']!}" >
                 <#else>
-                <input type="text" id="permit_id" name="permit_id" class="form-control" value="${permit['permit_id']!}" placeholder="Enter Permit ID" data-toggle="tooltip" title="This field accepts alphanumeric characters without spaces">
+                <input type="text" id="permitId" name="permit_id" class="form-control" value="${permit['permit_id']!}" placeholder="Enter Permit ID" data-toggle="tooltip" title="Permit ID" onchange="revalidate(this)">
                 </#if>
+            </div>
+            <div id="permitIdWarning" class="row col-sm-12 hidden">
+                <div class="col-sm-3 text-left"></div>
+                <div class="col-sm-9 text-left"><label id="permitIdWarningMsg"></label></div>
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="owner_name">Owner Name :</label>
             <div class="col-sm-6">
-                <input type="text" name="owner_name" class="form-control" value="${permit['owner_name']!}" placeholder="Enter Owner Name" data-toggle="tooltip" title="This field accepts alphanumeric characters without spaces">
+                <input type="text" id="ownerName" name="owner_name" class="form-control" value="${permit['owner_name']!}" placeholder="Enter Owner Name" data-toggle="tooltip" title="Owner Name" onchange="revalidate(this)">
+            </div>
+            <div id="ownerNameWarning" class="row col-sm-12 hidden">
+                <div class="col-sm-3 text-left"></div>
+                <div class="col-sm-9 text-left"><label id="ownerNameWarningMsg"></label></div>
             </div>
         </div>
         <div class="form-group">
@@ -209,7 +267,7 @@
             <label class="control-label col-sm-3" for="beg_date_month">Start Date :</label>
             <div class="row col-sm-6">
                 <div class="col-sm-4">
-                    <select id="startMonthSB"  name="beg_date_month" id="beg_date_month" class="form-control" onchange="switchMonthDayList('startMonthSB', 'startDaySB');setDefEndDate()">
+                    <select id="startMonthSB"  name="beg_date_month" id="beg_date_month" class="form-control" title="Start Month" onchange="revalidate(this);switchMonthDayList('startMonthSB', 'startDaySB');setDefEndDate()">
                         <option value="0" >Month</option>
                         <#list ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as x>
                         <option value="${x?counter}" <#if permit['beg_date_month']?? && permit['beg_date_month']?number == x?counter>selected</#if>>${x!}</option>
@@ -217,7 +275,7 @@
                     </select>
                 </div>
                 <div class="col-sm-4">
-                    <select id="startDaySB" name="beg_date_day" id="beg_date_day" class="form-control" onchange="setDefEndDate();">
+                    <select id="startDaySB" name="beg_date_day" id="beg_date_day" class="form-control" title="Start Day" onchange="revalidate(this);setDefEndDate();">
                         <option value="0" >Day</option>
                         <#list 1..31 as x>
                         <option value="${x?counter}" <#if permit['beg_date_day']?? && permit['beg_date_day']?number == x?counter>selected</#if>>${x!}</option>
@@ -225,27 +283,43 @@
                     </select>
                 </div>
             </div>
+            <div id="startMonthSBWarning" class="row col-sm-12 hidden">
+                <div class="col-sm-3 text-left"></div>
+                <div class="col-sm-9 text-left"><label id="startMonthSBWarningMsg"></label></div>
+            </div>
+            <div id="startDaySBWarning" class="row col-sm-12 hidden">
+                <div class="col-sm-3 text-left"></div>
+                <div class="col-sm-9 text-left"><label id="startDaySBWarningMsg"></label></div>
+            </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="end_date_month">End Date :</label>
             <div class="row col-sm-6">
                 <div class="col-sm-4">
-                    <select id="endMonthSB" name="end_date_month" class="form-control" onchange="switchMonthDayList('endMonthSB', 'endDaySB');setDateRange();">
+                    <select id="endMonthSB" name="end_date_month" class="form-control" title="End Month" onchange="revalidate(this);switchMonthDayList('endMonthSB', 'endDaySB');setDateRange();">
                         <option value ="0">Month</option>
                         <#list ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as x>
-                        <option value="${x?counter}" <#if permit['end_date_month']?? && permit['end_date_month']?number == x?counter>selected<#elseif !(permit['end_date_month']??)>style="display:none"</#if>>${x!}</option>
+                        <option value="${x?counter}" <#if permit['end_date_month']?? && permit['end_date_month']?number == x?counter>selected<#elseif !(permit['end_date_month']??)>class="text-danger"</#if>>${x!}</option>
                         </#list>
                     </select>
                 </div>
                 <div class="col-sm-4">
-                    <select id="endDaySB" name="end_date_day" class="form-control">
+                    <select id="endDaySB" name="end_date_day" class="form-control" title="End Day" onchange="revalidate(this);checkRange(this);">
                         <option value="0" >Day</option>
                         <#list 1..31 as x>
-                        <option value="${x?counter}" <#if permit['end_date_day']?? && permit['end_date_day']?number == x?counter>selected<#elseif !(permit['end_date_day']??)>style="display:none"</#if>>${x!}</option>
+                        <option value="${x?counter}" <#if permit['end_date_day']?? && permit['end_date_day']?number == x?counter>selected<#elseif !(permit['end_date_day']??)>class="text-danger"</#if>>${x!}</option>
                         </#list>
                     </select>
                 </div>
                 <div class="col-sm-1"><a onclick="window.open('http://abe.ufl.edu/bmpmodel/arcGIS/Test/CropInfo.pdf')" title="Crop Growing Seasaon Length Table"><span class="glyphicon glyphicon-question-sign"></span></a></div>
+            </div>
+            <div id="endMonthSBWarning" class="row col-sm-12 hidden">
+                <div class="col-sm-3 text-left"></div>
+                <div class="col-sm-9 text-left"><label id="endMonthSBWarningMsg"></label></div>
+            </div>
+            <div id="endDaySBWarning" class="row col-sm-12 hidden">
+                <div class="col-sm-3 text-left"></div>
+                <div class="col-sm-9 text-left"><label id="endDaySBWarningMsg"></label></div>
             </div>
         </div>
     </div>

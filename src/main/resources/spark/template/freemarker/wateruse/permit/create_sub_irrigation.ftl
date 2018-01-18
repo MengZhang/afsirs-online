@@ -80,7 +80,7 @@
         comp.min = min;
         comp.step = step;
         comp.value = value;
-        comp.placeholder = msg;
+        //comp.placeholder = msg;
         comp.title = msg;
     }
 </script>
