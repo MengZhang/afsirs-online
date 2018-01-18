@@ -10,7 +10,7 @@
             document.getElementById("total_area").disabled = true;
             document.getElementById('planted_area').max = "1000";
             document.getElementById('planted_area_input').max = "1000";
-            document.getElementById('soil_file_content').style.display = "none";
+            document.getElementById('soil_file_content').classList.add("hidden");
         } else {
             document.getElementById("total_area").disabled = false;
             var max = Number(document.getElementById('total_area').value);
@@ -20,7 +20,7 @@
             }
             document.getElementById('planted_area').max = max;
             document.getElementById('planted_area_input').max = max;
-            document.getElementById('soil_file_content').style.display = "block";
+            document.getElementById('soil_file_content').classList.remove("hidden");
         }
         
         updateWthSB(soilSource);
@@ -43,15 +43,14 @@
             if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                 var jsonStr = evt.target.result;
                 var obj = JSON.parse(jsonStr);
-                var soilsStr = JSON.stringify(obj["soils"]);
                 var plygonStr = JSON.stringify(obj["polygon"][0]);
                 var afsirsInfo = obj["afsirs"];
                 if (afsirsInfo === undefined) {
                     afsirsInfo = obj["asfirs"];
                 }
                 var totArea = Number(afsirsInfo[0].TotalArea);
-                document.getElementById('soil_file_content').style.display = "block";
-                document.getElementById('soil_file_content').textContent = soilsStr;
+                document.getElementById('soil_file_content').classList.remove("hidden");
+                document.getElementById('tblBody').innerHTML = toTableHtml(obj["soils"]);
                 document.getElementById('soil_file_json').value = jsonStr;
                 document.getElementById('polygon_info').value = plygonStr;
 //                var value = document.getElementById('planted_area_input').value;
@@ -68,6 +67,68 @@
 
         var blob = file.slice(start, stop + 1);
         reader.readAsBinaryString(blob);
+    }
+    
+    function toTableHtml(soils) {
+        if (soils.length === 0) {
+            return "<tr><td colspan='8'>No Data</td></tr>";
+        }
+        
+        var ret = "";
+        var unitRowSpan = 0;
+        var typeRowSpan = 0;
+        var unitStr = [];
+        var layerStr = [];
+        var typeStr = [];
+        var unitIdx = 0;
+        var unitRow = 0;
+        var typeIdx = 0;
+        var typeRow = 0;
+        var layerIdx = 0;
+        var unitArea = 0;
+        var mukey = soils[0]["mukey"];
+        var cokey = soils[0]["cokey"];
+        
+        for (var i = 0; i < soils.length; i++) {
+            
+            if (soils[i]["mukey"] !== mukey) {
+                unitStr[unitRow] = "<td rowspan='" + unitRowSpan + "'>" + soils[unitIdx]["musym"] + "</td><td rowspan='" + unitRowSpan + "'>" + soils[unitIdx]["mukeyName"] + "</td><td rowspan='" + unitRowSpan + "'>" + unitArea.toFixed(3) + "</td>";
+                mukey = soils[i]["mukey"];
+                unitIdx = i;
+                unitRow = layerIdx;
+                unitRowSpan = 0;
+                unitArea = Number(soils[unitIdx]["compArea"]);
+            } else {
+                unitArea += Number(soils[unitIdx]["compArea"]); 
+            }
+            if (soils[i]["cokey"] !== cokey) {
+                var typePct = soils[typeIdx]["comppct_r"];
+                if (typePct === undefined) {
+                    typePct = "";
+                }
+                typeStr[typeRow] = "<td rowspan='" + typeRowSpan + "'>" + soils[typeIdx]["soilName"] + "</td><td rowspan='" + typeRowSpan + "'>"+ typePct + "</td>";
+                cokey = soils[i]["cokey"];
+                typeIdx = i;
+                typeRow = layerIdx;
+                typeRowSpan = 0;
+            }
+            
+            
+            var layers = soils[i]["soilLayer"];
+            for (var j = 0; j < layers.length; j++, layerIdx++) {
+                layerStr[layerIdx] = "<td>" + layers[j]["sllb"] + "</td><td>" + layers[j]["slll"] + "</td><td>" + layers[j]["sldul"] + "</td>";
+                unitStr[layerIdx] = "";
+                typeStr[layerIdx] = "";
+                unitRowSpan++;
+                typeRowSpan++;
+            }
+        }
+        unitStr[unitRow] = "<td rowspan='" + unitRowSpan + "'>" + soils[unitIdx]["musym"] + "</td><td rowspan='" + unitRowSpan + "'>" + soils[unitIdx]["mukeyName"] + "</td><td rowspan='" + unitRowSpan + "'>" + unitArea.toFixed(3) + "</td>";
+        typeStr[typeRow] = "<td rowspan='" + typeRowSpan + "'>" + soils[typeIdx]["soilName"] + "</td><td rowspan='" + typeRowSpan + "'>"+ typePct + "</td>";
+        for (var i = 0; i < layerIdx; i++) {
+            ret += "<tr>" + unitStr[i] + typeStr[i] + layerStr[i] + "</tr>"; 
+        }
+        return ret;
     }
     
     function openSoilMap() {
@@ -143,8 +204,7 @@
             <label class="control-label col-sm-3" for="soil_file">Upload Soil File :</label>
             <div class="col-sm-5">
                 <input type="file" id="soil_file" name="soil_file" class="form-control" value="" accept=".json" onchange="readFile()" placeholder="Browse Soil File (.json)" data-toggle="tooltip" title="Browse Soil File (.json)">
-                <input type="hidden" id="soil_file_json" name="soil_file_json" value='{"soils":${permit["soil_json"]!}}'>
-                
+                <input type="hidden" id="soil_file_json" name="soil_file_json" value='{"soils":${permit["soil_json"]!"[]"}}'>
             </div>
             <div class="col-sm-4">
                 <input type="hidden" id="polygon_info" value='${permit["polygon_info"]!}'>
@@ -184,7 +244,29 @@
                 </select>
             </div>
         </div>
-        <div id="soil_file_content" class="form-group">${permit['soil_json']!}</div>
+        <div id="soil_file_content" class="form-group">
+            <label class="control-label col-sm-3" for="water_hold_capacity">Raw soil data :</label>
+            <div id="soil_file_content_rawdata" class="col-sm-8 text-left" style="overflow-y:auto;max-height:200px;">
+                <table id="tbl" class="table table-hover table-bordered table-condensed text-center" >
+                    <thead class="text-center">
+                        <tr class="info">
+                            <th rowspan="2"><span data-toggle="tooltip" title="Soil Unit Symbol #">Symbol</span></th>
+                            <th rowspan="2"><span data-toggle="tooltip" title="Soil Series Name">Soil Name</span></th>
+                            <th rowspan="2"><span data-toggle="tooltip" title="Map Unit Area (acres)" >Area</span></th>
+                            <th rowspan="2"><span data-toggle="tooltip" title="Soil Type Name">Soil Type</span></th>
+                            <th rowspan="2"><span data-toggle="tooltip" title="Soil Type Percentage">Pct.</span></th>
+                            <th colspan="3"><span data-toggle="tooltip" title="Soil layer info of a soil type">Soil layer info</span></th>
+                        </tr>
+                        <tr class="info">
+                            <th style="width:10%"><span data-toggle="tooltip" title="Soil layer base depth(in)">SLLB</span></th>
+                            <th style="width:10%"><span data-toggle="tooltip" title="Soil water, drained lower limit(in3/in3)">SLLL</span></th>
+                            <th style="width:10%"><span data-toggle="tooltip" title="Soil water, drained upper limit(in3/in3)">SLDUL</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblBody"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
     <div class="text-center">
         <div>

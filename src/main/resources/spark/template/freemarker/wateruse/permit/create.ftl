@@ -83,6 +83,7 @@
                     selectNeareast("et_loc");
                     selectNeareast("rain_loc");
                 }
+                document.getElementById('tblBody').innerHTML = toTableHtml(JSON.parse(document.getElementById('soil_file_json').value)["soils"]);
             }
 
             function openTab(tabName) {
