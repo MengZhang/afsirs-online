@@ -1,7 +1,7 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand navbar-static-top"><img src="/LOGO.png" height="125%" alt="Agricultural Field Scale Irrigation Requirements Simulation"></a>
+            <a class="navbar-brand navbar-static-top"><img src="/images/LOGO.png" height="125%" alt="Agricultural Field Scale Irrigation Requirements Simulation"></a>
         </div>
         <ul class="nav navbar-nav">
             <li class="active">
