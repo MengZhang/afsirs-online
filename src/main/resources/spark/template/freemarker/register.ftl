@@ -33,6 +33,7 @@
                     <tr>
                         <td><input type="submit" value="Register"></td>
                     </tr>
+                </table>
             </form>
         </div>
         <#include "footer.ftl">
