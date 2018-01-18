@@ -18,7 +18,7 @@
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="/wateruse/permit/create"><span class="glyphicon glyphicon-file"></span> Create Permit </a></li>
                     <li><a href="/wateruse/permit/list"><span class="glyphicon glyphicon-list-alt"></span> Permit List </a></li>
-                    <li><a href="/wateruse/permit/search"><span class="glyphicon glyphicon-search"></span> Search Permit </a></li>
+                    <li><a href="/wateruse/permit/search" class="hidden"><span class="glyphicon glyphicon-search"></span> Search Permit </a></li>
                 </ul>
             </li>
             <li class="dropdown">
