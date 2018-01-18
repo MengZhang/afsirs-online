@@ -17,9 +17,9 @@
             </ol>
 
             <!-- Wrapper for slides -->
-            <div class="carousel-inner" role="listbox">
+            <div class="carousel-inner" role="listbox" style="max-height:50vh">
                 <div class="item active">
-                    <img src="1-1-S.jpg" alt="field" width="1200" height="521">
+                    <img src="images/2-1-S.jpg" alt="field" width="1200" height="300" style="max-height:50vh">
                     <div class="carousel-caption ">
                         <h3>AFSIRS Online Prototype</h3>
                         <p>Simulate the water usage</p>
@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="item">
-                    <img src="1-2-S.jpg" alt="field" width="1200" height="521">
+                    <img src="images/2-2-S.jpg" alt="field" width="1200" height="300" style="max-height:50vh">
                     <div class="carousel-caption">
                         <h3>AFSIRS Online Prototype</h3>
                         <p>Collect site information</p>
@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="item">
-                    <img src="1-3-S.jpg" alt="field" width="1200" height="521">
+                    <img src="images/2-3-S.jpg" alt="field" width="1200" height="300" style="max-height:50vh">
                     <div class="carousel-caption">
                         <h3>AFSIRS Online  Prototype</h3>
                         <p>Manage soil and water use data</p>
@@ -58,9 +58,36 @@
 
             <div class="container-fluid text-left">
                 <h3>To run AFSIRS module</h3>
-                <p>Select Simulation from menu bar</p>
-                <p>Choose AFSIRS and input your site info and config your simulation</p>
-                <p>The result will show as graph or download as PDF file</p>
+                <ol>
+                    <li>Select Water Use from menu bar</li>
+                    <li>Choose Create Permit and input your site info and configure your simulation</li>
+                    <li>Once you save your Permit, you can find it in the Permit List page</li>
+                    <li>Find Run AFSIRS button on the list page, and click it to show the graph or download as PDF file</li>
+                </ol>
+            </div>
+            <hr>
+            <div class="container-fluid text-left">
+                <h3>Browser Support</h3>
+                <p>To smoothly use the online AFSIRS, please check the following table and make sure your browser is supported.</p>
+                <table class="table table-bordered table-striped text-center">
+                    <tr>
+                        <th style="width:16%;" title="Chrome" class="text-center"><img src="images/browsers/chrome.gif" alt="Chrome"></th>
+                        <th style="width:16%;" title="Edge" class="text-center"><img src="images/browsers/edge.gif" alt="Edge"></th>
+                        <th style="width:16%;" title="Internet Explorer" class="text-center"><img src="images/browsers/ie.gif" alt="Internet Explorer"></th>
+                        <th style="width:16%;" title="Firefox" class="text-center"><img src="images/browsers/firefox.gif" alt="Firefox"></th>
+                        <th style="width:16%;" title="Safari" class="text-center"><img src="images/browsers/safari.gif" alt="Safari"></th>
+                        <th style="width:16%;" title="Opera" class="text-center"><img src="images/browsers/opera.gif" alt="Opera"></th>                
+                    </tr>
+                    <tr>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>10 or later</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                    </tr>
+                </table>
+                <p>* Browsers which are not included in the above might face issue while using the web site.</p>
             </div>
 
         </div>
