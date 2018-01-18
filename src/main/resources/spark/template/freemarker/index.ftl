@@ -58,9 +58,10 @@
 
             <div class="container-fluid text-left">
                 <h3>To run AFSIRS module</h3>
-                <p>Select Simulation from menu bar</p>
-                <p>Choose AFSIRS and input your site info and config your simulation</p>
-                <p>The result will show as graph or download as PDF file</p>
+                <p>Select Water Use from menu bar</p>
+                <p>Choose Create Permit and input your site info and configure your simulation</p>
+                <p>Once you save your Permit, you can find it in the Permit List</p>
+                <p>Click Run AFSIRS to show the graph or download as PDF file</p>
             </div>
 
         </div>
