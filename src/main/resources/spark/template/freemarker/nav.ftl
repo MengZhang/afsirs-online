@@ -27,6 +27,12 @@
                     <li><a href="#" onClick="window.open('http://abe.ufl.edu/bmpmodel/arcGIS/Test/?zoom=9', 'Soil Map',width=1200,height=300)"><span class="glyphicon glyphicon-globe"></span> Soil Map</a></li>
                 </ul>
             </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-folder-close"></span> Document <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" onClick="window.open('doc/afsirs/AFSIRS_Technical_Manual.pdf', 'AFSIRS Technical Manual')"><span class="glyphicon glyphicon-book"></span> AFSIRS Technical Manual</a></li>
+                </ul>
+            </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <#if currentUser?? >
