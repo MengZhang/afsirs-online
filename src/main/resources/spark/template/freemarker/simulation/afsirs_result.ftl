@@ -423,6 +423,22 @@
             </fieldset>
         </div>
         <div class="row">
+            <#if currentUserRank?? && currentUserRank == "admin" >
+            <div class="text-right col-md-6">
+                <div>
+                    <button type="button" class="btn btn-success text-right" onclick="window.open('/simulation/afsirs_result?permit_id=${permit_id!}&user_id=${user_id!}&file_type=pdf')">Summary PDF</button>
+                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=$&user_id=${user_id!}{permit_id!}&file_type=excel'">Summary EXCEL</button>
+                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=$&user_id=${user_id!}{permit_id!}&file_type=calcExcel'">Calculation EXCEL</button>
+                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=$&user_id=${user_id!}{permit_id!}&file_type=text'">Raw Text</button>
+                </div>
+            </div>
+            <div class="text-right col-md-4">
+                <div>
+                    <button type="button" class="btn btn-primary text-right" onclick="window.location.href = '/wateruse/permit/list'">Back to list</button>
+                    <button type="button" class="btn btn-primary text-right" onclick="window.location.href = '/wateruse/permit/find?permit_id=${permit_id!}&user_id=${user_id!}'">Edit Permit</button>
+                </div>
+            </div>
+            <#else>
             <div class="text-right col-md-6">
                 <div>
                     <button type="button" class="btn btn-success text-right" onclick="window.open('/simulation/afsirs_result?permit_id=${permit_id!}&file_type=pdf')">Summary PDF</button>
@@ -437,6 +453,7 @@
                     <button type="button" class="btn btn-primary text-right" onclick="window.location.href = '/wateruse/permit/find?permit_id=${permit_id!}'">Edit Permit</button>
                 </div>
             </div>
+            </#if>
         </div>
         <br><br>
 

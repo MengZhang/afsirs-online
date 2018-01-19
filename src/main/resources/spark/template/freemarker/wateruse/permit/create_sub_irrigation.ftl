@@ -108,8 +108,9 @@
                 </div>
             </div>
         </div>
+        <hr>
         <div class="form-group">
-            <label class="control-label col-sm-3" for="irr_depth_type"><u>Irrigation Water Depths</u></label>
+            <label class="text-left col-sm-8 col-sm-push-1" for="irr_depth_type"><u>Irrigation Water Depths</u></label>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="irr_depth_type">Definition :</label>
@@ -167,8 +168,9 @@
                     </div>
                 </div>-->
 
+        <hr>
         <div class="form-group">
-            <label class="control-label col-sm-3"><u>Irrigation Coefficient</u></label>
+            <label class="text-left col-sm-8 col-sm-push-1"><u>Irrigation Coefficient</u></label>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="irr_efficiency">Efficiency :</label>

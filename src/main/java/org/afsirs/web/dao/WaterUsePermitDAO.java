@@ -40,7 +40,15 @@ public class WaterUsePermitDAO {
 
     public static ArrayList<WaterUsePermit> list(String userId) {
         ArrayList<WaterUsePermit> ret = new ArrayList<>();
-        ArrayList<Document> dbRetArr = MongoDBHandler.list(getConnection(AFSIRSCollection.WaterUserPermit));
+        ArrayList<Document> dbRetArr;
+        if (UserDAO.isAdmin(userId)) {
+            dbRetArr = MongoDBHandler.list(getConnection(AFSIRSCollection.WaterUserPermit));
+        } else {
+            dbRetArr = MongoDBHandler.search(
+                getConnection(AFSIRSCollection.WaterUserPermit),
+                new Document("user_id", userId));
+        }
+        
         for (Document data : dbRetArr) {
             ret.add(WaterUsePermit.readFromJson(data.toJson()));
         }

@@ -49,8 +49,9 @@
     }
 </script>
 <div id="decoef_annual">
+    <hr>
     <div class="form-group">
-        <label class="control-label col-sm-3"><u>Irrigated Root Zone Depth</u></label>
+        <label class="text-left col-sm-8 col-sm-push-1"><u>Irrigated Root Zone Depth</u></label>
     </div>
     <div class="form-group">
         <label class="control-label col-sm-3" for="dzn">Initial :</label>
@@ -66,8 +67,9 @@
         </div>
         <label class="control-label col-sm-1">(Inches)</label>
     </div>
+    <hr>
     <div class="form-group">
-        <label class="control-label col-sm-3"><u>Crop water use coefficients</u></label>
+        <label class="text-left col-sm-8 col-sm-push-1"><u>Crop water use coefficients</u></label>
     </div>
     <div class="form-group">
         <label class="control-label col-sm-3" for="akc3">Growth Stage 3 :</label>
@@ -79,8 +81,9 @@
             <input type="text" id="akc4" name="akc4" class="form-control" value="${permit['akc4']!}" placeholder="Coefficients for growth stage 4" data-toggle="tooltip" title="Crop water use coefficients for growth stage 4">
         </div>
     </div>
+    <hr>
     <div class="form-group">
-        <label class="control-label col-sm-3"><u>Fraction of Growing Season</u></label>
+        <label class="text-left col-sm-8 col-sm-push-1"><u>Fraction of Growing Season</u></label>
     </div>
     <div class="form-group">
         <label class="control-label col-sm-3" for="f1">Growth Stage 1 :</label>
@@ -102,8 +105,9 @@
             <input type="text" id="f4" name="f4" class="form-control" value="${permit['f4']!}" placeholder="Fraction for growth stage 4" data-toggle="tooltip" title="Fraction of Growing season for growth stage 4">
         </div>
     </div>
+    <hr>
     <div class="form-group">
-        <label class="control-label col-sm-3"><u>Allowable Soil Water Depletions</u></label>
+        <label class="text-left col-sm-8 col-sm-push-1"><u>Allowable Soil Water Depletions</u></label>
     </div>
     <div class="form-group">
         <label class="control-label col-sm-3" for="ald1">Growth Stage 1 :</label>

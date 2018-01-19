@@ -9,6 +9,7 @@ import static org.afsirs.web.util.DBUtil.getConnection;
 import org.afsirs.web.util.MongoDBHandler;
 import org.bson.Document;
 import org.mindrot.jbcrypt.BCrypt;
+import spark.Request;
 
 public class UserDAO {
 
@@ -17,6 +18,14 @@ public class UserDAO {
     public static ConcurrentHashMap<String, User> syncUserRecords() {
         ConcurrentHashMap<String, User> ret = new ConcurrentHashMap();
         return ret;
+    }
+    
+    public static boolean isAdmin(String userId) {
+        if (users.containsKey(userId)) {
+            return users.get(userId).isAdmin();
+        } else {
+            return false;
+        }
     }
 
     public static User getUserByUsername(String userName) {

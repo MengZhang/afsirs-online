@@ -198,6 +198,7 @@
 
             <form id="createPermitForm" action="/wateruse/permit/create" class="form-horizontal" method="post" onsubmit="return collectData()">
                 <input type="hidden" name="update_flg" value="${update_flg!'false'}">
+                <input type="hidden" name="user_id" value="${permit['user_id']!}">
                 <fieldset>
                     <legend>Create New Permit</legend>
 

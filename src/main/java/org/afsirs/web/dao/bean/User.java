@@ -30,4 +30,8 @@ public class User extends HashMap<String, Object>{
     public String getUserName() {
         return (String) this.get("userName");
     }
+    
+    public boolean isAdmin() {
+        return "admin".equals(this.get("userRank"));
+    }
 }

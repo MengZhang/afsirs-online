@@ -3,6 +3,7 @@ package org.afsirs.web.view;
 import java.util.Map;
 import org.afsirs.web.util.Path;
 import static org.afsirs.web.Main.LOG;
+import org.afsirs.web.dao.UserDAO;
 import org.afsirs.web.util.DataUtil;
 import spark.ModelAndView;
 import spark.Request;
@@ -13,6 +14,7 @@ public class ViewUtil {
     public static void setCommonParam(Request request, Map<String, Object> attributes) {
 //        model.put("msg", new MessageBundle(getSessionLocale(request)));
         attributes.put("currentUser", getSessionVar(request, "currentUser"));
+        attributes.put("currentUserRank", getSessionVar(request, "currentUserRank"));
         if (!attributes.containsKey("operation_result")) {
             attributes.put("operation_result", "");
         }
@@ -102,6 +104,13 @@ public class ViewUtil {
     }
     
     public static String getUserID(Request request) {
-        return getSessionVar(request, "currentUser", "");
+        String ret = getSessionVar(request, "currentUser", "");
+        if (UserDAO.isAdmin(ret)) {
+            String tmp = request.queryParams("user_id");
+            if (tmp != null && !tmp.isEmpty()) {
+                ret = tmp;
+            }
+        }
+        return ret;
     }
 }

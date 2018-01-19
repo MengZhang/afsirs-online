@@ -232,6 +232,7 @@
                 <div class="col-sm-9 text-left"><label id="ownerNameWarningMsg"></label></div>
             </div>
         </div>
+        <hr>
         <div class="form-group">
             <label class="control-label col-sm-3" for="crop_type">Crop :</label>
             <div class="row col-sm-6">
@@ -263,6 +264,7 @@
                 </select>
             </div>
         </div>
+        <hr>
         <div id="startDateSB" class="form-group">
             <label class="control-label col-sm-3" for="beg_date_month">Start Date :</label>
             <div class="row col-sm-6">

@@ -41,14 +41,13 @@
 <div class="subcontainer">
     <div class="row">
         <div class="form-group">
-            <label class="control-label col-sm-3">Irrigation System :</label>
-            <mark><label class="control-label col-sm-2" id="irr_sys_label"></label></mark>
-            <label class="control-label col-sm-2">Water Table Depth :</label>
-            <mark><label class="control-label col-sm-1" id="water_table_depth_label"></label></mark>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-3">Crop :</label>
-            <mark><label class="control-label col-sm-2" id="crop_label"></label></mark>
+            <label class="text-right col-sm-3">Irrigation System :</label>
+            <label class="text-primary text-left col-sm-9" id="irr_sys_label"></label>
+            <label class="text-right col-sm-3">Water Table Depth :</label>
+            <label class="text-primary text-left col-sm-1" id="water_table_depth_label"></label>
+            <label class="text-left col-sm-8">(inches)</label>
+            <label class="text-right col-sm-3">Crop :</label>
+            <label class="text-primary text-left col-sm-9" id="crop_label"></label>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="crop_type">Crop Data:</label>
