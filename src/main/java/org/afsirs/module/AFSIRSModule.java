@@ -3527,7 +3527,21 @@ public class AFSIRSModule {
     }
 
     //save permit files in JSON format
-    public static boolean savePermitFile(File outputDir, UserInput input) {
+    public static File savePermitFile(File outputDir, UserInput input) {
+        File ret = Paths.get(outputDir.getPath(), input.getSITE() + ".json").toFile();
+        try (FileWriter file = new FileWriter(ret)) {
+
+            file.write(savePermitJson(input));
+            file.flush();
+
+            return ret;
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+            return null;
+        }
+    }
+
+    public static String savePermitJson(UserInput input) {
         JSONObject obj = new JSONObject();
         //page 1
         obj.put("permit_id", input.getSITE());
@@ -3607,17 +3621,10 @@ public class AFSIRSModule {
                 obj.put("hgt", input.getHGT() + "");
             }
         }
+        
+        return obj.toJSONString();
 
-        try (FileWriter file = new FileWriter(Paths.get(outputDir.getPath(), input.getSITE() + ".json").toFile())) {
-
-            file.write(obj.toJSONString());
-            file.flush();
-
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace(System.err);
-            return false;
-        }
+        
 
     }
 
