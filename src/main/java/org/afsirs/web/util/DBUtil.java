@@ -1,6 +1,9 @@
 package org.afsirs.web.util;
 
+import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
 
 /**
  *
@@ -8,14 +11,30 @@ import com.mongodb.MongoClientURI;
  */
 public class DBUtil {
     
-//    public static String getDBBaseURI() {
-//        return "https://sample-api2.herokuapp.com/rest";
-////        return "http://localhost:8080/ifdc-db-api/rest/";
-//    }
+    private static MongoClient mongoClient;
+    protected final static String DEF_SKIP = "0";
+    protected final static String DEF_LIMIT = Integer.MAX_VALUE + "";
     
-    public static String AFSIRS_DB = "afsirs_db";
-    public static String AFSIRS_USER_COLLECTION = "users";
-    public static String AFSIRS_WUP_COLLECTION = "water_use_permit";
+    public final static String AFSIRS_DB = "afsirs_db";
+    public final static String AFSIRS_USER_COLLECTION = "users";
+    public final static String AFSIRS_WUP_COLLECTION = "water_use_permit";
+    
+    public enum AFSIRSCollection {
+        
+        User("users"),
+        WaterUserPermit("water_use_permit");
+
+        private final String name;
+
+        private AFSIRSCollection(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
+    }
     
     public static MongoClientURI getDBURI() {
         // Give your DB path here
@@ -24,5 +43,14 @@ public class DBUtil {
         return uri;
     }
     
-//    public static ArrayList<String> get
+    public static MongoCollection<Document> getConnection(AFSIRSCollection collection) {
+        return getConnection(collection.toString());
+    }
+    
+    public static MongoCollection<Document> getConnection(String collectionName) {
+        if (mongoClient == null) {
+            mongoClient = new MongoClient(DBUtil.getDBURI());
+        }
+        return mongoClient.getDatabase(AFSIRS_DB).getCollection(collectionName);
+    }
 }

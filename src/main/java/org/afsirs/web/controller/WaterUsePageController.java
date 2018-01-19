@@ -49,7 +49,14 @@ public class WaterUsePageController {
         }
         WaterUsePermit permit = WaterUsePermit.readFromRequest(request);
         attributes.put("permit", permit);
-        if (WaterUsePermitDAO.add(permit, ViewUtil.getUserID(request))) {
+        String updateFlg = request.queryParams("update_flg");
+        boolean ret;
+        if (updateFlg == null || "false".equals(updateFlg)) {
+            ret = WaterUsePermitDAO.add(permit, ViewUtil.getUserID(request));
+        } else {
+            ret = WaterUsePermitDAO.update(permit, ViewUtil.getUserID(request));
+        }
+        if (ret) {
             return getListPage(request, attributes);
         } else {
             attributes.put("operation_result", "Failed");
@@ -71,6 +78,7 @@ public class WaterUsePageController {
         } else {
             attributes.put("permit", ret);
         }
+        attributes.put("update_flg", "true");
         return getCreatePage(request, attributes);
     };
 
@@ -92,6 +100,5 @@ public class WaterUsePageController {
 //        }
         return getDetailPage(request, attributes);
     };
-    
-    
+
 }
