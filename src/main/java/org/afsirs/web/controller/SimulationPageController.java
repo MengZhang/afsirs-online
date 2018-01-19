@@ -37,6 +37,7 @@ public class SimulationPageController {
                 attributes.put("operation_result", "Failed");
             } else {
                 attributes.put("afsirs_input", permit.toAFSIRSInputData(userId));
+                attributes.put("user_id", userId);
             }
             return getAfsirsResultPage(request, attributes);
         }

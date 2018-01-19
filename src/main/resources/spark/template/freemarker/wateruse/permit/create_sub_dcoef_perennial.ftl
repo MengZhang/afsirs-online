@@ -76,8 +76,9 @@
     }
 </script>
 <div id="decoef_perennial">
+    <hr>
     <div class="form-group">
-        <label class="control-label col-sm-3"><u>Root Zone Depth</u></label>
+        <label class="text-left col-sm-8 col-sm-push-1"><u>Root Zone Depth</u></label>
     </div>
     <div class="form-group">
         <label class="control-label col-sm-3" for="drzirr">Irrigated :</label>
@@ -93,8 +94,9 @@
         </div>
         <label class="control-label col-sm-1">(Inches)</label>
     </div>
+    <hr>
     <div class="form-group">
-        <label class="control-label col-sm-5"><u>Monthly crop water use coefficients (0.0 - 2.0)</u></label>
+        <label class="text-left col-sm-8 col-sm-push-1"><u>Monthly crop water use coefficients (0.0 - 2.0)</u></label>
     </div>
     <div class="form-group">
         <table class="table table-hover table-bordered" >
@@ -130,8 +132,9 @@
         </table>
         <input type="hidden" id="akc_arr" name="akc_arr" value="">
     </div>
+    <hr>
     <div class="form-group">
-        <label class="control-label col-sm-5"><u>Allowable soil water depletions (0.0 - 1.0)</u></label>
+        <label class="text-left col-sm-8 col-sm-push-1"><u>Allowable soil water depletions (0.0 - 1.0)</u></label>
     </div>
     <div class="form-group">
         <table class="table table-hover table-bordered">

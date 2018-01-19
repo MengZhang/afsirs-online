@@ -50,10 +50,18 @@
                     </tr>
                     <#list permits as permit>
                     <tr>
-                        <td><a href="/wateruse/permit/find?permit_id=${permit["permit_id"]!}">${permit["permit_id"]!}</a></td>
+                        <#if currentUserRank?? && currentUserRank == "admin" >
+                        <td><a href='/wateruse/permit/find?permit_id=${permit["permit_id"]!}&user_id=${permit["user_id"]!}'>${permit["permit_id"]!}</a></td>
+                        <#else>
+                        <td><a href='/wateruse/permit/find?permit_id=${permit["permit_id"]!}'>${permit["permit_id"]!}</a></td>
+                        </#if>
                         <td>${permit["crop_name"]!}</td>
                         <td>${permit["et_loc"]!} / ${permit["rain_loc"]!}</td>
-                        <td><a href="/simulation/afsirs?permit_id=${permit["permit_id"]!}" class="btn btn-default">Run AFSIRS</a></td>
+                        <#if currentUserRank?? && currentUserRank == "admin" >
+                        <td><a href='/simulation/afsirs?permit_id=${permit["permit_id"]!}&user_id=${permit["user_id"]!}' class="btn btn-default">Run AFSIRS</a></td>
+                        <#else>
+                        <td><a href='/simulation/afsirs?permit_id=${permit["permit_id"]!}' class="btn btn-default">Run AFSIRS</a></td>
+                        </#if>
                     </tr>
                     <#else>
                     <tr><td colspan="4">No permit has been created yet.</td></tr>

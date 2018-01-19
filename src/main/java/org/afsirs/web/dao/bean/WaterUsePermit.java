@@ -29,6 +29,7 @@ public class WaterUsePermit {
 
     // Site Information
     private String permit_id;
+    private String user_id;
     private String owner_name;
     private String crop_type;
     private String crop_name;
@@ -278,6 +279,7 @@ public class WaterUsePermit {
     public static WaterUsePermit readFromJson(JSONObject data) {
         WaterUsePermit ret = new WaterUsePermit();
         ret.setPermit_id(data.getOrDefault("permit_id", ""));
+        ret.setUser_id(data.getOrDefault("user_id", ""));
         ret.setOwner_name(data.getOrDefault("owner_name", data.getOrBlank("output_name")));
         ret.setCrop_type(readCropType(data));
         ret.setCrop_name(data.getOrDefault("crop_name", ""));

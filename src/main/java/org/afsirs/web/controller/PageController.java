@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
 import static org.afsirs.web.Main.LOG;
+import org.afsirs.web.dao.UserDAO;
 import org.afsirs.web.util.DataUtil;
 import org.afsirs.web.util.Path;
 import org.afsirs.web.view.ViewUtil;
@@ -71,6 +72,11 @@ public class PageController {
             return ViewUtil.getLoginPage(request, attributes);
         }
         request.session().attribute("currentUser", username);
+        if (UserDAO.isAdmin(username)) {
+            request.session().attribute("currentUserRank", "admin");
+        } else {
+            request.session().attribute("currentUserRank", "regular");
+        }
 //        if (getQueryLoginRedirect(request) != null) {
 //            response.redirect(getQueryLoginRedirect(request));
 //        }
@@ -84,6 +90,7 @@ public class PageController {
         Map<String, Object> attributes = new HashMap<>();
         String username = request.session().attribute("currentUser");
         request.session().removeAttribute("currentUser");
+        request.session().removeAttribute("currentUserRank");
         request.session().attribute("loggedOut", true);
         attributes.put("message", "Goodbye");
         attributes.put("username", username);
