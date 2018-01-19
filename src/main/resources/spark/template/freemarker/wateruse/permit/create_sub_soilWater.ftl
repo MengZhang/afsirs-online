@@ -49,9 +49,10 @@
                     afsirsInfo = obj["asfirs"];
                 }
                 var totArea = Number(afsirsInfo[0].TotalArea);
+                obj = cmToInch(obj);
                 document.getElementById('soil_file_content').classList.remove("hidden");
                 document.getElementById('tblBody').innerHTML = toTableHtml(obj["soils"]);
-                document.getElementById('soil_file_json').value = jsonStr;
+                document.getElementById('soil_file_json').value = JSON.stringify(obj);
                 document.getElementById('polygon_info').value = plygonStr;
 //                var value = document.getElementById('planted_area_input').value;
                 document.getElementById('total_area').value = totArea;
@@ -67,6 +68,19 @@
 
         var blob = file.slice(start, stop + 1);
         reader.readAsBinaryString(blob);
+    }
+    
+    function cmToInch(data) {
+        var soils = data["soils"];
+        for (var i = 0; i < soils.length; i++) {
+            var layers = soils[i]["soilLayer"];
+            for (var j = 0; j < layers.length; j++) {
+                layers[j]["sllb"] = (Number(layers[j]["sllb"]) * 0.39370).toFixed(3);
+                layers[j]["slll"] = Number(layers[j]["slll"]) / 100;
+                layers[j]["sldul"] = Number(layers[j]["sldul"]) / 100;
+            }
+        }
+        return data;
     }
     
     function toTableHtml(soils) {
@@ -116,7 +130,7 @@
             
             var layers = soils[i]["soilLayer"];
             for (var j = 0; j < layers.length; j++, layerIdx++) {
-                layerStr[layerIdx] = "<td>" + layers[j]["sllb"] + "</td><td>" + layers[j]["slll"] + "</td><td>" + layers[j]["sldul"] + "</td>";
+                layerStr[layerIdx] = "<td>" + Number(layers[j]["sllb"]).toFixed(1) + "</td><td>" + Number(layers[j]["slll"]).toFixed(3) + "</td><td>" + Number(layers[j]["sldul"]).toFixed(3) + "</td>";
                 unitStr[layerIdx] = "";
                 typeStr[layerIdx] = "";
                 unitRowSpan++;
@@ -246,7 +260,7 @@
         </div>
         <div id="soil_file_content" class="form-group">
             <label class="control-label col-sm-3" for="water_hold_capacity">Raw soil data :</label>
-            <div id="soil_file_content_rawdata" class="col-sm-8 text-left" style="overflow-y:auto;max-height:200px;">
+            <div id="soil_file_content_rawdata" class="col-sm-8 text-left" style="overflow-y:auto;max-height:300px;">
                 <table id="tbl" class="table table-hover table-bordered table-condensed text-center" >
                     <thead class="text-center">
                         <tr class="info">
@@ -258,9 +272,9 @@
                             <th colspan="3"><span data-toggle="tooltip" title="Soil layer info of a soil type">Soil layer info</span></th>
                         </tr>
                         <tr class="info">
-                            <th style="width:10%"><span data-toggle="tooltip" title="Soil layer base depth(cm)">SLLB</span></th>
-                            <th style="width:10%"><span data-toggle="tooltip" title="Soil water, drained lower limit(cm3/cm3)">SLLL</span></th>
-                            <th style="width:10%"><span data-toggle="tooltip" title="Soil water, drained upper limit(cm3/cm3)">SLDUL</span></th>
+                            <th style="width:10%"><span data-toggle="tooltip" title="Soil layer base depth(in)">SLLB</span></th>
+                            <th style="width:10%"><span data-toggle="tooltip" title="Soil water, drained lower limit(in3/in3)">SLLL</span></th>
+                            <th style="width:10%"><span data-toggle="tooltip" title="Soil water, drained upper limit(in3/in3)">SLDUL</span></th>
                         </tr>
                     </thead>
                     <tbody id="tblBody"></tbody>

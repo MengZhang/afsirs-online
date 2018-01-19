@@ -544,10 +544,10 @@ public class DataUtil {
 
             for (Map soilLayer : soilLayers) {
                 //System.out.println ("NL we are looking for: " + NL);
-                wcu[nl] = new BigDecimal(soilLayer.get("sldul").toString()).doubleValue() / 100.00;
-                du[nl] = new BigDecimal(soilLayer.get("sllb").toString()).doubleValue() * 0.39370;
+                wcu[nl] = new BigDecimal(soilLayer.get("sldul").toString()).doubleValue(); // / 100.00;
+                du[nl] = new BigDecimal(soilLayer.get("sllb").toString()).doubleValue(); // * 0.39370;
                 du[nl] = round(du[nl], 3);
-                wcl[nl] = new BigDecimal(soilLayer.get("slll").toString()).doubleValue() / 100.00;
+                wcl[nl] = new BigDecimal(soilLayer.get("slll").toString()).doubleValue(); // / 100.00;
 
 //                if (whcIndex == 0) {
 //                    wc[nl] = wcl[nl];
