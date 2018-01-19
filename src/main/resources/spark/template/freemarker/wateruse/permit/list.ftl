@@ -45,14 +45,14 @@
                     <tr>
                         <th>Name</th>
                         <th>Crop</th>
-                        <th id="descCol">Description</th>
+                        <th id="descCol">Location(ET/Rain)</th>
                         <th>Option</th>
                     </tr>
                     <#list permits as permit>
                     <tr>
                         <td><a href="/wateruse/permit/find?permit_id=${permit["permit_id"]!}">${permit["permit_id"]!}</a></td>
                         <td>${permit["crop_name"]!}</td>
-                        <td>${permit["description"]!}</td>
+                        <td>${permit["et_loc"]!} / ${permit["rain_loc"]!}</td>
                         <td><a href="/simulation/afsirs?permit_id=${permit["permit_id"]!}" class="btn btn-default">Run AFSIRS</a></td>
                     </tr>
                     <#else>
