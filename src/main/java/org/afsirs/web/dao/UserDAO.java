@@ -1,13 +1,12 @@
 package org.afsirs.web.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import org.afsirs.web.dao.bean.User;
-import org.afsirs.web.util.DBUtil;
+import org.afsirs.web.util.DBUtil.AFSIRSCollection;
+import static org.afsirs.web.util.DBUtil.getConnection;
+import org.afsirs.web.util.MongoDBHandler;
 import org.bson.Document;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -24,28 +23,20 @@ public class UserDAO {
         if (users.containsKey(userName)) {
             return users.get(userName);
         } else {
-            String json;
-            try (MongoClient mongoClient = new MongoClient(DBUtil.getDBURI());) {
-
-                MongoDatabase database = mongoClient.getDatabase(DBUtil.AFSIRS_DB);
-                MongoCollection<Document> collection = database.getCollection(DBUtil.AFSIRS_USER_COLLECTION);
-                Document ret = collection.find(new Document("userName", userName)).first();
-                if (ret == null) {
-                    json = "";
-                } else {
-                    json = ret.toJson();
-                }
-            }
-
             try {
-                User ret = null;
-                if (!json.trim().isEmpty()) {
-                    ObjectMapper mapper = new ObjectMapper();
-                    ret = mapper.readValue(json, User.class);
-                    users.put(userName, ret);
+                Document data = MongoDBHandler.find(getConnection(AFSIRSCollection.User), new Document("userName", userName));
+                if (data == null) {
+                    return null;
+                } else {
+                    String json = data.toJson();
+                    User ret = null;
+                    if (!json.trim().isEmpty()) {
+                        ObjectMapper mapper = new ObjectMapper();
+                        ret = mapper.readValue(json, User.class);
+                        users.put(userName, ret);
+                    }
+                    return ret;
                 }
-                return ret;
-
             } catch (Exception ex) {
                 ex.printStackTrace(System.err);
             }
@@ -61,21 +52,12 @@ public class UserDAO {
         }
         String salt = BCrypt.gensalt();
         String hashedPassword = BCrypt.hashpw(password, salt);
-        try (MongoClient mongoClient = new MongoClient(DBUtil.getDBURI());) {
-     
-            MongoDatabase database = mongoClient.getDatabase(DBUtil.AFSIRS_DB);
-            MongoCollection<Document> collection = database.getCollection(DBUtil.AFSIRS_USER_COLLECTION);
-//            if (collection.find(new Document("userName", userName)).first() == null) {
-//                return false;
-//            }
-            collection.insertOne(
-                    new Document("userName", user.getUserName())
-                    .append("salt", salt)
-                    .append("hashedPassword", hashedPassword)
-                    .append("userRank", "regular")); //TODO
-             
-            return true;
-        }
+        MongoDBHandler.add(getConnection(AFSIRSCollection.User),
+                new Document("userName", user.getUserName())
+                .append("salt", salt)
+                .append("hashedPassword", hashedPassword)
+                .append("userRank", "regular")); //TODO
+        return true;
     }
 
     public static Collection<User> getAllUserNames() {

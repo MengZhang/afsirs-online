@@ -94,7 +94,7 @@ public class WaterUsePermit {
         dbSoilNames = new LinkedHashSet<>();
         dbSoilNames.addAll(Arrays.asList(names));
     }
-    
+
     public void setHgt(String hgt) {
         if (hgt == null || hgt.isEmpty()) {
             return;
@@ -113,7 +113,7 @@ public class WaterUsePermit {
                 aldpArr.set(i, "0.5");
             }
         }
-        
+
     }
 
     public void setCropData(CropData input) {
@@ -137,10 +137,10 @@ public class WaterUsePermit {
             this.setDrztot(data.getDRZTOT() + "");
             this.setAkcArr(toStringArray(data.getAKC()));
             this.setAldpArr(toStringArray(data.getALDP()));
-            
+
         }
     }
-    
+
     private static ArrayList<String> toStringArray(double[] values) {
         ArrayList arr = new ArrayList();
         for (double val : values) {
@@ -266,8 +266,17 @@ public class WaterUsePermit {
     }
 
     public static WaterUsePermit readFromJson(File jsonFile) {
-        WaterUsePermit ret = new WaterUsePermit();
         JSONObject data = JsonUtil.parseFrom(jsonFile);
+        return readFromJson(data);
+    }
+
+    public static WaterUsePermit readFromJson(String json) {
+        JSONObject data = JsonUtil.parseFrom(json);
+        return readFromJson(data);
+    }
+
+    public static WaterUsePermit readFromJson(JSONObject data) {
+        WaterUsePermit ret = new WaterUsePermit();
         ret.setPermit_id(data.getOrDefault("permit_id", ""));
         ret.setOwner_name(data.getOrDefault("owner_name", data.getOrBlank("output_name")));
         ret.setCrop_type(readCropType(data));
@@ -321,7 +330,7 @@ public class WaterUsePermit {
         ret.setAld2(data.getOrBlank("ald2"));
         ret.setAld3(data.getOrBlank("ald3"));
         ret.setAld4(data.getOrBlank("ald4"));
-        
+
         ret.setDrzirr(data.getOrBlank("drzirr"));
         ret.setDrztot(data.getOrBlank("drztot"));
         ret.setAkcArr(data.getArr("akc"));

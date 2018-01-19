@@ -1,27 +1,17 @@
 package org.afsirs.web.dao;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
-import java.io.FileFilter;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
+import lombok.Data;
 import org.afsirs.module.AFSIRSModule;
 import org.afsirs.web.dao.bean.WaterUsePermit;
+import org.afsirs.web.util.DBUtil.AFSIRSCollection;
+import static org.afsirs.web.util.DBUtil.getConnection;
+import org.afsirs.web.util.MongoDBHandler;
 import org.afsirs.web.util.Path;
-import static org.afsirs.web.util.Path.Folder.getUserWaterUsePermitDir;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.bson.Document;
 import org.eclipse.jetty.util.ConcurrentHashSet;
-//import org.ifdc.web.dao.bean.Project;
-//import org.ifdc.web.util.DBUtil;
-//import org.ifdc.web.util.JsonUtil;
 
 /**
  *
@@ -29,136 +19,101 @@ import org.eclipse.jetty.util.ConcurrentHashSet;
  */
 public class WaterUsePermitDAO {
 
-//    private static final ConcurrentHashSet<String> projectNames = syncRecords("project");
+    private static final ConcurrentHashSet<WUPKey> permitIds = syncUserRecords();
 
-//    public static ConcurrentHashSet<String> syncRecords(String dataType) {
-//        ConcurrentHashSet<String> ret = new ConcurrentHashSet();
-//
-//        try {
-//            Client client = ClientBuilder.newClient();
-//            WebTarget service = client.target(DBUtil.getDBBaseURI());
-//            Response response = service.path("me").path(dataType).path("listname").request().get();
-//            if (response.getStatus() == 200) {
-//                String resJson = response.readEntity(String.class);
-//                if (!resJson.trim().equals("")) {
-//                    ObjectMapper mapper = new ObjectMapper();
-//                    ret.addAll(mapper.readValue(resJson, ArrayList.class));
-//                }
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//        return ret;
-//    }
-    
-    public static ArrayList<WaterUsePermit> list(String userId) {
-        try {
-//            Client client = ClientBuilder.newClient();
-//            WebTarget service = client.target(DBUtil.getDBBaseURI());
-//            Response response = service.path("me").path("project").path("list")
-//                    .request().get();
-//            if (response.getStatus() == 200) {
-//                String json = response.readEntity(String.class);
-//                return JsonUtil.toObject(json, new TypeReference<ArrayList<HashMap>>() {});
-//            }
-            
-            return listPermits(userId);
-        } catch (Exception ex) {
-            ex.printStackTrace(System.err);
+    @Data
+    public static class WUPKey {
+
+        private String userId;
+        private String permitId;
+
+        private WUPKey(String userId, String permitId) {
+            this.userId = userId;
+            this.permitId = permitId;
         }
-        return new ArrayList();
     }
-    
-    private static ArrayList<WaterUsePermit> listPermits(String userId) {
-        ArrayList<WaterUsePermit> ret = new ArrayList();
-        File permitDir = getUserWaterUsePermitDir(userId);
-        for (File file : permitDir.listFiles((FileFilter) new WildcardFileFilter("*.json"))) {
-            ret.add(WaterUsePermit.readFromJson(file));
-        }
+
+    public static ConcurrentHashSet<WUPKey> syncUserRecords() {
+        ConcurrentHashSet<WUPKey> ret = new ConcurrentHashSet();
         return ret;
     }
-    
-//    public static boolean isNameExist(String permitName) {
-//        return permitName != null && !permitName.isEmpty() && projectNames.contains(permitName);
-//    }
-    
-//    public static List<String> listNames() {
-//        return Arrays.asList(projectNames.toArray(new String[]{}));
-//    }
-    
+
+    public static ArrayList<WaterUsePermit> list(String userId) {
+        ArrayList<WaterUsePermit> ret = new ArrayList<>();
+        ArrayList<Document> dbRetArr = MongoDBHandler.list(getConnection(AFSIRSCollection.WaterUserPermit));
+        for (Document data : dbRetArr) {
+            ret.add(WaterUsePermit.readFromJson(data.toJson()));
+        }
+        return ret;
+//            return listPermits(userId);
+    }
+
     public static WaterUsePermit find(String id, String userId) {
         if (id == null || id.isEmpty()) {
             return null;
         }
-        File permitDir = getUserWaterUsePermitDir(userId);
-        File permitFile = Paths.get(permitDir.getPath(), id + ".json").toFile();
-        if (permitFile.isFile()) {
-            return WaterUsePermit.readFromJson(permitFile);
+        Document dbRet = MongoDBHandler.find(getConnection(AFSIRSCollection.WaterUserPermit),
+                MongoDBHandler.getFindCritia(
+                        new String[]{"permit_id", "user_id"},
+                        new String[]{id, userId}));
+        if (dbRet != null) {
+            return WaterUsePermit.readFromJson(dbRet.toJson());
         } else {
             return null;
         }
     }
-//    public static HashMap find(String id) {
-//        if (id == null || id.isEmpty()) {
-//            return new HashMap();
-//        }
-//        try {
-//            Client client = ClientBuilder.newClient();
-//            WebTarget service = client.target(DBUtil.getDBBaseURI());
-//            Response response = service.path("me").path("project").path("find")
-//                    .queryParam("id", id)
-//                    .request().get();
-//            if (response.getStatus() == 200) {
-//                String json = response.readEntity(String.class);
-//                return JsonUtil.toMap(json);
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//        return new HashMap();
-//    }
 
     public static boolean add(WaterUsePermit permit, String currentUser) {
-        File dir = Path.Folder.getUserWaterUsePermitDir(currentUser);
-        return AFSIRSModule.savePermitFile(dir, permit.toAFSIRSInputData(currentUser));
-    }
-    
-//    public static boolean add(Project project) {
-//        String name = project.getName();
-//        String description = project.getDescription();
-//        if (name == null || name.isEmpty()) {
-//            return false;
-//        } else {
-//            try {
-//                Client client = ClientBuilder.newClient();
-//                WebTarget service = client.target(DBUtil.getDBBaseURI());
-//                Response response = service.path("me").path("project").path("add")
-//                        .queryParam("name", name)
-//                        .queryParam("description", description)
-//                        .request().get();
-//                if (response.getStatus() == 200) {
-//                    projectNames.add(name);
-//                    String id = response.readEntity(String.class);
-//                    if (id != null && !id.equals("-1") && !id.equals("-2")) {
-//                        return true;
-//                    } else {
-//                        return false;
-//                    }
-//                }
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
+        WUPKey pk = new WUPKey(currentUser, permit.getPermit_id());
+//        if (permitIds.contains(pk)) {
 //            return false;
 //        }
-//    }
-    
+        String json = AFSIRSModule.savePermitJson(permit.toAFSIRSInputData(currentUser));
+        if (json != null && !json.isEmpty()) {
+            try {
+                Document data = Document.parse(json);
+                data.put("user_id", currentUser);
+                boolean ret = MongoDBHandler.add(getConnection(AFSIRSCollection.WaterUserPermit), data);
+                if (ret) {
+                    permitIds.add(pk);
+                }
+                return ret;
+            } catch (Exception ex) {
+                ex.printStackTrace(System.err);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean update(WaterUsePermit permit, String currentUser) {
+        String json = AFSIRSModule.savePermitJson(permit.toAFSIRSInputData(currentUser));
+        if (json != null && !json.isEmpty()) {
+            try {
+                Document data = Document.parse(json);
+                data.put("user_id", currentUser);
+                return MongoDBHandler.replace(getConnection(AFSIRSCollection.WaterUserPermit),
+                        MongoDBHandler.getFindCritia(
+                                new String[]{"permit_id", "user_id"},
+                                new String[]{permit.getPermit_id(), currentUser}),
+                        data) != null;
+            } catch (Exception ex) {
+                ex.printStackTrace(System.err);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     public static File getOutputFile(String userId, String permitId, String fileType) {
-        
+
         WaterUsePermit permit = find(permitId, userId);
         String ownerName = permit.getOwner_name();
         File outDir = Path.Folder.getUserWaterUsePermitOutputDir(userId);
         String fileName;
-        
+
         if (fileType == null || fileType.isEmpty()) {
             fileName = ownerName + "-Summary.pdf";
         } else if ("text".equalsIgnoreCase(fileType)) {
