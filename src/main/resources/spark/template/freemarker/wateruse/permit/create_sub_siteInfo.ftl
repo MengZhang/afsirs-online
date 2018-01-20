@@ -8,6 +8,7 @@
             document.getElementById("endMonthSB").disabled = false;
             document.getElementById("endDaySB").disabled = false;
             changeIrrSysListByCrop("crop_name_annual");
+            setDefEndDate();
         } else if (cropType === "perennial") {
             document.getElementById("cropNamePerennialSB").style.display = "block";
             document.getElementById("startMonthSB").disabled = true;
