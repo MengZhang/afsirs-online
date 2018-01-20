@@ -2,6 +2,11 @@ package org.afsirs.web.dao.bean;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.MonthDay;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -412,6 +417,61 @@ public class WaterUsePermit {
             }
         }
 
+        return input;
+    }
+    
+    public static UserInput setDeviation(UserInput input, WaterUsePermit permit) {
+//        JSONObject tmp = new JSONObject();
+//        JSONArray arr = new JSONArray();
+//        arr.add(JsonUtil.parseFrom(permit.getPolygon_loc_info()));
+//        tmp.put("afsirs", arr);
+        if (!permit.getEt_loc().equals(DataUtil.calculateNearestStation("CLIMATE", permit.getPolygon_loc_info()))) {
+            input.addDeviation("RainfallLocation", permit.getEt_loc());
+        }
+        if (!permit.getRain_loc().equals(DataUtil.calculateNearestStation("RAIN", permit.getPolygon_loc_info()))) {
+            input.addDeviation("Climate Location", permit.getRain_loc());
+        }
+        if (input.isPerennialCrop()) {
+            input.addDeviation("Crop Type", permit.getCrop_type());
+        } else {
+            CropDataAnnual crop = (CropDataAnnual) DataUtil.getCropDataAnnual().get(permit.getCrop_name());
+            int max = crop.getMaxDays();
+            int min = crop.getMinDays();
+            Period p;
+            if (input.getMO1() > input.getMON() || (input.getMO1() == input.getMON() && input.getDAY1() > input.getDAYN())) {
+                p = Period.between(
+                        LocalDate.of(2001, Month.of(input.getMO1()), input.getDAY1()),
+                        LocalDate.of(2002, Month.of(input.getMON()), input.getDAYN()));
+            } else {
+                p = Period.between(
+                        LocalDate.of(2001, Month.of(input.getMO1()), input.getDAY1()),
+                        LocalDate.of(2001, Month.of(input.getMON()), input.getDAYN()));
+            }
+            if (p.getDays() > max || p.getDays() < min) {
+                MonthDay start = MonthDay.of(input.getMO1(), input.getDAY1());
+                MonthDay end = MonthDay.of(input.getMON(), input.getDAYN());
+                input.addDeviation("Date Range", start.format(DateTimeFormatter.ofPattern("MM-dd")) + " ~ " +  end.format(DateTimeFormatter.ofPattern("MM-dd")) + " which is outside the normal range");
+            }
+        }
+        if (input.getIrrigationSystem() != 0) {
+            input.addDeviation("Irrigation system", DataUtil.getIRSysNameList().get(Integer.parseInt(permit.getIrr_type())));
+        }
+        if (!input.isNetCalc()) {
+            input.addDeviation("Irrigation Requirement", permit.getIrr_option());
+        }
+        
+//                    
+                
+                
+//  input.addDeviation("Fraction of soil surface irrigated", (String) soilSurfaceIrrText.getText());
+//  input.addDeviation("Irrigation application efficiency", (String) irrTypeBox.getSelectedItem());
+//  input.addDeviation("Irrigation water depths", "none");
+//  input.addDeviation("Irrigation water depths", "Deficit Irrigation");
+//  input.addDeviation("Irrigation water depths", "Fixed water depth per application");
+//
+//  input.addDeviation("Irrigation Application Efficiency", (String) irrAppEffText.getText());
+//:  input.addDeviation("Fraction of ET extracted", (String) exirText.getText());
+        
         return input;
     }
 
