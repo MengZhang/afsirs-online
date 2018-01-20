@@ -518,22 +518,28 @@ public class DataUtil {
         JSONObject data = JsonUtil.parseFrom(file);
         return toSoils(data);
     }
-
+    
     public static ArrayList<Soil> toSoils(JSONObject data) {
-        ArrayList<Soil> ret = new ArrayList<>();
-        List<Map> soils = (List) data.get("soils");
-//        int row = 0;
-//        int whcIndex = waterholdcapacityBox.getSelectedIndex();
-//        ArrayList<Soil> soilList = new ArrayList<>();
-        for (Map soil : soils) {
+        return toSoils(data, "Average");
+    }
 
-            String soilSeriesName = soil.get("mukeyName").toString();
-            String soilSeriesKey = soil.get("mukey").toString();
-            String soilSymbolNum = soil.getOrDefault("musym", "").toString();
-            String soilName = soil.get("soilName").toString();
-            String compKey = soil.get("cokey").toString();
-            String soilTypeArea = soil.get("compArea").toString();
-            List<Map> soilLayers = (List) soil.get("soilLayer");
+    public static ArrayList<Soil> toSoils(JSONObject data, String WHC) {
+        ArrayList<Soil> ret = new ArrayList();
+        ArrayList<org.json.simple.JSONObject> soilArr = (ArrayList) data.getOrDefault("soils", new ArrayList());
+        String soilVersion = data.getOrBlank("version");
+        for (org.json.simple.JSONObject soilJS : soilArr) {
+            JSONObject soilJ = new JSONObject(soilJS);
+            String soilSeriesName = soilJ.getOrBlank("mukeyName");
+            String soilSeriesKey = soilJ.getOrBlank("mukey");
+            String soilSymbolNum = soilJ.getOrBlank("musym");
+
+            String soilName = soilJ.getOrBlank("soilName");
+            String compKey = soilJ.getOrBlank("cokey");
+
+            String soilTypeArea = soilJ.getOrBlank("compArea");
+            String soilTypePct = soilJ.getOrBlank("comppct_r");
+
+            ArrayList<org.json.simple.JSONObject> soilLayersNodes = (ArrayList) soilJ.getOrDefault("soilLayer", new ArrayList());
 
             int nl = 0;
             double[] wc = new double[6];
@@ -542,33 +548,39 @@ public class DataUtil {
             double[] du = new double[6];
             String[] txt = new String[3];
 
-            for (Map soilLayer : soilLayers) {
+            for (org.json.simple.JSONObject nodeJS : soilLayersNodes) {
                 //System.out.println ("NL we are looking for: " + NL);
-                wcu[nl] = new BigDecimal(soilLayer.get("sldul").toString()).doubleValue(); // / 100.00;
-                du[nl] = new BigDecimal(soilLayer.get("sllb").toString()).doubleValue(); // * 0.39370;
+                JSONObject node = new JSONObject(nodeJS);
+                wcu[nl] = node.getAsDouble("sldul");
+                du[nl] = node.getAsDouble("sllb");
                 du[nl] = round(du[nl], 3);
-                wcl[nl] = new BigDecimal(soilLayer.get("slll").toString()).doubleValue(); // / 100.00;
+                wcl[nl] = node.getAsDouble("slll");
 
-//                if (whcIndex == 0) {
-//                    wc[nl] = wcl[nl];
-//                } else if (whcIndex == 2) {
-//                    wc[nl] = wcu[nl];
-//                } else {
-//                    wc[nl] = 0.5 * (wcl[nl] + wcu[nl]);
-//                }
-                wc[nl] = round(wc[nl], 3);
+                if (WHC.equalsIgnoreCase("Minimum")) {
+                    wc[nl] = wcl[nl];
+                } else if (WHC.equalsIgnoreCase("Maximum")) {
+                    wc[nl] = wcu[nl];
+                } else {
+                    wc[nl] = 0.5 * (wcl[nl] + wcu[nl]);
+                }
+
+                wc[nl] = Util.round(wc[nl], 3);
                 nl++;
             }
-            // soilSeriesKey
-            Soil soilData = new Soil(soilName, soilSeriesKey, compKey, soilSeriesName, soilSymbolNum, nl);
-            soilData.setValues("Average", wcl, wcu, du, txt);
 
-            if (soilTypeArea != null) {
-                soilData.setSoilTypeArea(Double.valueOf(soilTypeArea));
+            Soil soil = new Soil(soilName, soilSeriesKey, compKey, soilSeriesName, soilSymbolNum, nl);
+            soil.setValues(wc, wcl, wcu, du, txt);
+
+            if (!soilTypeArea.isEmpty()) {
+                soil.setSoilTypeArea(Double.valueOf(soilTypeArea));
             } else {
-                soilData.setSoilTypeArea(0.0);
+                soil.setSoilTypeArea(0.0);
             }
-            ret.add(soilData);
+            if (!soilTypePct.isEmpty()) {
+                soil.setSoilTypePct(Integer.valueOf(soilTypePct));
+            }
+            soil.setVersion(soilVersion);
+            ret.add(soil);
         }
         return ret;
     }

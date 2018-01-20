@@ -314,7 +314,7 @@ public class WaterUsePermit {
         if (!polygonInfo.isEmpty()) {
             ret.setPolygon_info(((org.json.simple.JSONObject) polygonInfo.get(0)).toJSONString());
         }
-        ret.setSoils(readSoilFromPermitJson(data, ret.getWater_hold_capacity()));
+        ret.setSoils(DataUtil.toSoils(data, ret.getWater_hold_capacity()));
 
         ret.setEt_loc(data.getOrBlank("et_loc"));
         ret.setRain_loc(data.getOrBlank("rain_loc"));
@@ -341,62 +341,6 @@ public class WaterUsePermit {
             ret.setHgt(data.getOrBlank("hgt"));
         }
 
-        return ret;
-    }
-
-    private static ArrayList<Soil> readSoilFromPermitJson(JSONObject data, String WHC) {
-        ArrayList<Soil> ret = new ArrayList();
-        ArrayList<org.json.simple.JSONObject> soilArr = (ArrayList) data.getOrDefault("soils", new ArrayList());
-        for (org.json.simple.JSONObject soilJS : soilArr) {
-            JSONObject soilJ = new JSONObject(soilJS);
-            String soilSeriesName = soilJ.getOrBlank("mukeyName");
-            String soilSeriesKey = soilJ.getOrBlank("mukey");
-            String soilSymbolNum = soilJ.getOrBlank("musym");
-
-            String soilName = soilJ.getOrBlank("soilName");
-            String compKey = soilJ.getOrBlank("cokey");
-
-            String soilTypeArea = soilJ.getOrBlank("compArea");
-
-            ArrayList<org.json.simple.JSONObject> soilLayersNodes = (ArrayList) soilJ.getOrDefault("soilLayer", new ArrayList());
-
-            int nl = 0;
-
-            double[] wc = new double[6];
-            double[] wcl = new double[6];
-            double[] wcu = new double[6];
-            double[] du = new double[6];
-            String[] txt = new String[3];
-
-            for (org.json.simple.JSONObject nodeJS : soilLayersNodes) {
-                //System.out.println ("NL we are looking for: " + NL);
-                JSONObject node = new JSONObject(nodeJS);
-                wcu[nl] = node.getAsDouble("sldul");
-                du[nl] = node.getAsDouble("sllb");
-                wcl[nl] = node.getAsDouble("slll");
-
-                if (WHC.equalsIgnoreCase("Minimum")) {
-                    wc[nl] = wcl[nl];
-                } else if (WHC.equalsIgnoreCase("Maximum")) {
-                    wc[nl] = wcu[nl];
-                } else {
-                    wc[nl] = 0.5 * (wcl[nl] + wcu[nl]);
-                }
-
-                wc[nl] = Util.round(wc[nl], 3);
-                nl++;
-            }
-
-            Soil soil = new Soil(soilName, soilSeriesKey, compKey, soilSeriesName, soilSymbolNum, nl);
-            soil.setValues(wc, wcl, wcu, du, txt);
-
-            if (soilTypeArea != null) {
-                soil.setSoilTypeArea(Double.valueOf(soilTypeArea));
-            } else {
-                soil.setSoilTypeArea(0.0);
-            }
-            ret.add(soil);
-        }
         return ret;
     }
 
