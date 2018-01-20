@@ -25,6 +25,8 @@ public class Soil {
         private double[] WCU;
         private double[] DU;
         private double soilTypeArea;
+        private int SoilTypePct; 
+        private String version; 
 //        private double totalAvgIrrReq;
         
         public Soil cloneData() {
@@ -36,6 +38,7 @@ public class Soil {
                     Arrays.copyOf(DU, DU.length),
                     Arrays.copyOf(TXT, TXT.length));
             ret.setSoilTypeArea(soilTypeArea);
+            ret.setSoilTypePct(SoilTypePct);
             return ret;
         }
 

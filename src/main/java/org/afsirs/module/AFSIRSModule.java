@@ -3543,6 +3543,7 @@ public class AFSIRSModule {
 
     public static String savePermitJson(UserInput input) {
         JSONObject obj = new JSONObject();
+        obj.put("afsirs_version", Messages.getVersion());
         //page 1
         obj.put("permit_id", input.getSITE());
         obj.put("owner_name", input.getOWNER());
@@ -3581,6 +3582,7 @@ public class AFSIRSModule {
             soilData.put("cokey", soil.getCOMPKEY());
             soilData.put("soilName", soil.getSNAME());
             soilData.put("compArea", soil.getSoilTypeArea() + "");
+            soilData.put("comppct_r", soil.getSoilTypePct() + "");
             ArrayList soilLayers = new ArrayList();
             for (int i = 0; i < soil.getNL(); i++) {
                 HashMap soilLayer = new HashMap();
@@ -3591,6 +3593,7 @@ public class AFSIRSModule {
             }
             soilData.put("soilLayer", soilLayers);
             soils.add(soilData);
+            obj.put("soil_version", soil.getVersion());
         }
         obj.put("soils", soils);
         JSONObject polygonInfo = input.getPolygonInfoJSONObject();
@@ -3623,9 +3626,6 @@ public class AFSIRSModule {
         }
         
         return obj.toJSONString();
-
-        
-
     }
 
     public static boolean saveInputData(File outputDir, UserInput input) {
