@@ -70,11 +70,12 @@ public class UserInput {
         return irrOption.equalsIgnoreCase("NET");
     }
 
-    public LinkedHashMap deviation = new LinkedHashMap();
+    private LinkedHashMap deviation = new LinkedHashMap();
 
 //    private SoilData soilData;
     private ArrayList<Soil> soils = new ArrayList();
     private String polygonInfo;
+    private String polygonLocInfo;
     private String WATERHOLDINGCAPACITY;
     private String soilSource;
     private String CLIMATESTATION;
@@ -308,6 +309,8 @@ public class UserInput {
                 this.polygonInfo = "";
                 return;
             }
+        } else {
+            jsonStr = "{\"polygon\":[" + jsonStr + "]}";
         }
         polygonInfo = jsonStr;
     }
@@ -319,6 +322,45 @@ public class UserInput {
         JSONParser parser = new JSONParser();
         try {
             return new JSONObject((Map) parser.parse(this.polygonInfo));
+        } catch (ParseException ex) {
+            Logger.getLogger(UserInput.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+    
+    public void setPolygonLocInfo(String jsonStr) {
+        if (jsonStr == null || jsonStr.isEmpty()) {
+            this.polygonLocInfo = "";
+            return;
+        }
+        if (jsonStr.contains("soils") || jsonStr.contains("polygon")) {
+            try {
+                JSONParser parser = new JSONParser();
+                JSONObject soilData = new JSONObject((Map) parser.parse(jsonStr));
+                soilData.remove("soils");
+                soilData.remove("polygon");
+                if (soilData.containsKey("asfirs")) {
+                    soilData.put("afsirs", soilData.remove("asfirs"));
+                }
+                jsonStr = soilData.toJSONString();
+            } catch (ParseException ex) {
+                Logger.getLogger(UserInput.class.getName()).log(Level.SEVERE, null, ex);
+                this.polygonLocInfo = "";
+                return;
+            }
+        } else {
+            jsonStr = "{\"afsirs\":[" + jsonStr + "]}";
+        }
+        polygonLocInfo = jsonStr;
+    }
+    
+    public JSONObject getPolygonLocInfoJSONObject() {
+        if (this.polygonLocInfo == null || this.polygonLocInfo.isEmpty()) {
+            return null;
+        }
+        JSONParser parser = new JSONParser();
+        try {
+            return new JSONObject((Map) parser.parse(this.polygonLocInfo));
         } catch (ParseException ex) {
             Logger.getLogger(UserInput.class.getName()).log(Level.SEVERE, null, ex);
             return null;

@@ -3600,6 +3600,10 @@ public class AFSIRSModule {
         if (polygonInfo != null && !polygonInfo.isEmpty()) {
             obj.put("polygon", polygonInfo.get("polygon"));
         }
+        JSONObject polygonLocInfo = input.getPolygonLocInfoJSONObject();
+        if (polygonLocInfo != null && !polygonLocInfo.isEmpty()) {
+            obj.put("afsirs", polygonLocInfo.get("afsirs"));
+        }
         obj.put("coefficent_type", input.getCoefficentType());
         if ("annual".equalsIgnoreCase(input.getCropType())) {
             obj.put("dzn", input.getDZN() + "");
