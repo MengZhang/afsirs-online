@@ -72,12 +72,20 @@
     
     function cmToInch(data) {
         var soils = data["soils"];
+        var version = data["version"]
+        if (version === undefined) {
+            version = 0;
+        } else {
+            version = Number(version);
+        }
         for (var i = 0; i < soils.length; i++) {
             var layers = soils[i]["soilLayer"];
             for (var j = 0; j < layers.length; j++) {
                 layers[j]["sllb"] = (Number(layers[j]["sllb"]) * 0.39370).toFixed(3);
-                layers[j]["slll"] = Number(layers[j]["slll"]) / 100;
-                layers[j]["sldul"] = Number(layers[j]["sldul"]) / 100;
+                if (version < 1) {
+                    layers[j]["slll"] = Number(layers[j]["slll"]) / 100;
+                    layers[j]["sldul"] = Number(layers[j]["sldul"]) / 100;
+                }
             }
         }
         return data;
