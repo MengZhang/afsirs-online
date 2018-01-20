@@ -6,6 +6,7 @@ import java.util.Map;
 import static org.afsirs.web.Main.LOG;
 import org.afsirs.web.dao.WaterUsePermitDAO;
 import org.afsirs.web.dao.bean.WaterUsePermit;
+import static org.afsirs.web.dao.bean.WaterUsePermit.setDeviation;
 import org.afsirs.web.util.Path;
 import static org.afsirs.web.view.SimulationViewUtil.getAfsirsDownloadResponse;
 import static org.afsirs.web.view.SimulationViewUtil.getAfsirsResultPage;
@@ -36,7 +37,7 @@ public class SimulationPageController {
             if (permit == null) {
                 attributes.put("operation_result", "Failed");
             } else {
-                attributes.put("afsirs_input", permit.toAFSIRSInputData(userId));
+                attributes.put("afsirs_input", setDeviation(permit.toAFSIRSInputData(userId), permit));
                 attributes.put("user_id", userId);
             }
             return getAfsirsResultPage(request, attributes);
@@ -59,7 +60,8 @@ public class SimulationPageController {
             if (permit == null) {
                 attributes.put("operation_result", "Failed");
             } else {
-                attributes.put("afsirs_input", permit.toAFSIRSInputData(userId));
+                
+                attributes.put("afsirs_input", setDeviation(permit.toAFSIRSInputData(userId), permit));
             }
             return getAfsirsResultPage(request, attributes);
         }

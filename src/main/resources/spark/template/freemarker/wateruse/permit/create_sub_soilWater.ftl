@@ -54,6 +54,7 @@
                 document.getElementById('tblBody').innerHTML = toTableHtml(obj["soils"]);
                 document.getElementById('soil_file_json').value = JSON.stringify(obj);
                 document.getElementById('polygon_info').value = plygonStr;
+                document.getElementById('polygon_loc_info').value = JSON.stringify(afsirsInfo[0]);
 //                var value = document.getElementById('planted_area_input').value;
                 document.getElementById('total_area').value = totArea;
                 document.getElementById('planted_area').max = totArea;
@@ -229,7 +230,8 @@
                 <input type="hidden" id="soil_file_json" name="soil_file_json" value='{"soils":${permit["soil_json"]!"[]"}}'>
             </div>
             <div class="col-sm-4">
-                <input type="hidden" id="polygon_info" value='${permit["polygon_info"]!}'>
+                <input type="hidden" id="polygon_info" name="polygon_info" value='${permit["polygon_info"]!}'>
+                <input type="hidden" id="polygon_loc_info" name="polygon_loc_info" value='${permit["polygon_loc_info"]!}'>
                 <input type="hidden" id="soil_map_url" value="${soil_map_url!'http://abe.ufl.edu/bmpmodel/arcGIS/Test'}">
                 <button type="button" class="btn btn-primary text-right" onclick="openSoilMap()">View Soil Map</button>
                 <button type="button" class="btn btn-primary text-right" onclick="" disabled>Show Soil Data</button>

@@ -235,7 +235,7 @@ public class DataUtil {
         return ret;
     }
 
-    private static CropData readCropDataAnnual(String line, String cropName) {
+    private static CropDataAnnual readCropDataAnnual(String line, String cropName) {
         CropDataAnnual ret = new CropDataAnnual(cropName);
         if (line.length() < 12) {
             return ret;
@@ -271,7 +271,7 @@ public class DataUtil {
         return ret;
     }
 
-    private static CropData readCropDataPerennial(String line1, String line2, String cropName) {
+    private static CropDataPerennial readCropDataPerennial(String line1, String line2, String cropName) {
         CropDataPerennial ret = new CropDataPerennial(cropName);
         String data = line1.substring(14);
         String[] arr = data.split(" ");
@@ -671,25 +671,38 @@ public class DataUtil {
 
     public static String calculateNearestStation(String type, String jsonStr) {
         JSONObject data = JsonUtil.parseFrom(jsonStr);
-        List<Map> afsirs = (List) data.get("afsirs");
-        if (afsirs == null) {
-            afsirs = (List) data.get("asfirs");
-        }
-        if (afsirs == null) {
-            return null;
-        }
-        String longi = null;
-        String lat = null;
-        for (Map node : afsirs) {
-            longi = node.get("long").toString();
-            lat = node.get("lat").toString();
-            // TODO for multiple polygons
-        }
-        if (longi == null || lat == null) {
+        return calculateNearestStation(type, data);
+    }
+
+    public static String calculateNearestStation(String type, JSONObject data) {
+        String longi = data.getOrBlank("long");
+        String lat = data.getOrBlank("lat");
+        if (longi.isEmpty() || lat.isEmpty()) {
             return null;
         }
         return calculateNearestStation(type, lat, longi);
     }
+
+//    public static String calculateNearestStation(String type, JSONObject data) {
+//        List<Map> afsirs = (List) data.get("afsirs");
+//        if (afsirs == null) {
+//            afsirs = (List) data.get("asfirs");
+//        }
+//        if (afsirs == null) {
+//            return null;
+//        }
+//        String longi = null;
+//        String lat = null;
+//        for (Map node : afsirs) {
+//            longi = node.get("long").toString();
+//            lat = node.get("lat").toString();
+//            // TODO for multiple polygons
+//        }
+//        if (longi == null || lat == null) {
+//            return null;
+//        }
+//        return calculateNearestStation(type, lat, longi);
+//    }
 
     public static String calculateNearestStation(String type, String lat, String longi) {
 
