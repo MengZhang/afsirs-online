@@ -235,7 +235,7 @@ public class DataUtil {
         return ret;
     }
 
-    private static CropData readCropDataAnnual(String line, String cropName) {
+    private static CropDataAnnual readCropDataAnnual(String line, String cropName) {
         CropDataAnnual ret = new CropDataAnnual(cropName);
         if (line.length() < 12) {
             return ret;
@@ -271,7 +271,7 @@ public class DataUtil {
         return ret;
     }
 
-    private static CropData readCropDataPerennial(String line1, String line2, String cropName) {
+    private static CropDataPerennial readCropDataPerennial(String line1, String line2, String cropName) {
         CropDataPerennial ret = new CropDataPerennial(cropName);
         String data = line1.substring(14);
         String[] arr = data.split(" ");
