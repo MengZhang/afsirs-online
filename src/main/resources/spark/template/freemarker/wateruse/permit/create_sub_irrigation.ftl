@@ -202,10 +202,10 @@
         <div class="form-group">
             <label class="control-label col-sm-3" for="water_table_depth">Water Table Depth :</label>
             <div class="col-sm-4">
-                <input type="range" id="water_table_depth" name="water_table_depth" step="0.1" max="200" min="0.1" class="form-control" value="${permit['water_table_depth']!'1.0'}" placeholder="Enter Depth of Water Table" data-toggle="tooltip" title="Water Table Depth" onchange="showValue('water_table_depth')">
+                <input type="range" id="water_table_depth" name="water_table_depth" step="0.1" max="200" min="0.1" class="form-control" value="${permit['water_table_depth']!'60'}" placeholder="Enter Depth of Water Table" data-toggle="tooltip" title="Water Table Depth" onchange="showValue('water_table_depth')">
             </div>
             <div class="col-sm-2">
-                <input type="number" id="water_table_depth_input" step="10" max="200" min="0.1" class="form-control" value="${permit['water_table_depth']!'1.0'}" placeholder="Enter Depth of Water Table" data-toggle="tooltip" title="Water Table Depth" onchange="showRange('water_table_depth')">
+                <input type="number" id="water_table_depth_input" step="10" max="200" min="0.1" class="form-control" value="${permit['water_table_depth']!'60'}" placeholder="Enter Depth of Water Table" data-toggle="tooltip" title="Water Table Depth" onchange="showRange('water_table_depth')">
             </div>
             <label class="control-label col-sm-1">(Inches)</label>
         </div>

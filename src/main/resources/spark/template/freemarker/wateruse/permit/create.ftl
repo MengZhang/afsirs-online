@@ -179,6 +179,7 @@
                     errTab = "SiteInfo";
                 }
                 if (errTab === "") {
+                    collectData();
                     document.getElementById("createPermitForm").submit();
                 } else {
                     openTab(errTab);
@@ -196,7 +197,7 @@
             <p>${error_message!"Permit Already Exist"}</p>
             </#if>
 
-            <form id="createPermitForm" action="/wateruse/permit/create" class="form-horizontal" method="post" onsubmit="return collectData()">
+            <form id="createPermitForm" action="/wateruse/permit/create" class="form-horizontal" method="post">
                 <input type="hidden" name="update_flg" value="${update_flg!'false'}">
                 <input type="hidden" name="user_id" value="${permit['user_id']!}">
                 <fieldset>

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import lombok.Data;
 import org.afsirs.module.AFSIRSModule;
+import org.afsirs.module.Irrigation;
 import org.afsirs.module.Soil;
 import org.afsirs.module.UserInput;
 import org.afsirs.web.util.DataUtil;
@@ -419,18 +420,18 @@ public class WaterUsePermit {
 
         return input;
     }
-    
+
     public static UserInput setDeviation(UserInput input, WaterUsePermit permit) {
-//        JSONObject tmp = new JSONObject();
-//        JSONArray arr = new JSONArray();
-//        arr.add(JsonUtil.parseFrom(permit.getPolygon_loc_info()));
-//        tmp.put("afsirs", arr);
+
+        // Climate
         if (!permit.getEt_loc().equals(DataUtil.calculateNearestStation("CLIMATE", permit.getPolygon_loc_info()))) {
             input.addDeviation("RainfallLocation", permit.getEt_loc());
         }
         if (!permit.getRain_loc().equals(DataUtil.calculateNearestStation("RAIN", permit.getPolygon_loc_info()))) {
             input.addDeviation("Climate Location", permit.getRain_loc());
         }
+
+        // General
         if (input.isPerennialCrop()) {
             input.addDeviation("Crop Type", permit.getCrop_type());
         } else {
@@ -450,28 +451,99 @@ public class WaterUsePermit {
             if (p.getDays() > max || p.getDays() < min) {
                 MonthDay start = MonthDay.of(input.getMO1(), input.getDAY1());
                 MonthDay end = MonthDay.of(input.getMON(), input.getDAYN());
-                input.addDeviation("Date Range", start.format(DateTimeFormatter.ofPattern("MM-dd")) + " ~ " +  end.format(DateTimeFormatter.ofPattern("MM-dd")) + " which is outside the normal range");
+                input.addDeviation("Date Range", start.format(DateTimeFormatter.ofPattern("MM-dd")) + " ~ " + end.format(DateTimeFormatter.ofPattern("MM-dd")) + " which is outside the normal range");
             }
         }
+
+        // Irrigation
         if (input.getIrrigationSystem() != 0) {
-            input.addDeviation("Irrigation system", DataUtil.getIRSysNameList().get(Integer.parseInt(permit.getIrr_type())));
+            input.addDeviation("Irrigation system", DataUtil.getIRSysNameList().get(input.getIrrigationSystem()));
         }
         if (!input.isNetCalc()) {
             input.addDeviation("Irrigation Requirement", permit.getIrr_option());
         }
-        
-//                    
-                
-                
-//  input.addDeviation("Fraction of soil surface irrigated", (String) soilSurfaceIrrText.getText());
-//  input.addDeviation("Irrigation application efficiency", (String) irrTypeBox.getSelectedItem());
-//  input.addDeviation("Irrigation water depths", "none");
-//  input.addDeviation("Irrigation water depths", "Deficit Irrigation");
-//  input.addDeviation("Irrigation water depths", "Fixed water depth per application");
-//
-//  input.addDeviation("Irrigation Application Efficiency", (String) irrAppEffText.getText());
-//:  input.addDeviation("Fraction of ET extracted", (String) exirText.getText());
-        
+        switch (permit.getIrr_depth_type()) {
+            case "1":
+                input.addDeviation("Irrigation water depths", "Fixed water depth per application");
+                break;
+            case "2":
+                input.addDeviation("Irrigation water depths", "Deficit Irrigation");
+                break;
+            case "3":
+                input.addDeviation("Irrigation water depths", "none");
+                break;
+        }
+        Irrigation irSys = DataUtil.getIRSysList().get(input.getIrrigationSystem());
+        if (irSys.getEff() != input.getIEFF()) {
+            input.addDeviation("Irrigation application efficiency", input.getIEFF() + "");
+        }
+        if (irSys.getArea() != input.getARZI()) {
+            input.addDeviation("Fraction of soil surface irrigated", input.getFRIR() + "");
+        }
+        if (irSys.getEx() != input.getEXIR()) {
+            input.addDeviation("Fraction of ET extracted", input.getFRIR() + "");
+        }
+        if (irSys.getDwt() != input.getDWT()) {
+            input.addDeviation("Depth of water table", input.getFRIR() + "");
+        }
+
+        // Soil
+        if (input.getPlantedAcres() != input.getMapArea()) {
+            input.addDeviation("Planted area", input.getPlantedAcres() + "");
+        }
+        if (!input.getWATERHOLDINGCAPACITY().equals("Average")) {
+            input.addDeviation("Water hold capacity", input.getWATERHOLDINGCAPACITY());
+        }
+//1074:  input.addDeviation("Soil Series name", soilNameText.toString());
+//1082:  input.addDeviation("Soil Texture", soilTextureText.toString());
+//1368:  input.addDeviation("Input data from", "User defined");
+//1409:  input.addDeviation("Input data from", "Soil Database");
+
+        // Annual Decoefficient
+        if (input.isPerennialCrop()) {
+            CropDataPerennial crop = (CropDataPerennial) DataUtil.getCropDataPerennial().get(permit.getCrop_name());
+            if (input.getDRZIRR() != crop.getDRZIRR()) {
+                input.addDeviation("Irrigated root zone depth", input.getDRZIRR() + "");
+            }
+            if (input.getDRZTOT() != crop.getDRZTOT()) {
+                input.addDeviation("Total crop root zone depth", input.getDRZTOT() + "");
+            }
+            if (input.getHGT() != crop.getHGT()) {
+                input.addDeviation("Height of Crown flood system", input.getHGT() + "");
+            }
+            for (int i = 0; i < 12; i++) {
+                if (input.getAKC()[i] != crop.getAKC()[i]) {
+                    input.addDeviation("Crop water use coefficients for " + Month.of(i + 1).name(), input.getAKC()[i] + "");
+                }
+                if (input.getALDP()[i] != crop.getALDP()[i]) {
+                    input.addDeviation("Allowable soil water depletions for " + Month.of(i + 1).name(), input.getALDP()[i] + "");
+                }
+            }
+
+        } else {
+            CropDataAnnual crop = (CropDataAnnual) DataUtil.getCropDataAnnual().get(permit.getCrop_name());
+            if (input.getDZN() != crop.getDZN()) {
+                input.addDeviation("Intial Irrigated root zone depth", input.getDZN() + "");
+            }
+            if (input.getDZX() != crop.getDZX()) {
+                input.addDeviation("Maximum Irrigated root zone depth", input.getDZX() + "");
+            }
+            if (input.getAKC3() != crop.getAKC3()) {
+                input.addDeviation("Crop water usage stage 3 coefficient", input.getAKC3() + "");
+            }
+            if (input.getAKC4() != crop.getAKC4()) {
+                input.addDeviation("Crop water usage stage 4 coefficient", input.getAKC4() + "");
+            }
+            for (int i = 0; i < 4; i++) {
+                if (input.getF()[i] != crop.getF()[i]) {
+                    input.addDeviation("Fraction of growing season stage " + (i + 1), input.getF()[i] + "");
+                }
+                if (input.getALD()[i] != crop.getALD()[i]) {
+                    input.addDeviation("Allowable soil water depletion stage " + (i + 1), input.getALD()[i] + "");
+                }
+            }
+        }
+
         return input;
     }
 
