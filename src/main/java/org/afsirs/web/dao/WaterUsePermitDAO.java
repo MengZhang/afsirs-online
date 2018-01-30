@@ -117,23 +117,21 @@ public class WaterUsePermitDAO {
 
     public static File getOutputFile(String userId, String permitId, String fileType) {
 
-        WaterUsePermit permit = find(permitId, userId);
-        String ownerName = permit.getOwner_name();
         File outDir = Path.Folder.getUserWaterUsePermitOutputDir(userId);
         String fileName;
 
         if (fileType == null || fileType.isEmpty()) {
-            fileName = ownerName + "-Summary.pdf";
+            fileName = permitId + "-Summary.pdf";
         } else if ("text".equalsIgnoreCase(fileType)) {
-            fileName = ownerName + ".txt";
+            fileName = permitId + ".txt";
         } else if ("pdf".equalsIgnoreCase(fileType)) {
-            fileName = ownerName + "-Summary.pdf";
+            fileName = permitId + "-Summary.pdf";
         } else if ("excel".equalsIgnoreCase(fileType)) {
-            fileName = ownerName + "-Summary.xlsx";
+            fileName = permitId + "-Summary.xlsx";
         } else if ("calcExcel".equalsIgnoreCase(fileType)) {
-            fileName = ownerName + "-Cal.xlsx";
+            fileName = permitId + "-Cal.xlsx";
         } else {
-            fileName = ownerName + "-Summary.pdf";
+            fileName = permitId + "-Summary.pdf";
         }
         return Paths.get(outDir.getPath(), fileName).toFile();
     }
