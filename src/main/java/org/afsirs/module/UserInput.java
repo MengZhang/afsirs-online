@@ -88,7 +88,7 @@ public class UserInput {
     public void addDeviation(String varName, String varText) {
         deviation.put(varName, varText);
     }
-    
+
     public UserInput() {
         this(new Date());
     }
@@ -100,10 +100,10 @@ public class UserInput {
         MONTH = Integer.parseInt(date[1]);
         IIDAY = Integer.parseInt(date[2]);
     }
-    
-    public void setOWNER(String OWNER, String outPath) {
-        this.OWNER = OWNER;
-        outFile = Paths.get(outPath, OWNER).toFile().getPath(); //siteName +"-"+ unitName;
+
+    public void setSITE(String SITE, String outPath) {
+        this.SITE = SITE;
+        outFile = Paths.get(outPath, SITE).toFile().getPath(); //siteName +"-"+ unitName;
         summaryFile = outFile + "-Summary.pdf";
         summaryFileExcel = outFile + "-Summary.xlsx";
         calculationExcel = outFile + "-Cal.xlsx";
@@ -278,19 +278,19 @@ public class UserInput {
             weather.setJDAY(JDAY);
         }
     }
-    
+
     public void setWATERHOLDINGCAPACITY(String WHC) {
         for (Soil soil : soils) {
             soil.setWHC(WHC);
         }
         this.WATERHOLDINGCAPACITY = WHC;
     }
-    
+
     public void setSoils(ArrayList<Soil> soils, String WHC) {
         this.soils = soils;
         setWATERHOLDINGCAPACITY(WATERHOLDINGCAPACITY);
     }
-    
+
     public void setPolygonInfo(String jsonStr) {
         if (jsonStr == null || jsonStr.isEmpty()) {
             this.polygonInfo = "";
@@ -314,7 +314,7 @@ public class UserInput {
         }
         polygonInfo = jsonStr;
     }
-    
+
     public JSONObject getPolygonInfoJSONObject() {
         if (this.polygonInfo == null || this.polygonInfo.isEmpty()) {
             return null;
@@ -327,7 +327,7 @@ public class UserInput {
             return null;
         }
     }
-    
+
     public void setPolygonLocInfo(String jsonStr) {
         if (jsonStr == null || jsonStr.isEmpty()) {
             this.polygonLocInfo = "";
@@ -353,7 +353,7 @@ public class UserInput {
         }
         polygonLocInfo = jsonStr;
     }
-    
+
     public JSONObject getPolygonLocInfoJSONObject() {
         if (this.polygonLocInfo == null || this.polygonLocInfo.isEmpty()) {
             return null;
@@ -638,7 +638,6 @@ public class UserInput {
             }
 
 //            NYR = endYear - startYear + 1;
-
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace(System.err);
         } finally {

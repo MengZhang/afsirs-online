@@ -1,8 +1,6 @@
 package org.afsirs.module;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -81,19 +79,28 @@ public abstract class SummaryReport {
         }
 
     }
-    
+
     public SummaryReport(String soilKey, String soilName, String soilSymbolNum, double soilArea) {
         this(soilKey, soilName, soilSymbolNum);
         this.soilArea = soilArea;
     }
-    
+
     public SummaryReport(String soilKey, String soilName, String soilSymbolNum) {
         this();
         this.soilKey = soilKey;
         this.soilName = soilName;
         this.soilSymbolNum = soilSymbolNum;
     }
-    
+
+    public String getSoilAreaStr() {
+        String ret = String.format("%6.2f", soilArea);
+        if (ret.equals("0.00")) {
+            return "< 0.01";
+        } else {
+            return ret;
+        }
+    }
+
 //    public void reset() {
 //        for (int i = 0; i < 12; i++) {
 //

@@ -1731,7 +1731,7 @@ public class AFSIRSModule {
             int NYR = input.getNYR();
             int NDAYS = input.getNDAYS();
 
-            bwOutputFile.append("PERMIT ID = " + input.getSITE() + "     MAP NAME = " + input.getUNIT() + "     OUTPUT FILE = " + input.getOWNER() + "     DATE = " + MONTH + "-" + IIDAY + "-" + IYEAR + "" + EOL);
+            bwOutputFile.append("PERMIT ID = " + input.getSITE() + "     MAP NAME = " + input.getUNIT() + "     OWNER NAME = " + input.getOWNER() + "     DATE = " + MONTH + "-" + IIDAY + "-" + IYEAR + "" + EOL);
             bwOutputFile.append(EOL + "                      CROP TYPE = " + CTYPE + EOL);
             bwOutputFile.append(EOL + " IRRIGATION SEASON = " + MO1 + "-" + DAY1 + " TO " + MON + "-" + DAYN + "                LENGTH = " + NDAYS + " DAYS" + EOL);
             bwOutputFile.append(EOL + " ET DATA BASE: LOCATION = " + CLIMATELOC + " LENGTH = " + NYR + " YEARS" + "(" + startYear + "-" + endYear + ")" + EOL);
@@ -1868,7 +1868,6 @@ public class AFSIRSModule {
              }
              calculateBalance();
              SUMX();*/
-            
             ArrayList<PdfPTable> summaryTables = ret.getSummaryTables();
 
             ArrayList<Soil> soils = input.getSoils();
@@ -1913,10 +1912,9 @@ public class AFSIRSModule {
             for (SoilSeriesSummaryReport report : ret.getSoilSeriesSummaryList()) {
                 finalSummaryOutput(report, excelSummary, bwOutputSummaryFile, ret, summaryTables);
             }
-            
+
             //Write the permit file.
 //            savePermitFile(new File("Permit/"), input);
-
 //            excelCal = new SummaryReportExcelFormat(input.getCalculationExcel());
             excelCal = buildCalculationExcel(input, ret, ret.getSoilTypeSummaryList());
             // Set the foot note here in the excel file and the pdf
@@ -2441,23 +2439,26 @@ public class AFSIRSModule {
                 addParagraphToTableSoilName(t, " ", " ");
             }
 
-            double soilPercent = 0.0;
-
+            String soilPercentStr = "< 0.01";
             if (ret.getTotalArea() != 0) {
-                soilPercent = ((summaryReport.getSoilArea() * 100) / ret.getTotalArea());
+                double soilPercent = ((summaryReport.getSoilArea() * 100) / ret.getTotalArea());
+                String tmp = String.format("%6.2f", soilPercent);
+                if (!tmp.equals("0.00")) {
+                    soilPercentStr = tmp;
+                }
             }
 
             addParagraphToTableSoilName(t, "Soil : ", summaryReport.getSoilName());
             addParagraphToTableSoilName(t, "Soil Component Code : ", summaryReport.getSoilKey());
-            addParagraphToTableSoilName(t, "Soil Percentage : ", String.format("%6.2f", soilPercent));
-            addParagraphToTableSoilName(t, "Soil Area(ACRES) : ", String.format("%6.2f", summaryReport.getSoilArea()));
+            addParagraphToTableSoilName(t, "Soil Percentage : ", soilPercentStr);
+            addParagraphToTableSoilName(t, "Soil Area(ACRES) : ", summaryReport.getSoilAreaStr());
 
             excelSummary.insertDataWithStyle("Soil", 0, false, true);
             excelSummary.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
             excelSummary.insertDataWithStyle("Soil Component Code", 0, false, true);
             excelSummary.insertDataWithStyle(summaryReport.getSoilKey(), 0, false, true);
             excelSummary.insertDataWithStyle("Soil Percentage", 0, false, true);
-            excelSummary.insertDataWithStyle(String.format("%6.2f", soilPercent), 0, false, true);
+            excelSummary.insertDataWithStyle(soilPercentStr, 0, false, true);
             excelSummary.insertDataWithStyle("Soil Series Name", 0, false, true);
             excelSummary.insertDataWithStyle(summaryReport.getSoilSeriesName(), 0, false, true);
             excelSummary.insertDataWithStyle("Soil Map Unit Code", 0, false, true);
@@ -2483,10 +2484,10 @@ public class AFSIRSModule {
             e.printStackTrace(System.err);
         }
     }
-    
+
     private static void finalSummaryOutput(SoilSeriesSummaryReport summaryReport, SummaryReportExcelFormat excelSummary, Document bwOutputSummaryFile, SimResult ret, ArrayList<PdfPTable> summaryTables) {
         try {
-            
+
             double area = ret.getPlantedArea();
 
             if (summaryTables.size() < 2) {
@@ -2501,28 +2502,28 @@ public class AFSIRSModule {
                 addParagraphToTableSoilName(t, " ", " ");
             }
 
-            double soilPercent = 0.0;
-
+            String soilPercentStr = "< 0.01";
             if (ret.getTotalArea() != 0) {
-                soilPercent = ((summaryReport.getSoilArea() * 100) / ret.getTotalArea());
+                double soilPercent = ((summaryReport.getSoilArea() * 100) / ret.getTotalArea());
+                String tmp = String.format("%6.2f", soilPercent);
+                if (!tmp.equals("0.00")) {
+                    soilPercentStr = tmp;
+                }
             }
-
-            
 
             addParagraphToTableSoilName(t, "Soil Series Name : ", summaryReport.getSoilName());
             addParagraphToTableSoilName(t, "Soil Map Unit Symbol# : ", summaryReport.getSoilSymbolNum());
             addParagraphToTableSoilName(t, "Soil Map Unit Code : ", summaryReport.getSoilKey());
-            addParagraphToTableSoilName(t, "Soil Percentage : ", String.format("%6.2f", soilPercent));
-            addParagraphToTableSoilName(t, "Soil Area(ACRES) : ", String.format("%6.2f", summaryReport.getSoilArea()));
+            addParagraphToTableSoilName(t, "Soil Percentage : ", soilPercentStr);
+            addParagraphToTableSoilName(t, "Soil Area(ACRES) : ", summaryReport.getSoilAreaStr());
             addParagraphToTableSoilName(t, " ", " ");
 
-            
             excelSummary.insertDataWithStyle("Soil Series Name", 0, false, true);
             excelSummary.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
             excelSummary.insertDataWithStyle("Soil Map Unit Code", 0, false, true);
             excelSummary.insertDataWithStyle(summaryReport.getSoilKey(), 0, false, true);
             excelSummary.insertDataWithStyle("Soil Percentage", 0, false, true);
-            excelSummary.insertDataWithStyle(String.format("%6.2f", soilPercent), 0, true, true);
+            excelSummary.insertDataWithStyle(soilPercentStr, 0, true, true);
 
             summaryTables.add(t);
             if (summaryReport.getTotalOneinTen() == -99.0 || summaryReport.getTotalTwoinTen() == -99.0) {
@@ -2531,9 +2532,12 @@ public class AFSIRSModule {
                 summaryTables.add(error);
 
             }
-            PdfPTable table = infoInInches(summaryReport, excelSummary, ret);
-            summaryTables.add(table);
-            probablityInfoInGallons(summaryReport, excelSummary, summaryTables, area);
+            for (SoilTypeSummaryReport report : summaryReport.getSoilTypeSummaryReportList()) {
+                summaryReport.setCurReport(report);
+                PdfPTable table = infoInInches(summaryReport, excelSummary, ret);
+                summaryTables.add(table);
+                probablityInfoInGallons(summaryReport, excelSummary, summaryTables, area);
+            }
 
         } catch (DocumentException e) {
             // Logger.getLogger(AFSIRSUtils.class.getName()).log(Level.SEVERE, null, ex);
@@ -2759,7 +2763,6 @@ public class AFSIRSModule {
 //            }
 //        }
 //    }
-
     private static PdfPTable infoInInches(SummaryReport summaryReport, SummaryReportExcelFormat excelSummary, SimResult ret) throws DocumentException {
         PdfPTable table;
         PdfPCell cell;
@@ -2792,7 +2795,7 @@ public class AFSIRSModule {
         designRowTitleCell(table, "Mean Irr Req");
         excelSummary.insertDataWithStyle("Mean Irr Req", 0, false, true);
         LOG.debug("Soil Name :" + summaryReport.getSoilName());
-        LOG.debug("Soil Area :" + summaryReport.getSoilArea());
+        LOG.debug("Soil Area :" + summaryReport.getSoilAreaStr());
         LOG.debug("Total Area :" + ret.getTotalArea());
         LOG.debug("****Mean Irr Required ******");
 
@@ -3628,7 +3631,7 @@ public class AFSIRSModule {
                 obj.put("hgt", input.getHGT() + "");
             }
         }
-        
+
         return obj.toJSONString();
     }
 

@@ -31,22 +31,30 @@ public class SoilSeriesSummaryReport extends SummaryReport {
     @Setter(AccessLevel.NONE)
     private ArrayList<SoilTypeSummaryReport> sortedReports = new ArrayList<>();
 
-    private SummaryReport curReport;
+    private SoilTypeSummaryReport curReport;
 
     public SoilSeriesSummaryReport(SoilTypeSummaryReport firstSoilTypeReport) {
         super(firstSoilTypeReport.getSoilSeriesKey(), firstSoilTypeReport.getSoilSeriesName(), firstSoilTypeReport.getSoilSymbolNum());
         addSoilTypeSummaryReport(firstSoilTypeReport);
     }
-    
+
     public SoilSeriesSummaryReport(Soil soil) {
         super(soil.getSOILSERIESKEY(), soil.getSERIESNAME(), soil.getSoilSymbolNum());
         addSoilTypeSummaryReport(new SoilTypeSummaryReport(soil));
     }
-    
+
+    public void setCurReport(SoilTypeSummaryReport report) {
+        String soilTypeKey = report.getSoilKey();
+        if (!reports.containsKey(soilTypeKey)) {
+            addSoilTypeSummaryReport(report);
+        }
+        this.curReport = reports.get(soilTypeKey);
+    }
+
     public void setCurReport(Soil soil) {
         String soilTypeKey = soil.getCOMPKEY();
         if (!reports.containsKey(soilTypeKey)) {
-            reports.put(soilTypeKey, new SoilTypeSummaryReport(soil));
+            addSoilTypeSummaryReport(new SoilTypeSummaryReport(soil));
         }
         this.curReport = reports.get(soilTypeKey);
     }
@@ -67,12 +75,12 @@ public class SoilSeriesSummaryReport extends SummaryReport {
             ret = reports.get(soilKey);
         } else {
             ret = new SoilTypeSummaryReport(soil);
-            reports.put(soilKey, ret);
+            addSoilTypeSummaryReport(ret);
         }
         this.curReport = ret;
         return ret;
     }
-    
+
     public ArrayList<SoilTypeSummaryReport> getSoilTypeSummaryReportList() {
         if (sortedReports.size() < reports.size()) {
             sortedReports = new ArrayList(reports.values());
@@ -82,11 +90,11 @@ public class SoilSeriesSummaryReport extends SummaryReport {
         }
         return sortedReports;
     }
-    
+
     public void addSoilArea(double soilArea) {
         this.setSoilArea(this.getSoilArea() + soilArea);
     }
-    
+
     private void updateStatistics(SoilTypeSummaryReport report) {
         String soilKey = report.getSoilKey();
         if (reports.containsKey(soilKey)) {
@@ -181,29 +189,23 @@ public class SoilSeriesSummaryReport extends SummaryReport {
 
     @Override
     public void setWeightedAvgIrrRequired(int month, double val) {
-        double orgVal = curReport.getWeightedAvgIrrRequired(month);
-        double diff = val - orgVal;
         curReport.setWeightedAvgIrrRequired(month, val);
-        val = super.getWeightedAvgIrrRequired(month) + diff * curReport.getSoilArea() / this.getSoilArea();
-        super.setWeightedAvgIrrRequired(month, val);
+        double increase = val * curReport.getSoilArea() / this.getSoilArea();
+        super.setWeightedAvgIrrRequired(month, increase);
     }
 
     @Override
     public void setWeighted2In10IrrRequired(int month, double val) {
-        double orgVal = curReport.getWeighted2In10IrrRequired(month);
-        double diff = val - orgVal;
         curReport.setWeighted2In10IrrRequired(month, val);
-        val = super.getWeighted2In10IrrRequired(month) + diff * curReport.getSoilArea() / this.getSoilArea();
-        super.setWeighted2In10IrrRequired(month, val);
+        double increase = val * curReport.getSoilArea() / this.getSoilArea();
+        super.setWeighted2In10IrrRequired(month, increase);
     }
 
     @Override
     public void setWeighted1In10IrrRequired(int month, double val) {
-        double orgVal = curReport.getWeighted1In10IrrRequired(month);
-        double diff = val - orgVal;
         curReport.setWeighted1In10IrrRequired(month, val);
-        val = super.getWeighted1In10IrrRequired(month) + diff * curReport.getSoilArea() / this.getSoilArea();
-        super.setWeighted1In10IrrRequired(month, val);
+        double increase = val * curReport.getSoilArea() / this.getSoilArea();
+        super.setWeighted1In10IrrRequired(month, increase);
     }
 
     /**

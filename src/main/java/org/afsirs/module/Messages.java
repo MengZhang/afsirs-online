@@ -127,7 +127,7 @@ public class Messages {
     
     
     public static final String USER_DETAILS [] = {
-                        "Output File : "  ,
+                        "Owner Name : "  ,
                         "Permit ID : ",
                         "Map Name : ",
                         "Crop : ",
