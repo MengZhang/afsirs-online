@@ -358,8 +358,8 @@ public class WaterUsePermit {
 
     public UserInput toAFSIRSInputData(String userId) {
         UserInput input = new UserInput();
-        input.setSITE(permit_id);
-        input.setOWNER(owner_name, Path.Folder.getUserWaterUsePermitOutputDir(userId).getPath());
+        input.setSITE(permit_id, Path.Folder.getUserWaterUsePermitOutputDir(userId).getPath());
+        input.setOWNER(owner_name);
         input.setCropType(crop_type);
 //        input.setCropName(crop_name);
         input.setCropData(DataUtil.getCropIndexCode(crop_type, crop_name), crop_name);
