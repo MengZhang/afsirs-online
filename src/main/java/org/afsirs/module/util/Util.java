@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.afsirs.module.SoilTypeSummaryReport;
 import org.afsirs.module.SummaryReport;
 import org.afsirs.module.UserInput;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
@@ -243,14 +244,12 @@ public class Util {
         };
     }
 
-    public static boolean isSorted(ArrayList reports) {
+    public static boolean isSorted(ArrayList<? extends SummaryReport> reports) {
         if (reports == null || reports.isEmpty()) {
             return true;
         }
-        double preVal = ((SummaryReport) reports.get(0)).getTotalAvgIrr();
-        for (Object report : reports) {
-            if (preVal < ((SummaryReport) report).getTotalAvgIrr()) {
-
+        for (int i = 1; i < reports.size(); i++) {
+            if (reports.get(i - 1).getTotalAvgIrr() < reports.get(i).getTotalAvgIrr()) {
                 return false;
             }
         }

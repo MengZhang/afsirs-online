@@ -190,22 +190,19 @@ public class SoilSeriesSummaryReport extends SummaryReport {
     @Override
     public void setWeightedAvgIrrRequired(int month, double val) {
         curReport.setWeightedAvgIrrRequired(month, val);
-        double increase = val * curReport.getSoilArea() / this.getSoilArea();
-        super.setWeightedAvgIrrRequired(month, increase);
+        super.setWeightedAvgIrrRequired(month, val);
     }
 
     @Override
     public void setWeighted2In10IrrRequired(int month, double val) {
         curReport.setWeighted2In10IrrRequired(month, val);
-        double increase = val * curReport.getSoilArea() / this.getSoilArea();
-        super.setWeighted2In10IrrRequired(month, increase);
+        super.setWeighted2In10IrrRequired(month, val);
     }
 
     @Override
     public void setWeighted1In10IrrRequired(int month, double val) {
         curReport.setWeighted1In10IrrRequired(month, val);
-        double increase = val * curReport.getSoilArea() / this.getSoilArea();
-        super.setWeighted1In10IrrRequired(month, increase);
+        super.setWeighted1In10IrrRequired(month, val);
     }
 
     /**

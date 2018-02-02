@@ -91,6 +91,19 @@ public class SimResult {
             return report;
         }
     }
+    
+    public SoilSeriesSummaryReport getSoilSeriesSummaryReport(SoilTypeSummaryReport report) {
+        String soilSeriesKey = report.getSoilSeriesKey();
+        if (summaryList.containsKey(soilSeriesKey)) {
+            SoilSeriesSummaryReport ret = summaryList.get(soilSeriesKey);
+            ret.setCurReport(report);
+            return ret;
+        } else {
+            SoilSeriesSummaryReport ret = new SoilSeriesSummaryReport(report);
+            summaryList.put(soilSeriesKey, ret);
+            return ret;
+        }
+    }
 
     public SoilTypeSummaryReport getSoilTypeSummaryReport(Soil soil) {
         String soilSeriesKey = soil.getSOILSERIESKEY();
