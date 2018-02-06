@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -1913,7 +1915,7 @@ public class AFSIRSModule {
 
             //Write the permit file.
 //            savePermitFile(new File("Permit/"), input);
-            excelCal = buildCalculationExcel(input, ret, ret.getSoilTypeSummaryList());
+            excelCal = buildCalculationExcel(input, ret);
             // Set the foot note here in the excel file and the pdf
             excelSummary.setFootNoteExcelFile(Messages.FOOTNOTE[0]);
             setIrrigationWeightedAverageExcel(ret, excelSummary, ret.getSoilTypeSummaryList());
@@ -3372,8 +3374,9 @@ public class AFSIRSModule {
         bwOutputSummaryFile.add(t);
     }
 
-    private static SummaryReportExcelFormat buildCalculationExcel(UserInput input, SimResult ret, ArrayList<SoilTypeSummaryReport> summaryReports) {
+    private static SummaryReportExcelFormat buildCalculationExcel(UserInput input, SimResult ret) {
         SummaryReportExcelFormat excelCal = new SummaryReportExcelFormat(ret.getCalculationExcel());
+        ArrayList<SoilSeriesSummaryReport> summaryReports = ret.getSummaryList();
 //        ArrayList<Soil> soils = input.getSoils();
         excelCal.setRowNum(2);
         excelCal.insertDataWithStyle(Messages.DOC_HEADER_EXCEL, 2, true, true);
@@ -3393,288 +3396,40 @@ public class AFSIRSModule {
             double factorGross = input.getPlantedAcres() * 27154 / 1000000;
             switch (i) {
                 case 0:
-                    for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                        excelCal.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        double sum = 0;
-                        double peak = summaryReport.getAverageIrrigationRequired(1);
-                        for (int j = 0; j < 12; j++) {
-                            sum = sum + summaryReport.getAverageIrrigationRequired(j + 1);
-                            if (summaryReport.getAverageIrrigationRequired(j + 1) > peak) {
-                                peak = summaryReport.getAverageIrrigationRequired(j + 1);
-                            }
-                            excelCal.insertDataWithStyle(summaryReport.getAverageIrrigationRequired(j + 1), 0, false, true);
-                        }
-                        excelCal.insertDataWithStyle(sum, 0, false, true);
-                        excelCal.insertDataWithStyle(peak, 0, false, true);
-                        excelCal.insertDataWithStyle(sum / 365, 0, false, true);
-                        excelCal.insertEmptyLine(1);
-                    }
+                    writeCalExcelInches(excelCal, ret, summaryReports, "getAverageIrrigationRequired");
                     break;
                 case 1:
-                    excelCal.insertDataWithStyle("", 3, false, true);
-                    excelCal.insertDataWithStyle("", 3, false, true);
-                    excelCal.insertDataWithStyle("Area Fraction", 0, false, true);
-                    excelCal.insertDataWithStyle("Area Percentage", 0, true, false);
-                    excelCal.insertEmptyLine(1);
-                    for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                        excelCal.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle(summaryReport.getSoilArea(), 0, false, true);
-                        excelCal.insertDataWithStyle((summaryReport.getSoilArea() / ret.getTotalArea()) * 100, 0, false, true);
-                        double sum = 0;
-                        double peak = summaryReport.getWeightedAvgIrrRequired(1);
-                        for (int j = 0; j < 12; j++) {
-                            sum = sum + summaryReport.getWeightedAvgIrrRequired(j + 1);
-                            if (summaryReport.getWeightedAvgIrrRequired(j + 1) > peak) {
-                                peak = summaryReport.getWeightedAvgIrrRequired(j + 1);
-                            }
-                            excelCal.insertDataWithStyle(summaryReport.getWeightedAvgIrrRequired(j + 1), 0, false, true);
-                        }
-                        excelCal.insertDataWithStyle(sum, 0, false, true);
-                        excelCal.insertDataWithStyle(peak, 0, false, true);
-                        excelCal.insertDataWithStyle(sum / 365, 0, false, true);
-                        excelCal.insertEmptyLine(1);
-                    }
+                    writeCalExcelInches(excelCal, ret, summaryReports, "getWeightedAvgIrrRequired");
                     break;
                 case 2:
-                    for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                        excelCal.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        double sum = 0;
-                        double peak = summaryReport.getTwoin10IrrigationRequired(1);
-                        for (int j = 0; j < 12; j++) {
-                            sum = sum + summaryReport.getTwoin10IrrigationRequired(j + 1);
-                            if (summaryReport.getTwoin10IrrigationRequired(j + 1) > peak) {
-                                peak = summaryReport.getTwoin10IrrigationRequired(j + 1);
-                            }
-                            excelCal.insertDataWithStyle(summaryReport.getTwoin10IrrigationRequired(j + 1), 0, false, true);
-                        }
-                        excelCal.insertDataWithStyle(sum, 0, false, true);
-                        excelCal.insertDataWithStyle(peak, 0, false, true);
-                        excelCal.insertDataWithStyle(sum / 365, 0, false, true);
-                        excelCal.insertEmptyLine(1);
-                    }
+                    writeCalExcelInches(excelCal, ret, summaryReports, "getTwoin10IrrigationRequired");
                     break;
                 case 3:
-                    excelCal.insertDataWithStyle("", 3, false, true);
-                    excelCal.insertDataWithStyle("", 3, false, true);
-                    excelCal.insertDataWithStyle("Area Fraction", 0, false, true);
-                    excelCal.insertDataWithStyle("Area Percentage", 0, true, false);
-                    excelCal.insertEmptyLine(1);
-                    for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                        excelCal.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle(summaryReport.getSoilArea(), 0, false, true);
-                        excelCal.insertDataWithStyle((summaryReport.getSoilArea() / ret.getTotalArea()) * 100, 0, false, true);
-                        double sum = 0;
-                        double peak = summaryReport.getWeighted2In10IrrRequired(1);
-                        for (int j = 0; j < 12; j++) {
-                            sum = sum + summaryReport.getWeighted2In10IrrRequired(j + 1);
-                            if (summaryReport.getWeighted2In10IrrRequired(j + 1) > peak) {
-                                peak = summaryReport.getWeighted2In10IrrRequired(j + 1);
-                            }
-                            excelCal.insertDataWithStyle(summaryReport.getWeighted2In10IrrRequired(j + 1), 0, false, true);
-                        }
-                        excelCal.insertDataWithStyle(sum, 0, false, true);
-                        excelCal.insertDataWithStyle(peak, 0, false, true);
-                        excelCal.insertDataWithStyle(sum / 365, 0, false, true);
-                        excelCal.insertEmptyLine(1);
-                    }
+                    writeCalExcelInches(excelCal, ret, summaryReports, "getWeighted2In10IrrRequired");
                     break;
                 case 4:
-                    for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                        excelCal.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        double sum = 0;
-                        double peak = summaryReport.getOnein10IrrigationRequired(1);
-                        for (int j = 0; j < 12; j++) {
-                            sum = sum + summaryReport.getOnein10IrrigationRequired(j + 1);
-                            if (summaryReport.getOnein10IrrigationRequired(j + 1) > peak) {
-                                peak = summaryReport.getOnein10IrrigationRequired(j + 1);
-                            }
-                            excelCal.insertDataWithStyle(summaryReport.getOnein10IrrigationRequired(j + 1), 0, false, true);
-                        }
-                        excelCal.insertDataWithStyle(sum, 0, false, true);
-                        excelCal.insertDataWithStyle(peak, 0, false, true);
-                        excelCal.insertDataWithStyle(sum / 365, 0, false, true);
-                        excelCal.insertEmptyLine(1);
-                    }
+                    writeCalExcelInches(excelCal, ret, summaryReports, "getOnein10IrrigationRequired");
                     break;
                 case 5:
-                    excelCal.insertDataWithStyle("", 3, false, true);
-                    excelCal.insertDataWithStyle("", 3, false, true);
-                    excelCal.insertDataWithStyle("Area Fraction", 0, false, true);
-                    excelCal.insertDataWithStyle("Area Percentage", 0, true, false);
-                    excelCal.insertEmptyLine(1);
-                    for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                        excelCal.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle(summaryReport.getSoilArea(), 0, false, true);
-                        excelCal.insertDataWithStyle((summaryReport.getSoilArea() / ret.getTotalArea()) * 100, 0, false, true);
-                        double sum = 0;
-                        double peak = summaryReport.getWeighted1In10IrrRequired(1);
-                        for (int j = 0; j < 12; j++) {
-                            sum = sum + summaryReport.getWeighted1In10IrrRequired(j + 1);
-                            if (summaryReport.getWeighted1In10IrrRequired(j + 1) > peak) {
-                                peak = summaryReport.getWeighted1In10IrrRequired(j + 1);
-                            }
-                            excelCal.insertDataWithStyle(summaryReport.getWeighted1In10IrrRequired(j + 1), 0, false, true);
-                        }
-                        excelCal.insertDataWithStyle(sum, 0, false, true);
-                        excelCal.insertDataWithStyle(peak, 0, false, true);
-                        excelCal.insertDataWithStyle(sum / 365, 0, false, true);
-                        excelCal.insertEmptyLine(1);
-                    }
+                    writeCalExcelInches(excelCal, ret, summaryReports, "getWeighted1In10IrrRequired");
                     break;
                 case 6:
-                    excelCal.insertDataWithStyle("", 3, false, true);
-                    excelCal.insertDataWithStyle("", 3, false, true);
-                    excelCal.insertDataWithStyle("Planted Area", 0, false, true);
-                    excelCal.insertDataWithStyle("Efficiency", 0, true, false);
-                    excelCal.insertEmptyLine(1);
-                    for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                        excelCal.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle(input.getPlantedAcres(), 0, false, true);
-                        excelCal.insertDataWithStyle(input.getIEFF(), 0, false, true);
-                        double sum = 0;
-                        double peak = summaryReport.getAverageIrrigationRequired(1) * factorNet;
-                        for (int j = 0; j < 12; j++) {
-                            sum = sum + summaryReport.getAverageIrrigationRequired(j + 1) * factorNet;
-                            if ((summaryReport.getAverageIrrigationRequired(j + 1) * factorNet) > peak) {
-                                peak = summaryReport.getAverageIrrigationRequired(j + 1) * factorNet;
-                            }
-                            excelCal.insertDataWithStyle(summaryReport.getAverageIrrigationRequired(j + 1) * factorNet, 0, false, true);
-                        }
-                        excelCal.insertDataWithStyle(sum, 0, false, true);
-                        excelCal.insertDataWithStyle(peak, 0, false, true);
-                        excelCal.insertDataWithStyle(sum / 365, 0, false, true);
-                        excelCal.insertEmptyLine(1);
-                    }
+                    writeCalExcelGallonsNet(excelCal, input, summaryReports, factorNet, "getAverageIrrigationRequired");
                     break;
                 case 7:
-                    for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                        excelCal.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        double sum = 0;
-                        double peak = summaryReport.getAverageIrrigationRequired(1) * factorGross;
-                        for (int j = 0; j < 12; j++) {
-                            sum = sum + summaryReport.getAverageIrrigationRequired(j + 1) * factorGross;
-                            if ((summaryReport.getAverageIrrigationRequired(j + 1) * factorGross) > peak) {
-                                peak = summaryReport.getAverageIrrigationRequired(j + 1) * factorGross;
-                            }
-                            excelCal.insertDataWithStyle(summaryReport.getAverageIrrigationRequired(j + 1) * factorGross, 0, false, true);
-                        }
-                        excelCal.insertDataWithStyle(sum, 0, false, true);
-                        excelCal.insertDataWithStyle(peak, 0, false, true);
-                        excelCal.insertDataWithStyle(sum / 365, 0, false, true);
-                        excelCal.insertEmptyLine(1);
-                    }
+                    writeCalExcelGallonsGross(excelCal, summaryReports, factorGross, "getAverageIrrigationRequired");
                     break;
                 case 8:
-                    excelCal.insertDataWithStyle("", 3, false, true);
-                    excelCal.insertDataWithStyle("", 3, false, true);
-                    excelCal.insertDataWithStyle("Planted Area", 0, false, true);
-                    excelCal.insertDataWithStyle("Efficiency", 0, true, false);
-                    excelCal.insertDataWithStyle("", 0, false, false);
-                    excelCal.insertEmptyLine(1);
-                    for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                        excelCal.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle(input.getPlantedAcres(), 0, false, true);
-                        excelCal.insertDataWithStyle(input.getIEFF(), 0, false, true);
-                        double sum = 0;
-                        double peak = summaryReport.getTwoin10IrrigationRequired(1) * factorNet;
-                        for (int j = 0; j < 12; j++) {
-                            sum = sum + summaryReport.getTwoin10IrrigationRequired(j + 1) * factorNet;
-                            if ((summaryReport.getTwoin10IrrigationRequired(j + 1) * factorNet) > peak) {
-                                peak = summaryReport.getTwoin10IrrigationRequired(j + 1) * factorNet;
-                            }
-                            excelCal.insertDataWithStyle(summaryReport.getTwoin10IrrigationRequired(j + 1) * factorNet, 0, false, true);
-                        }
-                        excelCal.insertDataWithStyle(sum, 0, false, true);
-                        excelCal.insertDataWithStyle(peak, 0, false, true);
-                        excelCal.insertDataWithStyle(sum / 365, 0, false, true);
-                        excelCal.insertEmptyLine(1);
-                    }
+                    writeCalExcelGallonsNet(excelCal, input, summaryReports, factorNet, "getTwoin10IrrigationRequired");
                     break;
                 case 9:
-                    for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                        excelCal.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        double sum = 0;
-                        double peak = summaryReport.getTwoin10IrrigationRequired(1) * factorGross;
-                        for (int j = 0; j < 12; j++) {
-                            sum = sum + summaryReport.getTwoin10IrrigationRequired(j + 1) * factorGross;
-                            if ((summaryReport.getTwoin10IrrigationRequired(j + 1) * factorGross) > peak) {
-                                peak = summaryReport.getTwoin10IrrigationRequired(j + 1) * factorGross;
-                            }
-                            excelCal.insertDataWithStyle(summaryReport.getTwoin10IrrigationRequired(j + 1) * factorGross, 0, false, true);
-                        }
-                        excelCal.insertDataWithStyle(sum, 0, false, true);
-                        excelCal.insertDataWithStyle(peak, 0, false, true);
-                        excelCal.insertDataWithStyle(sum / 365, 0, false, true);
-                        excelCal.insertEmptyLine(1);
-                    }
+                    writeCalExcelGallonsGross(excelCal, summaryReports, factorGross, "getTwoin10IrrigationRequired");
                     break;
                 case 10:
-                    excelCal.insertDataWithStyle("", 3, false, true);
-                    excelCal.insertDataWithStyle("", 3, false, true);
-                    excelCal.insertDataWithStyle("Planted Area", 0, false, true);
-                    excelCal.insertDataWithStyle("Efficiency", 0, true, false);
-                    excelCal.insertDataWithStyle("", 0, false, false);
-                    excelCal.insertEmptyLine(1);
-                    for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                        excelCal.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle(input.getPlantedAcres(), 0, false, true);
-                        excelCal.insertDataWithStyle(input.getIEFF(), 0, false, true);
-                        double sum = 0;
-                        double peak = summaryReport.getOnein10IrrigationRequired(1) * factorNet;
-                        for (int j = 0; j < 12; j++) {
-                            sum = sum + summaryReport.getOnein10IrrigationRequired(j + 1) * factorNet;
-                            if ((summaryReport.getOnein10IrrigationRequired(j + 1) * factorNet) > peak) {
-                                peak = summaryReport.getOnein10IrrigationRequired(j + 1) * factorNet;
-                            }
-                            excelCal.insertDataWithStyle(summaryReport.getOnein10IrrigationRequired(j + 1) * factorNet, 0, false, true);
-                        }
-                        excelCal.insertDataWithStyle(sum, 0, false, true);
-                        excelCal.insertDataWithStyle(peak, 0, false, true);
-                        excelCal.insertDataWithStyle(sum / 365, 0, false, true);
-                        excelCal.insertEmptyLine(1);
-                    }
+                    writeCalExcelGallonsNet(excelCal, input, summaryReports, factorNet, "getOnein10IrrigationRequired");
                     break;
                 case 11:
-                    for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                        excelCal.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        excelCal.insertDataWithStyle("", 3, false, true);
-                        double sum = 0;
-                        double peak = summaryReport.getOnein10IrrigationRequired(1) * factorGross;
-                        for (int j = 0; j < 12; j++) {
-                            sum = sum + summaryReport.getOnein10IrrigationRequired(j + 1) * factorGross;
-                            if ((summaryReport.getOnein10IrrigationRequired(j + 1) * factorGross) > peak) {
-                                peak = summaryReport.getOnein10IrrigationRequired(j + 1) * factorGross;
-                            }
-                            excelCal.insertDataWithStyle(summaryReport.getOnein10IrrigationRequired(j + 1) * factorGross, 0, false, true);
-                        }
-                        excelCal.insertDataWithStyle(sum, 0, false, true);
-                        excelCal.insertDataWithStyle(peak, 0, false, true);
-                        excelCal.insertDataWithStyle(sum / 365, 0, false, true);
-                        excelCal.insertEmptyLine(1);
-                    }
+                    writeCalExcelGallonsGross(excelCal, summaryReports, factorGross, "getOnein10IrrigationRequired");
                     break;
                 case 12:
                     excelCal.insertDataWithStyle("Mean Irr Req", 0, false, true);
@@ -3683,8 +3438,10 @@ public class AFSIRSModule {
                     excelCal.insertDataWithStyle("", 3, false, true);
                     for (int j = 0; j < 12; j++) {
                         double meanIrrSum = 0;
-                        for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                            meanIrrSum = meanIrrSum + summaryReport.getAverageIrrigationRequired(j + 1) * factorNet;
+                        for (SoilSeriesSummaryReport seriesReport : summaryReports) {
+                            for (SoilTypeSummaryReport summaryReport : seriesReport.getSoilTypeSummaryReportList()) {
+                                meanIrrSum = meanIrrSum + summaryReport.getAverageIrrigationRequired(j + 1) * factorNet;
+                            }
                         }
                         excelCal.insertDataWithStyle(meanIrrSum * factorNet, 0, false, true);
                     }
@@ -3696,8 +3453,10 @@ public class AFSIRSModule {
                     excelCal.insertDataWithStyle("", 3, false, true);
                     for (int j = 0; j < 12; j++) {
                         double twoInTenIrrSum = 0;
-                        for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                            twoInTenIrrSum = twoInTenIrrSum + summaryReport.getWeighted2In10IrrRequired(j + 1) * factorNet;
+                        for (SoilSeriesSummaryReport seriesReport : summaryReports) {
+                            for (SoilTypeSummaryReport summaryReport : seriesReport.getSoilTypeSummaryReportList()) {
+                                twoInTenIrrSum = twoInTenIrrSum + summaryReport.getWeighted2In10IrrRequired(j + 1) * factorNet;
+                            }
                         }
                         excelCal.insertDataWithStyle(twoInTenIrrSum * factorNet, 0, false, true);
                     }
@@ -3709,8 +3468,10 @@ public class AFSIRSModule {
                     excelCal.insertDataWithStyle("", 3, false, true);
                     for (int j = 0; j < 12; j++) {
                         double oneInTenIrrSum = 0;
-                        for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                            oneInTenIrrSum = oneInTenIrrSum + summaryReport.getWeighted1In10IrrRequired(j + 1) * factorNet;
+                        for (SoilSeriesSummaryReport seriesReport : summaryReports) {
+                            for (SoilTypeSummaryReport summaryReport : seriesReport.getSoilTypeSummaryReportList()) {
+                                oneInTenIrrSum = oneInTenIrrSum + summaryReport.getWeighted1In10IrrRequired(j + 1) * factorNet;
+                            }
                         }
                         excelCal.insertDataWithStyle(oneInTenIrrSum * factorNet, 0, false, true);
                     }
@@ -3723,8 +3484,10 @@ public class AFSIRSModule {
                     excelCal.insertDataWithStyle("", 3, false, true);
                     for (int j = 0; j < 12; j++) {
                         double meanIrrSum = 0;
-                        for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                            meanIrrSum = meanIrrSum + summaryReport.getAverageIrrigationRequired(j + 1) * factorGross;
+                        for (SoilSeriesSummaryReport seriesReport : summaryReports) {
+                            for (SoilTypeSummaryReport summaryReport : seriesReport.getSoilTypeSummaryReportList()) {
+                                meanIrrSum = meanIrrSum + summaryReport.getAverageIrrigationRequired(j + 1) * factorGross;
+                            }
                         }
                         excelCal.insertDataWithStyle(meanIrrSum * factorGross, 0, false, true);
                     }
@@ -3736,8 +3499,10 @@ public class AFSIRSModule {
                     excelCal.insertDataWithStyle("", 3, false, true);
                     for (int j = 0; j < 12; j++) {
                         double twoInTenIrrSum = 0;
-                        for (SoilTypeSummaryReport summaryReport : summaryReports) {
-                            twoInTenIrrSum = twoInTenIrrSum + summaryReport.getWeighted2In10IrrRequired(j + 1) * factorGross;
+                        for (SoilSeriesSummaryReport seriesReport : summaryReports) {
+                            for (SoilTypeSummaryReport summaryReport : seriesReport.getSoilTypeSummaryReportList()) {
+                                twoInTenIrrSum = twoInTenIrrSum + summaryReport.getWeighted2In10IrrRequired(j + 1) * factorGross;
+                            }
                         }
                         excelCal.insertDataWithStyle(twoInTenIrrSum * factorGross, 0, false, true);
                     }
@@ -3749,8 +3514,10 @@ public class AFSIRSModule {
                     excelCal.insertDataWithStyle("", 3, false, true);
                     for (int j = 0; j < 12; j++) {
                         double oneInTenIrrSum = 0;
-                        for (SoilTypeSummaryReport summaryReport : summaryReports) {
+                        for (SoilSeriesSummaryReport seriesReport : summaryReports) {
+                        for (SoilTypeSummaryReport summaryReport : seriesReport.getSoilTypeSummaryReportList()) {
                             oneInTenIrrSum = oneInTenIrrSum + summaryReport.getWeighted1In10IrrRequired(j + 1) * factorGross;
+                        }
                         }
                         excelCal.insertDataWithStyle(oneInTenIrrSum * factorGross, 0, false, true);
                     }
@@ -3786,6 +3553,106 @@ public class AFSIRSModule {
         excelCal.insertDataWithStyle("Irrigation in  million gallons = Irrigation in inches * PLANTEDACRES * 27154/1000000; ", 4, true, true);
 
         return excelCal;
+    }
+    
+    private static void writeCalExcelInches (SummaryReportExcelFormat excelCal, SimResult ret, ArrayList<SoilSeriesSummaryReport> summaryReports, String methodName) {
+        excelCal.insertDataWithStyle("", 3, false, true);
+        excelCal.insertDataWithStyle("", 3, false, true);
+        excelCal.insertDataWithStyle("Area Fraction", 0, false, true);
+        excelCal.insertDataWithStyle("Area Percentage", 0, true, false);
+        excelCal.insertEmptyLine(1);
+        try {
+            Method seriesMethod = SoilSeriesSummaryReport.class.getMethod(methodName);
+            Method typeMethod = SoilTypeSummaryReport.class.getMethod(methodName);
+            for (SoilSeriesSummaryReport seriesReport : summaryReports) {
+                writeCalExcelRecord(seriesReport,
+                        seriesReport.getSoilArea() + "",
+                        seriesReport.getSoilArea() / ret.getTotalArea() * 100 + "",
+                        (ArrayList<Double>) seriesMethod.invoke(seriesReport),
+                        excelCal, 5, 1);
+                for (SoilTypeSummaryReport summaryReport : seriesReport.getSoilTypeSummaryReportList()) {
+                    writeCalExcelRecord(summaryReport,
+                            summaryReport.getSoilArea() + "",
+                            summaryReport.getSoilArea() / seriesReport.getSoilArea() * 100 + "",
+                            (ArrayList<Double>) typeMethod.invoke(summaryReport),
+                            excelCal, 0, 1);
+                }
+            }
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            ex.printStackTrace(System.err);
+        }
+    }
+    
+    private static void writeCalExcelGallonsNet (SummaryReportExcelFormat excelCal, UserInput input, ArrayList<SoilSeriesSummaryReport> summaryReports, double factor, String methodName) {
+        excelCal.insertDataWithStyle("", 3, false, true);
+        excelCal.insertDataWithStyle("", 3, false, true);
+        excelCal.insertDataWithStyle("Planted Area", 0, false, true);
+        excelCal.insertDataWithStyle("Efficiency", 0, true, false);
+        excelCal.insertEmptyLine(1);
+        try {
+            Method seriesMethod = SoilSeriesSummaryReport.class.getMethod(methodName);
+            Method typeMethod = SoilTypeSummaryReport.class.getMethod(methodName);
+            for (SoilSeriesSummaryReport seriesReport : summaryReports) {
+                writeCalExcelRecord(seriesReport,
+                        input.getPlantedAcres() + "",
+                        input.getIEFF() + "",
+                        (ArrayList<Double>) seriesMethod.invoke(seriesReport),
+                        excelCal, 5, factor);
+                for (SoilTypeSummaryReport summaryReport : seriesReport.getSoilTypeSummaryReportList()) {
+                    writeCalExcelRecord(summaryReport,
+                            summaryReport.getSoilArea() + "",
+                            summaryReport.getSoilArea() / seriesReport.getSoilArea() * 100 + "",
+                            (ArrayList<Double>) typeMethod.invoke(summaryReport),
+                            excelCal, 0, factor);
+                }
+            }
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            ex.printStackTrace(System.err);
+        }
+    }
+    
+    private static void writeCalExcelGallonsGross (SummaryReportExcelFormat excelCal, ArrayList<SoilSeriesSummaryReport> summaryReports, double factor, String methodName) {
+        try {
+            Method seriesMethod = SoilSeriesSummaryReport.class.getMethod(methodName);
+            Method typeMethod = SoilTypeSummaryReport.class.getMethod(methodName);
+            for (SoilSeriesSummaryReport seriesReport : summaryReports) {
+                writeCalExcelRecord(seriesReport,
+                        "",
+                        "",
+                        (ArrayList<Double>) seriesMethod.invoke(seriesReport),
+                        excelCal, 5, factor);
+                for (SoilTypeSummaryReport summaryReport : seriesReport.getSoilTypeSummaryReportList()) {
+                    writeCalExcelRecord(summaryReport,
+                            summaryReport.getSoilArea() + "",
+                            summaryReport.getSoilArea() / seriesReport.getSoilArea() * 100 + "",
+                            (ArrayList<Double>) typeMethod.invoke(summaryReport),
+                            excelCal, 0, factor);
+                }
+            }
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            ex.printStackTrace(System.err);
+        }
+    }
+    
+    private static void writeCalExcelRecord(SummaryReport summaryReport, String val1, String val2, ArrayList<Double> monthlyVals, SummaryReportExcelFormat excelCal, int style, double factor) {
+        excelCal.insertDataWithStyle(summaryReport.getSoilName(), style, false, true);
+        excelCal.insertDataWithStyle("", style, false, true);
+        excelCal.insertDataWithStyle(val1, style, false, true);
+        excelCal.insertDataWithStyle(val2, style, false, true);
+        double sum = 0;
+        double peak = 0;
+        for (Double val : monthlyVals) {
+            val = val * factor;
+            sum = sum + val;
+            if (val > peak) {
+                peak = val;
+            }
+            excelCal.insertDataWithStyle(val, style, false, true);
+        }
+        excelCal.insertDataWithStyle(sum, style, false, true);
+        excelCal.insertDataWithStyle(peak, style, false, true);
+        excelCal.insertDataWithStyle(sum / 365, style, false, true);
+        excelCal.insertEmptyLine(1);
     }
 
     //save permit files in JSON format

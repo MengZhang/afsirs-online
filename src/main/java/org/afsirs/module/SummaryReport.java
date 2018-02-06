@@ -214,6 +214,10 @@ public abstract class SummaryReport {
         this.totalIrrigationRequired.set(month - 1, this.totalIrrigationRequired.get(month - 1) + irrigationRequired);
     }
 
+    public ArrayList<Double> getAverageIrrigationRequired() {
+        return this.averageIrrigationRequired;
+    }
+
     public Double getAverageIrrigationRequired(int month) {
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException("Month " + month + " is not in the valid range. It should be 1-12.");
@@ -228,6 +232,10 @@ public abstract class SummaryReport {
         this.averageIrrigationRequired.set(month - 1, irrigationRequired);
     }
 
+    public ArrayList<Double> getTwoin10IrrigationRequired() {
+        return this.twoin10IrrigationRequired;
+    }
+
     public Double getTwoin10IrrigationRequired(int month) {
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException("Month " + month + " is not in the valid range. It should be 1-12.");
@@ -240,6 +248,10 @@ public abstract class SummaryReport {
             throw new IllegalArgumentException("Month " + month + " is not in the valid range. It should be 1-12.");
         }
         this.twoin10IrrigationRequired.set(month - 1, irrigationRequired);
+    }
+
+    public ArrayList<Double> getOnein10IrrigationRequired() {
+        return this.onein10IrrigationRequired;
     }
 
     public Double getOnein10IrrigationRequired(int month) {
@@ -267,6 +279,18 @@ public abstract class SummaryReport {
 
     public void setWeighted1In10IrrRequired(int month, double val) {
         this.weighted1In10IrrRequired.set(month - 1, weighted1In10IrrRequired.get(month - 1) + val);
+    }
+
+    public ArrayList<Double> getWeightedAvgIrrRequired() {
+        return this.weightedAverageIrrRequired;
+    }
+
+    public ArrayList<Double> getWeighted2In10IrrRequired() {
+        return this.weighted2In10IrrRequired;
+    }
+
+    public ArrayList<Double> getWeighted1In10IrrRequired() {
+        return this.weighted1In10IrrRequired;
     }
 
     public double getWeightedAvgIrrRequired(int month) {

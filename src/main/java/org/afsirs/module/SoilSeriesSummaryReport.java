@@ -8,8 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import static org.afsirs.module.util.Util.getSummaryReportComparetor;
-import static org.afsirs.module.util.Util.isSorted;
+import static org.afsirs.module.util.Util.getSummaryReportComparetor2;
+import static org.afsirs.module.util.Util.isSorted2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,9 +84,9 @@ public class SoilSeriesSummaryReport extends SummaryReport {
     public ArrayList<SoilTypeSummaryReport> getSoilTypeSummaryReportList() {
         if (sortedReports.size() < reports.size()) {
             sortedReports = new ArrayList(reports.values());
-            Collections.sort(sortedReports, getSummaryReportComparetor());
-        } else if (!isSorted(sortedReports)) {
-            Collections.sort(sortedReports, getSummaryReportComparetor());
+            Collections.sort(sortedReports, getSummaryReportComparetor2());
+        } else if (!isSorted2(sortedReports)) {
+            Collections.sort(sortedReports, getSummaryReportComparetor2());
         }
         return sortedReports;
     }

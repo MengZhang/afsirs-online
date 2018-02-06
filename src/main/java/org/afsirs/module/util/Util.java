@@ -232,7 +232,24 @@ public class Util {
 
             @Override
             public int compare(SummaryReport o1, SummaryReport o2) {
-                double compare = o1.getTotalAvgIrr() - o2.getTotalAvgIrr();
+                double compare = o2.getTotalAvgIrr() - o1.getTotalAvgIrr();
+                if (compare > 0) {
+                    return 1;
+                } else if (compare < 0) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        };
+    }
+
+    public static Comparator getSummaryReportComparetor2() {
+        return new Comparator<SummaryReport>() {
+
+            @Override
+            public int compare(SummaryReport o1, SummaryReport o2) {
+                double compare = o2.getSoilArea()- o1.getSoilArea();
                 if (compare > 0) {
                     return 1;
                 } else if (compare < 0) {
@@ -250,6 +267,18 @@ public class Util {
         }
         for (int i = 1; i < reports.size(); i++) {
             if (reports.get(i - 1).getTotalAvgIrr() < reports.get(i).getTotalAvgIrr()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isSorted2(ArrayList<? extends SummaryReport> reports) {
+        if (reports == null || reports.isEmpty()) {
+            return true;
+        }
+        for (int i = 1; i < reports.size(); i++) {
+            if (reports.get(i - 1).getSoilArea() < reports.get(i).getSoilArea()) {
                 return false;
             }
         }
