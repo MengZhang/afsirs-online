@@ -672,6 +672,9 @@ public class DataUtil {
     }
 
     public static String calculateNearestStation(String type, String jsonStr) {
+        if (jsonStr == null || jsonStr.isEmpty()) {
+            return "";
+        }
         JSONObject data = JsonUtil.parseFrom(jsonStr);
         return calculateNearestStation(type, data);
     }
