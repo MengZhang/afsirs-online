@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -66,12 +67,13 @@ public class AFSIRSModule {
 
     static Logger LOG = LoggerFactory.getLogger(AFSIRSModule.class);
 
-    private static final Font BLACK_NORMAL = new Font(FontFamily.HELVETICA, 7, Font.NORMAL, BaseColor.BLACK);
-    private static final Font BLACK_BOLD = new Font(FontFamily.HELVETICA, 7, Font.BOLD, BaseColor.BLACK);
+    private static final Font BLACK_NORMAL = new Font(FontFamily.HELVETICA, 8, Font.NORMAL, BaseColor.BLACK);
+    private static final Font BLACK_BOLD = new Font(FontFamily.HELVETICA, 8, Font.BOLD, BaseColor.BLACK);
     //private final Font BLACK_NORMAL = new Font(FontFamily.HELVETICA, 7, Font.NORMAL, BaseColor.RED);
-    private static final Font BLUE_NORMAL = new Font(FontFamily.HELVETICA, 7, Font.NORMAL, BaseColor.BLUE);
+    private static final Font BLUE_NORMAL = new Font(FontFamily.HELVETICA, 8, Font.NORMAL, BaseColor.BLUE);
+    private static final Font BLUE_LINK = new Font(FontFamily.HELVETICA, 12, Font.NORMAL, BaseColor.BLUE);
     private static final Font BLUE_HEADER = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLUE);
-    private static final Font GREEN_ITALIC = new Font(FontFamily.HELVETICA, 7, Font.ITALIC, BaseColor.GREEN);
+    private static final Font GREEN_ITALIC = new Font(FontFamily.HELVETICA, 8, Font.ITALIC, BaseColor.GREEN);
 
     // Initialization of constants
     public static final int IRSEEP = 6;
@@ -696,7 +698,7 @@ public class AFSIRSModule {
         double SWX = 0.0;
         double SWN;
 
-        double[] DL = new double[6];
+        double[] DL = new double[NL];
 
         int IW0 = 0;
         int IW1 = 0;
@@ -1703,11 +1705,7 @@ public class AFSIRSModule {
             ret.setTotalArea(input.getPlantedAcres());
         }
         try (BufferedWriter bwOutputFile = new BufferedWriter(new FileWriter(ret.getOutFile(), false))) {
-            //bwOutputSummaryFile = new BufferedWriter(new FileWriter(SUMMARYFILE, true));
-
-            //PdfWriter.getInstance(bwOutputSummaryFile, new FileOutputStream(SUMMARYFILE+"-Summary.pdf"));
             PdfWriter.getInstance(bwOutputSummaryFile, new FileOutputStream(ret.getSummaryFile()));
-
             excelSummary = new SummaryReportExcelFormat(ret.getSummaryFileExcel());
             deCoefRet = DECOEF(input);
 
@@ -1869,8 +1867,6 @@ public class AFSIRSModule {
              }
              calculateBalance();
              SUMX();*/
-            ArrayList<PdfPTable> summaryTables = ret.getSummaryTables();
-
             ArrayList<Soil> soils = input.getSoils();
             double[] soilFractions = new double[soils.size()];
             double totalArea = 0.0;
@@ -1902,50 +1898,57 @@ public class AFSIRSModule {
 
 //                resetAllocate(input, EXIR_1, RAIN_1, ETP_1, deCoefRet, deCoefRet_1);
                 SWResult swRet = SW(input, deCoefRet, soil, bwOutputFile);
-//                SummaryReport report = new SummaryReport(soil);
                 SoilSeriesSummaryReport report = ret.getSoilSeriesSummaryReport(soil);
                 calculateBalance(report, input, swRet, bwOutputFile);
                 SUMX(report, input, swRet, soil, ret, bwOutputFile);
                 storeTotalIrr(report, soil, ret);
-//                swRets.add(swRet);
                 i++;
             }
 //            sortOutput(soils, ret);
-//            for (Soil soil : soils) {
-//                finalSummaryOutput(ret.getSoilTypeSummaryReport(soil), excelSummary, bwOutputSummaryFile, soil, ret, input, summaryTables);
-//            }
-            for (SoilSeriesSummaryReport report : ret.getSoilSeriesSummaryList()) {
-                finalSummaryOutput(report, excelSummary, bwOutputSummaryFile, ret, summaryTables);
+            
+            ArrayList<SoilSeriesSummaryReport> reports = ret.getSummaryList();
+            for (SoilSeriesSummaryReport report : reports) {
+                infoInInches(report, ret);
             }
 
             //Write the permit file.
 //            savePermitFile(new File("Permit/"), input);
-//            excelCal = new SummaryReportExcelFormat(input.getCalculationExcel());
             excelCal = buildCalculationExcel(input, ret, ret.getSoilTypeSummaryList());
             // Set the foot note here in the excel file and the pdf
             excelSummary.setFootNoteExcelFile(Messages.FOOTNOTE[0]);
             setIrrigationWeightedAverageExcel(ret, excelSummary, ret.getSoilTypeSummaryList());
-            setIrrigationWeightedAverage(summaryTables, ret.getSoilTypeSummaryList(), input);
+            PdfPTable tableIn = prepareWeightedAverageInchesTable();
+            PdfPTable tableGal = prepareWeightedAverageGallonTable();
+            setIrrigationWeightedAverage(tableIn, tableGal, ret.getSoilTypeSummaryList(), input);
+            
             bwOutputSummaryFile.add(new Paragraph("\r\n"));
-            if (summaryTables.size() >= 2) {
-                bwOutputSummaryFile.add(summaryTables.get(0));
+            if (!reports.isEmpty()) {
+                PdfPTable excel = generalInformation(reports.get(0), excelSummary);
+                bwOutputSummaryFile.add(createSectionTitle("Weather data during the season: "));
+                bwOutputSummaryFile.add(excel);
                 bwOutputSummaryFile.add(new Paragraph("\r\n"));
 
+                bwOutputSummaryFile.add(createSectionTitle("Total Irrigation requirements (all soil series): "));
                 // This is for the weighted Average of the irrigation
-                bwOutputSummaryFile.add(summaryTables.get(1));
-            //bwOutputSummaryFile.add(new Paragraph("\r\n"));
-
+                bwOutputSummaryFile.add(tableIn);
                 // This is for the weighted Average of the irrigation
-                bwOutputSummaryFile.add(summaryTables.get(2));
-                //bwOutputSummaryFile.add(new Paragraph("\r\n"));
+                bwOutputSummaryFile.add(tableGal);
             }
-            for (int inx = 3; inx < summaryTables.size(); inx++) {
-                PdfPTable t = summaryTables.get(inx);
-                bwOutputSummaryFile.add(t);
-            }
-
-            bwOutputFile.close();
             addDeviations(input, bwOutputSummaryFile);
+            
+            bwOutputSummaryFile.newPage();
+            bwOutputSummaryFile.add(createSectionTitle("Total Irrigaiton Requirements by soil series: "));
+            for (SoilSeriesSummaryReport report : reports) {
+                ArrayList<PdfPTable> summaryTables = finalSummaryOutput(report, excelSummary, ret);
+                for (PdfPTable t : summaryTables) {
+                    bwOutputSummaryFile.add(t);
+                }
+            }
+            
+            bwOutputSummaryFile.newPage();
+            addSoilMap(input, bwOutputSummaryFile, ret);
+            
+            bwOutputFile.close();
         } catch (IOException | DocumentException e) {
             e.printStackTrace(System.err);
             return ret;
@@ -1979,6 +1982,10 @@ public class AFSIRSModule {
     }
 
     private static void addParagraphToTableSoilName(PdfPTable t, String key, String value) {
+        addParagraphToTableSoilName(t, key, value, false, Element.ALIGN_LEFT);
+    }
+
+    private static void addParagraphToTableSoilName(PdfPTable t, String key, String value, boolean noWrap, int align) {
         PdfPCell c;
         Paragraph p = new Paragraph();
 
@@ -1989,7 +1996,8 @@ public class AFSIRSModule {
         p.add(valChunk);
 
         c = new PdfPCell(p);
-        c.setHorizontalAlignment(Element.ALIGN_CENTER);
+        c.setNoWrap(noWrap);
+        c.setHorizontalAlignment(align);
         c.setBorder(0);
         t.addCell(c);
     }
@@ -2117,21 +2125,25 @@ public class AFSIRSModule {
         }
     }
 
-    private static void prepareWeightedAverageTable(ArrayList<PdfPTable> summaryTables) throws DocumentException {
+    private static PdfPTable prepareWeightedAverageInchesTable() throws DocumentException {
         PdfPTable tableWeightedInches = new PdfPTable(14);
 
         tableWeightedInches.setTotalWidth(new float[]{190, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 120});
         designTableTitleCell(tableWeightedInches, "Irrigation Weighted Average (Inches)");
         //bwOutputSummaryFileExcel.insertDataWithStyle("Irrigation Weighted Average (Inches)", 0, true, true);
         createTableHeader(tableWeightedInches);
-        summaryTables.add(tableWeightedInches);
+        
+        return tableWeightedInches;
+    }
 
+    private static PdfPTable prepareWeightedAverageGallonTable() throws DocumentException {
         PdfPTable tableWeightedGallon = new PdfPTable(14);
         tableWeightedGallon.setTotalWidth(new float[]{190, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 120});
         designTableTitleCell(tableWeightedGallon, "Irrigation Weighted Average (Million Gallons)");
         //bwOutputSummaryFileExcel.insertDataWithStyle("Irrigation Weighted Average (Gallons)", 0, true, true);
         createTableHeader(tableWeightedGallon);
-        summaryTables.add(tableWeightedGallon);
+        
+        return tableWeightedGallon;
     }
 
     private static void setIrrigationWeightedAverageExcel(SimResult simRet, SummaryReportExcelFormat excelSummary, ArrayList<SoilTypeSummaryReport> summaryList) throws DocumentException {
@@ -2295,9 +2307,7 @@ public class AFSIRSModule {
         excelSummary.insertEmptyLine(1);
     }
 
-    private static void setIrrigationWeightedAverage(ArrayList<PdfPTable> summaryTables, ArrayList<SoilTypeSummaryReport> summaryList, UserInput input) throws DocumentException {
-        PdfPTable tIn = summaryTables.get(1);
-        PdfPTable tGa = summaryTables.get(2);
+    private static void setIrrigationWeightedAverage(PdfPTable tIn, PdfPTable tGa, ArrayList<SoilTypeSummaryReport> summaryList, UserInput input) throws DocumentException {
 
         designRowTitleCell(tIn, "Mean Irr Req");
         designRowTitleCell(tGa, "Mean Irr Req");
@@ -2427,16 +2437,11 @@ public class AFSIRSModule {
         designDataCell(tGa, str);
     }
 
-    private static void finalSummaryOutput(SoilTypeSummaryReport summaryReport, SummaryReportExcelFormat excelSummary, SimResult ret, ArrayList<PdfPTable> summaryTables) {
+    private static ArrayList<PdfPTable> finalSummaryOutput(SoilSeriesSummaryReport summaryReport, SummaryReportExcelFormat excelSummary, SimResult ret) {
+        ArrayList<PdfPTable> summaryTables = new ArrayList();
         try {
 
             double area = ret.getPlantedArea();
-
-            if (summaryTables.size() < 2) {
-                PdfPTable excel = generalInformation(summaryReport, excelSummary);
-                summaryTables.add(excel);
-                prepareWeightedAverageTable(summaryTables);
-            }
 
             PdfPTable t = new PdfPTable(3);
             for (int i = 0; i < 6; i++) {
@@ -2453,82 +2458,27 @@ public class AFSIRSModule {
                 }
             }
 
-            addParagraphToTableSoilName(t, "Soil : ", summaryReport.getSoilName());
-            addParagraphToTableSoilName(t, "Soil Component Code : ", summaryReport.getSoilKey());
-            addParagraphToTableSoilName(t, "Soil Percentage : ", soilPercentStr);
-            addParagraphToTableSoilName(t, "Soil Area(ACRES) : ", summaryReport.getSoilAreaStr());
-
-            excelSummary.insertDataWithStyle("Soil", 0, false, true);
-            excelSummary.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-            excelSummary.insertDataWithStyle("Soil Component Code", 0, false, true);
-            excelSummary.insertDataWithStyle(summaryReport.getSoilKey(), 0, false, true);
-            excelSummary.insertDataWithStyle("Soil Percentage", 0, false, true);
-            excelSummary.insertDataWithStyle(soilPercentStr, 0, false, true);
-            excelSummary.insertDataWithStyle("Soil Series Name", 0, false, true);
-            excelSummary.insertDataWithStyle(summaryReport.getSoilSeriesName(), 0, false, true);
-            excelSummary.insertDataWithStyle("Soil Map Unit Code", 0, false, true);
-            excelSummary.insertDataWithStyle(summaryReport.getSoilSeriesKey(), 0, true, true);
-
-            addParagraphToTableSoilName(t, "Soil Series Name : ", summaryReport.getSoilSeriesName());
-            addParagraphToTableSoilName(t, "Soil Map Unit Code : ", summaryReport.getSoilSeriesKey());
+            addParagraphToTableSoilName(t, "Soil Series Name : ", summaryReport.getSoilName(), true, Element.ALIGN_LEFT);
             addParagraphToTableSoilName(t, " ", " ");
-
-            summaryTables.add(t);
-            if (summaryReport.getTotalOneinTen() == -99.0 || summaryReport.getTotalTwoinTen() == -99.0) {
-                PdfPTable error = new PdfPTable(1);
-                addParagraphToTable(error, Messages.AFSIRS_ERROR);
-                summaryTables.add(error);
-
-            }
-            PdfPTable table = infoInInches(summaryReport, excelSummary, ret);
-            summaryTables.add(table);
-            probablityInfoInGallons(summaryReport, excelSummary, summaryTables, area);
-
-        } catch (DocumentException e) {
-            // Logger.getLogger(AFSIRSUtils.class.getName()).log(Level.SEVERE, null, ex);
-            e.printStackTrace(System.err);
-        }
-    }
-
-    private static void finalSummaryOutput(SoilSeriesSummaryReport summaryReport, SummaryReportExcelFormat excelSummary, Document bwOutputSummaryFile, SimResult ret, ArrayList<PdfPTable> summaryTables) {
-        try {
-
-            double area = ret.getPlantedArea();
-
-            if (summaryTables.size() < 2) {
-                PdfPTable excel = generalInformation(summaryReport, excelSummary);
-                summaryTables.add(excel);
-                prepareWeightedAverageTable(summaryTables);
-            }
-
-            PdfPTable t = new PdfPTable(3);
-            for (int i = 0; i < 6; i++) {
-                addParagraphToTableSoilName(t, " ", " ");
-                addParagraphToTableSoilName(t, " ", " ");
-            }
-
-            String soilPercentStr = "< 0.01";
-            if (ret.getTotalArea() != 0) {
-                double soilPercent = ((summaryReport.getSoilArea() * 100) / ret.getTotalArea());
-                String tmp = String.format("%6.2f", soilPercent);
-                if (!tmp.equals("0.00")) {
-                    soilPercentStr = tmp;
-                }
-            }
-
-            addParagraphToTableSoilName(t, "Soil Series Name : ", summaryReport.getSoilName());
+            addParagraphToTableSoilName(t, " ", " ");
             addParagraphToTableSoilName(t, "Soil Map Unit Symbol# : ", summaryReport.getSoilSymbolNum());
             addParagraphToTableSoilName(t, "Soil Map Unit Code : ", summaryReport.getSoilKey());
             addParagraphToTableSoilName(t, "Soil Percentage : ", soilPercentStr);
             addParagraphToTableSoilName(t, "Soil Area(ACRES) : ", summaryReport.getSoilAreaStr());
             addParagraphToTableSoilName(t, " ", " ");
 
-            excelSummary.insertDataWithStyle("Soil Series Name", 0, false, true);
-            excelSummary.insertDataWithStyle(summaryReport.getSoilName(), 0, false, true);
-            excelSummary.insertDataWithStyle("Soil Map Unit Code", 0, false, true);
-            excelSummary.insertDataWithStyle(summaryReport.getSoilKey(), 0, false, true);
-            excelSummary.insertDataWithStyle("Soil Percentage", 0, false, true);
-            excelSummary.insertDataWithStyle(soilPercentStr, 0, true, true);
+            excelSummary.insertEmptyLine(2);
+            excelSummary.insertDataWithStyle("Soil Series Name", 5, false, true);
+            excelSummary.insertDataWithStyle(summaryReport.getSoilName(), 5, false, true);
+            excelSummary.insertEmptyLine(1);
+            excelSummary.insertDataWithStyle("Soil Map Unit Symbol#", 5, false, true);
+            excelSummary.insertDataWithStyle(summaryReport.getSoilSymbolNum(), 5, false, true);
+            excelSummary.insertDataWithStyle("Soil Map Unit Code", 5, false, true);
+            excelSummary.insertDataWithStyle(summaryReport.getSoilKey(), 5, false, true);
+            excelSummary.insertDataWithStyle("Soil Percentage", 5, false, true);
+            excelSummary.insertDataWithStyle(soilPercentStr, 5, false, true);
+            excelSummary.insertDataWithStyle("Soil Area(ACRES)", 5, false, true);
+            excelSummary.insertDataWithStyle(summaryReport.getSoilAreaStr(), 5, false, true);
 
             summaryTables.add(t);
             if (summaryReport.getTotalOneinTen() == -99.0 || summaryReport.getTotalTwoinTen() == -99.0) {
@@ -2537,14 +2487,15 @@ public class AFSIRSModule {
                 summaryTables.add(error);
 
             }
-            PdfPTable table = infoInInches(summaryReport, excelSummary, ret);
-            summaryTables.add(table);
-            probablityInfoInGallons(summaryReport, excelSummary, summaryTables, area);
+            summaryTables.add(infoInInchesSummary(summaryReport, excelSummary, ret));
+            summaryTables.add(probablityInfoInGallons(summaryReport, excelSummary, area));
+            summaryTables.add(infoInInchesWeightedSummary(summaryReport, excelSummary, ret));
+            summaryTables.add(probablityInfoWeightedInGallons(summaryReport, excelSummary, area));
 
         } catch (DocumentException e) {
-            // Logger.getLogger(AFSIRSUtils.class.getName()).log(Level.SEVERE, null, ex);
             e.printStackTrace(System.err);
         }
+        return summaryTables;
     }
 
     private static void designTableTitleCell(PdfPTable table, String str) {
@@ -2568,23 +2519,43 @@ public class AFSIRSModule {
     }
 
     private static void designTableHeaderRowCell(PdfPTable table, String str) {
+        designTableHeaderRowCell(table, str, 1, 1);
+    }
+    
+    private static void designTableHeaderRowCell(PdfPTable table, String str, int colSpan, int rowSpan) {
         PdfPCell cell;
         // we add a c with colspan 3
         cell = new PdfPCell(new Phrase(str, BLUE_NORMAL));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setBackgroundColor(BaseColor.ORANGE);
-        //cell.setColspan(14);
+        cell.setColspan(colSpan);
+        cell.setRowspan(rowSpan);
         table.addCell(cell);
     }
-
+    
     private static void designDataCell(PdfPTable table, String str) {
+        designDataCell(table, str, 1, 1);
+    }
+
+    private static void designDataCell(PdfPTable table, String str, int colSpan, int rowSpan) {
+        designDataCell(table, str, colSpan, rowSpan, Element.ALIGN_CENTER);
+    }
+
+    private static void designDataCell(PdfPTable table, String str, int colSpan, int rowSpan, int align) {
         PdfPCell cell;
         // we add a c with colspan 3
         cell = new PdfPCell(new Phrase(str, BLACK_NORMAL));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setHorizontalAlignment(align);
         cell.setBackgroundColor(BaseColor.CYAN);
-        //cell.setColspan(14);
+        cell.setColspan(colSpan);
+        cell.setRowspan(rowSpan);
         table.addCell(cell);
+    }
+    
+    private static Paragraph createSectionTitle(String str) {
+        Paragraph p = new Paragraph(str + "\r\n\r\n");
+        p.setAlignment(Paragraph.ALIGN_CENTER);
+        return p;
     }
 
     private static PdfPTable generalInformation(SummaryReport summaryReport1, SummaryReportExcelFormat excelSummary) throws DocumentException {
@@ -2747,16 +2718,10 @@ public class AFSIRSModule {
 
     }
 
-    private static PdfPTable infoInInches(SoilSeriesSummaryReport summaryReport, SummaryReportExcelFormat excelSummary, SimResult ret) throws DocumentException {
+    private static void infoInInches(SoilSeriesSummaryReport summaryReport, SimResult ret) throws DocumentException {
         for (SoilTypeSummaryReport report : summaryReport.getSoilTypeSummaryReportList()) {
             infoInInches(report, ret);
         }
-        return infoInInchesSummary(summaryReport, excelSummary, ret);
-    }
-
-    private static PdfPTable infoInInches(SoilTypeSummaryReport summaryReport, SummaryReportExcelFormat excelSummary, SimResult ret) throws DocumentException {
-        infoInInches(summaryReport, ret);
-        return infoInInchesSummary(summaryReport, excelSummary, ret);
     }
     
     private static void infoInInches(SoilTypeSummaryReport summaryReport, SimResult ret) throws DocumentException {
@@ -2944,6 +2909,105 @@ public class AFSIRSModule {
         excelSummary.insertEmptyLine(1);
         return table;
     }
+    
+    private static PdfPTable infoInInchesWeightedSummary(SummaryReport summaryReport, SummaryReportExcelFormat excelSummary, SimResult ret) throws DocumentException {
+        double totalVal;
+        String str;
+        PdfPTable table = new PdfPTable(14);
+        table.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        table.setTotalWidth(new float[]{190, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 120});
+
+        designTableTitleCell(table, "Details in Inches(Weighted)");
+        excelSummary.insertEmptyLine(1);
+        excelSummary.mergeCells();
+        excelSummary.insertDataWithStyle("Details in Inches(Weighted)", 4, false, true);
+        excelSummary.insertEmptyLine(1);
+
+        createTableHeader(table);
+        createExcelTableHeader(excelSummary);
+
+        /**
+         * *********Peak Evaporation Details************
+         */
+        designRowTitleCell(table, "Mean Irr Req");
+        excelSummary.insertDataWithStyle("Mean Irr Req", 0, false, true);
+
+        totalVal = 0.0;
+        for (int i = 1; i <= 12; i++) {
+            double val = summaryReport.getWeightedAvgIrrRequired(i);
+            if (val >= 0) {
+                totalVal += val;
+                str = String.format("%6.2f", val);
+            } else {
+                str = "NA";
+            }
+
+            designDataCell(table, str);
+            excelSummary.insertDataWithStyle(val, 0, false, true);
+        }
+        str = String.format("%6.2f", totalVal);
+        designDataCell(table, str);
+        excelSummary.insertDataWithStyle(str, 0, false, true);
+        excelSummary.insertEmptyLine(1);
+        /**
+         * *********2-in-10 Irrigation Required************
+         */
+        designRowTitleCell(table, "2-in-10 Irr Req");
+        excelSummary.insertDataWithStyle("2-in-10 Irr Req", 0, false, true);
+        totalVal = 0.0;
+        for (int i = 1; i <= 12; i++) {
+            double val = summaryReport.getWeighted2In10IrrRequired(i);
+            if (val > 0) {
+                str = String.format("%6.2f", val);
+                totalVal += val;
+            } else {
+                str = "NA";
+            }
+            designDataCell(table, str);
+            excelSummary.insertDataWithStyle(val, 0, false, true);
+        }
+        if (totalVal >= 0) {
+            str = String.format("%6.2f", totalVal);
+        } else {
+            str = "NA";
+        }
+        designDataCell(table, str);
+        excelSummary.insertDataWithStyle(totalVal, 0, false, true);
+        excelSummary.insertEmptyLine(1);
+        /**
+         * *********1-in-10 Irrigation Required************
+         */
+        designRowTitleCell(table, "1-in-10 Irr Req");
+        excelSummary.insertDataWithStyle("1-in-10 Irr Req", 0, false, true);
+        totalVal = 0.0;
+        if (totalVal == -99.0) {
+            ret.getSoilNames().add(summaryReport.getSoilName());
+        }
+
+        for (int i = 1; i <= 12; i++) {
+            double val = summaryReport.getWeighted1In10IrrRequired(i);
+            if (val > 0.00) {
+                str = String.format("%6.2f", val);
+                totalVal += val;
+            } else {
+                str = "NA";
+
+            }
+            designDataCell(table, str);
+            excelSummary.insertDataWithStyle(val, 0, false, true);
+        }
+        if (totalVal >= 0) {
+            str = String.format("%6.2f", totalVal);
+        } else {
+            str = "NA";
+        }
+
+        designDataCell(table, str);
+        excelSummary.insertDataWithStyle(totalVal, 0, false, true);
+        excelSummary.insertEmptyLine(1);
+        return table;
+    }
 
     private static void createTableHeader(PdfPTable table) {
         for (String str : Messages.TABLE_HEADER) {
@@ -2958,7 +3022,7 @@ public class AFSIRSModule {
         excelSummary.insertEmptyLine(1);
     }
 
-    private static PdfPTable probablityInfoInGallons(SummaryReport summaryReport, SummaryReportExcelFormat excelSummary, ArrayList<PdfPTable> summaryTables, double area) throws DocumentException {
+    private static PdfPTable probablityInfoInGallons(SummaryReport summaryReport, SummaryReportExcelFormat excelSummary, double area) throws DocumentException {
         PdfPTable table;
         PdfPCell cell;
         double totalVal;
@@ -3063,7 +3127,117 @@ public class AFSIRSModule {
         str = String.format("%6.2f", totalVal);
         //str = "-";
         designDataCell(table, str);
-        summaryTables.add(table);
+        excelSummary.insertDataWithStyle(totalVal, 0, false, true);
+        excelSummary.insertEmptyLine(1);
+        //bwOutputSummaryFile1.add(table);
+        return table;
+    }
+
+    private static PdfPTable probablityInfoWeightedInGallons(SummaryReport summaryReport, SummaryReportExcelFormat excelSummary, double area) throws DocumentException {
+        PdfPTable table;
+        PdfPCell cell;
+        double totalVal;
+        String str;
+        //bwOutputSummaryFile1.add(new Paragraph("\r\n"));
+        table = new PdfPTable(14);
+
+        table.setTotalWidth(new float[]{190, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 120});
+        designTableTitleCell(table, "Details in Million Gallons(Weighted)");
+        createTableHeader(table);
+
+        excelSummary.insertEmptyLine(1);
+        excelSummary.mergeCells();
+        excelSummary.insertDataWithStyle("Details in Million Gallons(Weighted)", 4, false, true);
+        excelSummary.insertEmptyLine(1);
+        createExcelTableHeader(excelSummary);
+
+        /**
+         * *********Peak Evaporation Details************
+         */
+        designRowTitleCell(table, "Mean Irr Req");
+        excelSummary.insertDataWithStyle("Mean Irr Req", 0, false, true);
+        totalVal = 0.0;
+        for (int i = 1; i <= 12; i++) {
+            double val = summaryReport.getWeightedAvgIrrRequired(i);
+//            str = "";
+            if (val >= 0) {
+                val = (val * area * 27154);
+                val = (val / 1000000);
+                str = String.format("%6.2f", val);
+                totalVal += val;
+            } else {
+                str = "NA";
+            }
+
+            //str = String.format("%6.2f", val);
+            designDataCell(table, str);
+            excelSummary.insertDataWithStyle(val, 0, false, true);
+
+        }
+        str = String.format("%6.2f", totalVal);
+        //double totalAvgIrr = totalVal;
+        designDataCell(table, str);
+        excelSummary.insertDataWithStyle(totalVal, 0, false, true);
+        excelSummary.insertEmptyLine(1);
+
+        /**
+         * *********2-in-10 Irrigation Required************
+         */
+        designRowTitleCell(table, "2-in-10 Irr Req");
+        excelSummary.insertDataWithStyle("2-in-10 Irr Req", 0, false, true);
+        totalVal = 0.0;
+        for (int i = 1; i <= 12; i++) {
+            double val = summaryReport.getWeighted2In10IrrRequired(i);
+            //double val = (summaryReport1.getAverageIrrigationRequired(i)/totalAvgIrr) * summaryReport1.getTotalTwoinTen();
+//            str = "";
+            if (val > 0) {
+                val = (val * area * 27154);
+                val = (val / 1000000);
+                str = String.format("%6.2f", val);
+                totalVal += val;
+            } else if (val == 0.00) {
+                str = "0.00";
+            } else {
+                str = "NA";
+            }
+
+            //str = String.format("%6.2f", val);
+            designDataCell(table, str);
+            excelSummary.insertDataWithStyle(val, 0, false, true);
+        }
+        str = String.format("%6.2f", totalVal);
+        //str = "-";
+        designDataCell(table, str);
+        excelSummary.insertDataWithStyle(totalVal, 0, false, true);
+        excelSummary.insertEmptyLine(1);
+        /**
+         * *********1-in-10 Irrigation Required************
+         */
+        designRowTitleCell(table, "1-in-10 Irr Req");
+        excelSummary.insertDataWithStyle("1-in-10 Irr Req", 0, false, true);
+        totalVal = 0.0;
+        for (int i = 1; i <= 12; i++) {
+            double val = summaryReport.getWeighted1In10IrrRequired(i);
+            //double val = (summaryReport1.getAverageIrrigationRequired(i)/totalAvgIrr) * summaryReport1.getTotalOneinTen();
+//            str = "";
+            if (val > 0) {
+                val = (val * area * 27154);
+                val = (val / 1000000);
+                str = String.format("%6.2f", val);
+                totalVal += val;
+            } else if (val == 0.00) {
+                str = "0.00";
+            } else {
+                str = "NA";
+            }
+
+            //str = String.format("%6.2f", val);
+            designDataCell(table, str);
+            excelSummary.insertDataWithStyle(val, 0, false, true);
+        }
+        str = String.format("%6.2f", totalVal);
+        //str = "-";
+        designDataCell(table, str);
         excelSummary.insertDataWithStyle(totalVal, 0, false, true);
         excelSummary.insertEmptyLine(1);
         //bwOutputSummaryFile1.add(table);
@@ -3080,24 +3254,108 @@ public class AFSIRSModule {
 
     }
 
-    private static void addDeviations(UserInput input, Document bwOutputSummaryFile) throws DocumentException {
-        //========================
+    private static void addSoilMap(UserInput input, Document bwOutputSummaryFile, SimResult ret) throws DocumentException {
+        bwOutputSummaryFile.add(new Paragraph("\r\n"));
+        bwOutputSummaryFile.add(createSectionTitle("Soil Data: "));
+        
+        // Soil Data Table
+        PdfPTable table = new PdfPTable(8);
+        table.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        table.setTotalWidth(new float[]{80, 240, 80, 120, 60, 80, 80, 80});
+
+        designTableHeaderRowCell(table, "Symbol", 1, 2);
+        designTableHeaderRowCell(table, "Soil Name", 1, 2);
+        designTableHeaderRowCell(table, "Area", 1, 2);
+        designTableHeaderRowCell(table, "Soil Type", 1, 2);
+        designTableHeaderRowCell(table, "Pct.", 1, 2);
+        designTableHeaderRowCell(table, "Soil layer info", 3, 1);
+        designTableHeaderRowCell(table, "SLLB", 1, 1);
+        designTableHeaderRowCell(table, "SLLL", 1, 1);
+        designTableHeaderRowCell(table, "SLDUL", 1, 1);
+        
+        LinkedHashMap<String, ArrayList<Soil>> soilSeriesMap = new LinkedHashMap();
+        LinkedHashMap<String, Integer> soilSeriesSpan = new LinkedHashMap();
+        for (Soil soil : input.getSoils()) {
+            String key = soil.getSOILSERIESKEY();
+            if (!soilSeriesMap.containsKey(key)) {
+                soilSeriesMap.put(key, new ArrayList());
+                soilSeriesSpan.put(key, 0);
+            }
+            soilSeriesMap.get(key).add(soil);
+            soilSeriesSpan.put(key, soilSeriesSpan.get(key) + soil.getDU().length);
+        }
+        
+        for (String key : soilSeriesMap.keySet()) {
+            ArrayList<Soil> soils = soilSeriesMap.get(key);
+            if (!soils.isEmpty()) {
+                SoilSeriesSummaryReport report = ret.getSoilSeriesSummaryReport(soils.get(0));
+                int rowSpan = soilSeriesSpan.get(key);
+                designDataCell(table, report.getSoilSymbolNum(), 1, rowSpan);
+                designDataCell(table, report.getSoilName(), 1, rowSpan, Element.ALIGN_LEFT);
+                designDataCell(table, report.getSoilAreaStr(), 1, rowSpan);
+                for (Soil soil : soils) {
+                    rowSpan = soil.getDU().length;
+                    designDataCell(table, soil.getSNAME(), 1, rowSpan, Element.ALIGN_LEFT);
+                    designDataCell(table, soil.getSoilTypePct() + "%", 1, rowSpan);
+                    for (int i = 0; i < rowSpan; i++) {
+                        designDataCell(table, String.format("%5.1f", soil.getDU()[i]));
+                        designDataCell(table, String.format("%6.3f", soil.getWCL()[i]));
+                        designDataCell(table, String.format("%6.3f", soil.getWCU()[i]));
+                    }
+                }
+            }
+        }
+        bwOutputSummaryFile.add(table);
+        
+        // Meta Table
+        PdfPTable metaTable = new PdfPTable(1);
+        Chunk headerChunk = new Chunk("\r\nMeta Info:", BLACK_BOLD);
+        Paragraph metaPara = new Paragraph();
+        PdfPCell metaTitleCell = new PdfPCell(metaPara);
+        metaPara.add(headerChunk);
+        metaTitleCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        metaTitleCell.setBorder(0);
+        metaTable.addCell(metaTitleCell);
+        addUserDetails(metaTable, "Symbol : ", "Soil Unit Symbol #");
+        addUserDetails(metaTable, "Soil Name : ", "Soil Series Name");
+        addUserDetails(metaTable, "Area : ", "Map Unit Area (acres)");
+        addUserDetails(metaTable, "Soil Type : ", "Soil Type Name");
+        addUserDetails(metaTable, "Pct. : ", "Soil Type Percentage");
+        addUserDetails(metaTable, "Soil layer info : ", "Soil Layer info for a soil type");
+        addUserDetails(metaTable, "    SLLB : ", "Soil layer base depth (in)");
+        addUserDetails(metaTable, "    SLLL : ", "Soil water, drained lower limit (in3/in3)");
+        addUserDetails(metaTable, "    SLDUL : ", "Soil water, drained upper limit (in3/in3)");
+        bwOutputSummaryFile.add(metaTable);
+        
+       // Soil Map link
         Paragraph p;
-        Chunk imdb = new Chunk("View Map");
+        Chunk imdb = new Chunk("here", BLUE_LINK);
+        Chunk imdb2 = new Chunk("Soil Map", BLUE_LINK);
         try {
             imdb.setAnchor(Util.getSoilMapUrl(input));
+            imdb2.setAnchor(Util.SOIL_MAP_BASE_URL);
         } catch (MalformedURLException ex) {
             java.util.logging.Logger.getLogger(AFSIRSModule.class.getName()).log(Level.SEVERE, null, ex);
         }
-        p = new Paragraph("Click on the link to ");
+        p = new Paragraph("Click ");
+        p.setAlignment(Paragraph.ALIGN_CENTER);
         p.add(imdb);
+        p.add(" to view the field polygon on .");
+        p.add(imdb2);
         p.add(".");
         bwOutputSummaryFile.add(p);
-        //========================
+        
+    }
+
+    private static void addDeviations(UserInput input, Document bwOutputSummaryFile) throws DocumentException {
+        bwOutputSummaryFile.add(new Paragraph("\r\n"));
+        bwOutputSummaryFile.add(createSectionTitle("Deviations List: "));
+        Paragraph p;
         PdfPCell c;
         p = new Paragraph();
         PdfPTable t = new PdfPTable(1);
-        Chunk headerChunk = new Chunk("\r\n\nDeviations", BLACK_BOLD);
+        Chunk headerChunk = new Chunk("\r\nDeviations", BLACK_BOLD);
         p.add(headerChunk);
         c = new PdfPCell(p);
         c.setHorizontalAlignment(Element.ALIGN_LEFT);

@@ -93,9 +93,9 @@ public abstract class SummaryReport {
     }
 
     public String getSoilAreaStr() {
-        String ret = String.format("%6.2f", soilArea);
-        if (ret.equals("0.00")) {
-            return "< 0.01";
+        String ret = String.format("%6.3f", soilArea);
+        if (ret.equals("0.000")) {
+            return "< 0.001";
         } else {
             return ret;
         }

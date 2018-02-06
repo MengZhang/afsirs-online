@@ -1,5 +1,6 @@
 package org.afsirs.module;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import lombok.Data;
 import static org.afsirs.module.util.Util.round;
@@ -77,6 +78,22 @@ public class Soil {
             COMPKEY = compKey;
             this.soilSymbolNum = soilSymbolNum;
             NL = nl;
+        }
+
+        public void setValues(ArrayList<Double> wc, ArrayList<Double> wcl, ArrayList<Double> wcu, ArrayList<Double> du, String[] txt){
+            WC = toArray(wc);
+            WCL = toArray(wcl);
+            WCU = toArray(wcu);
+            DU = toArray(du);
+            TXT = txt;
+        }
+        
+        private double[] toArray(ArrayList<Double> in)  {
+            double[] ret = new double[in.size()];
+            for (int i = 0; i < in.size(); i++) {
+                ret[i] = in.get(i);
+            }
+            return ret;
         }
 
         public void setValues(double[] wc, double[] wcl, double[] wcu, double[] du, String[] txt){

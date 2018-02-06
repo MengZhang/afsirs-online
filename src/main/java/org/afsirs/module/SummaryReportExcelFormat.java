@@ -166,14 +166,9 @@ public class SummaryReportExcelFormat {
                 break;
 
             case 5:
+                font.setBold(true);
                 font.setFontHeightInPoints((short) 15);
-                font.setFontName("IMPACT");
-                font.setItalic(true);
-                font.setColor(HSSFColor.BLUE.index);
                 style = workbook.createCellStyle();
-                style.setWrapText(true);
-                style.setVerticalAlignment(VerticalAlignment.CENTER);
-                style.setAlignment(HorizontalAlignment.CENTER);
                 style.setFont(font);
                 break;
 

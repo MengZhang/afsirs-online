@@ -38,7 +38,6 @@ public class SimResult {
     @Setter(AccessLevel.NONE)
     private ArrayList<SoilSeriesSummaryReport> sortedSummaryList = new ArrayList<>();
 
-    private ArrayList<PdfPTable> summaryTables = new ArrayList<>();
     private File outFile, summaryFile, summaryFileExcel, calculationExcel;
 
     public void addSoilTypeSummaryReport(SoilTypeSummaryReport report) {
@@ -60,13 +59,13 @@ public class SimResult {
         return sortedSummaryList;
     }
 
-    public ArrayList<SoilSeriesSummaryReport> getSoilSeriesSummaryList() {
+    private ArrayList<SoilSeriesSummaryReport> getSoilSeriesSummaryList() {
         return new ArrayList(summaryList.values());
     }
 
     public ArrayList<SoilTypeSummaryReport> getSoilTypeSummaryList() {
         ArrayList<SoilTypeSummaryReport> ret = new ArrayList();
-        for (SoilSeriesSummaryReport report : getSummaryList()) {
+        for (SoilSeriesSummaryReport report : getSoilSeriesSummaryList()) {
             ret.addAll(report.getSoilTypeSummaryReportList());
         }
         return ret;
