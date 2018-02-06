@@ -380,7 +380,9 @@ public class DataUtil {
 
                 String line2 = br.readLine();//Read data line
                 int NL = Integer.parseInt(line2.substring(0, 1));
-                Soil soil = new Soil(i, item, null, null, item, NL);
+                String idxStr = String.format("DB%04d", i);
+                Soil soil = new Soil(i, item, idxStr, idxStr, item, NL);
+                soil.setSoilSymbolNum(idxStr);
                 int k = 0;
                 int j = 1;
                 while (line2.charAt(j) == ' ') {
@@ -388,10 +390,10 @@ public class DataUtil {
                 }
                 line2 = line2.substring(j);
                 parts = line2.split(" ");
-                double[] wc = new double[6];
-                double[] wcl = new double[6];
-                double[] wcu = new double[6];
-                double[] du = new double[6];
+                ArrayList<Double> wc = new ArrayList();
+                ArrayList<Double> wcl = new ArrayList();
+                ArrayList<Double> wcu = new ArrayList();
+                ArrayList<Double> du = new ArrayList();
                 String[] txt = new String[3];
 
                 while (k < NL) {
@@ -420,10 +422,10 @@ public class DataUtil {
 //                    }
 //                    System.out.println();
 //                    System.out.println("Fields : " + fields[0] + " " + fields[1] + " " + fields[2]);
-                    du[k] = Double.parseDouble(fields[0]);
-                    wcl[k] = Double.parseDouble(fields[1]) / 100.0;
-                    wcu[k] = Double.parseDouble(fields[2]) / 100.0;
-                    wc[k] = new BigDecimal(wcl[k]).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+                    du.add(Double.parseDouble(fields[0]));
+                    wcl.add(Double.parseDouble(fields[1]) / 100.0);
+                    wcu.add(Double.parseDouble(fields[2]) / 100.0);
+                    wc.add(new BigDecimal(wcl.get(k)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue());
                     k++;
                 }
                 soil.setValues(wc, wcl, wcu, du, txt);
@@ -542,10 +544,10 @@ public class DataUtil {
             ArrayList<org.json.simple.JSONObject> soilLayersNodes = (ArrayList) soilJ.getOrDefault("soilLayer", new ArrayList());
 
             int nl = 0;
-            double[] wc = new double[6];
-            double[] wcl = new double[6];
-            double[] wcu = new double[6];
-            double[] du = new double[6];
+            double[] wc = new double[soilLayersNodes.size()];
+            double[] wcl = new double[soilLayersNodes.size()];
+            double[] wcu = new double[soilLayersNodes.size()];
+            double[] du = new double[soilLayersNodes.size()];
             String[] txt = new String[3];
 
             for (org.json.simple.JSONObject nodeJS : soilLayersNodes) {
@@ -670,6 +672,9 @@ public class DataUtil {
     }
 
     public static String calculateNearestStation(String type, String jsonStr) {
+        if (jsonStr == null || jsonStr.isEmpty()) {
+            return "";
+        }
         JSONObject data = JsonUtil.parseFrom(jsonStr);
         return calculateNearestStation(type, data);
     }

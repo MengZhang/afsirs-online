@@ -74,6 +74,8 @@
                 hideComp("soilTypeSB");
                 if (document.getElementById("soil_source_db").checked) {
                     switchSoilSource('DB');
+                    var pcts = [<#if permit['plantedArea']??><#list permit['soils'] as soil>${soil['soilTypeArea'] / permit['plantedArea']?number * 100},</#list></#if>];
+                    showDBSelection(pcts);
                 } else if (document.getElementById("soil_source_map").checked) {
                     switchSoilSource('MAP');
                 } else {
@@ -119,6 +121,12 @@
                 document.getElementById("et_extracted_input").disabled = disableIrr;
                 document.getElementById("water_table_depth_input").disabled = disableIrr;
                 document.getElementById("planted_area_input").disabled = disableSW;
+                if (document.getElementById("soil_source_db").checked) {
+                    var dbSoilTypeRanges = document.getElementsByName("db_soil_type_pct_range");
+                    for (var i = 0; i < dbSoilTypeRanges.length; i++) {
+                        dbSoilTypeRanges[i].disabled = disableSW;
+                    }
+                }
                 if (disableCoef) {
                     activeHGT();
                 }
@@ -172,6 +180,9 @@
             
             function validateInput() {
                 var errTab = "";
+                if (!validateClimate()) {
+                    errTab = "Climate";
+                }
                 if (!validateSoilWater()) {
                     errTab = "SoilWater";
                 }
