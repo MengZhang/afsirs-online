@@ -380,7 +380,9 @@ public class DataUtil {
 
                 String line2 = br.readLine();//Read data line
                 int NL = Integer.parseInt(line2.substring(0, 1));
-                Soil soil = new Soil(i, item, null, null, item, NL);
+                String idxStr = String.format("DB%04d", i);
+                Soil soil = new Soil(i, item, idxStr, idxStr, item, NL);
+                soil.setSoilSymbolNum(idxStr);
                 int k = 0;
                 int j = 1;
                 while (line2.charAt(j) == ' ') {

@@ -197,7 +197,12 @@ public class WaterUsePermit {
         ret.setSoil_json(request.queryParams("soil_file_json"));
         if (soilSource.equalsIgnoreCase("DB")) {
             ret.setDbSoilNames(request.queryParamsValues("soil_type_db"));
-            ret.setSoils(DataUtil.readSoils(ret.getDbSoilNames()));
+            ArrayList<Soil> soils = DataUtil.readSoils(ret.getDbSoilNames());
+            for (Soil soil : soils) {
+                soil.setSoilTypeArea(new BigDecimal(ret.getPlantedArea()).setScale(3).doubleValue());
+                soil.setSoilTypePct(100);
+            }
+            ret.setSoils(soils);
         } else if (soilSource.equalsIgnoreCase("MAP")) {
             String jsonStr = ret.getSoil_json();
             ret.setSoils(DataUtil.toSoils(jsonStr));
