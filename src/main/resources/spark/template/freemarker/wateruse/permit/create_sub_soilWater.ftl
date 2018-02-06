@@ -73,7 +73,7 @@
     
     function cmToInch(data) {
         var soils = data["soils"];
-        var version = data["version"]
+        var version = data["version"];
         if (version === undefined) {
             version = 0;
         } else {
@@ -186,15 +186,134 @@
         window.open(url);
     }
     
+    function showDBSelection(pctArr) {
+        var types = document.getElementById('soil_type_db').selectedOptions;
+        var typeList = document.getElementById('selected_soil_type_db');
+        var typeBar = document.getElementById('selected_soil_type_db_partition');
+        typeList.innerHTML = "";
+        typeBar.innerHTML = "";
+        var avgPct = (100 / types.length).toFixed(1);
+        for (var i = 0; i < types.length; i++) {
+            var node = document.createElement("div");
+            node.setAttribute("class", "form-group");
+            var label = document.createElement("label");
+            label.setAttribute("class", "control-label col-sm-4");
+            label.innerHTML = types[i].label + " : ";
+            
+            var label2 = document.createElement("label");
+            label2.setAttribute("class", "col-sm-1");
+            label2.innerHTML = "(%)";
+            
+            var inputId = "db_soil_type_" + i;
+            var range = document.createElement("div");
+            range.setAttribute("class", "col-sm-4");
+            var rangeInput = document.createElement("input");
+            rangeInput.setAttribute("id", inputId);
+            rangeInput.setAttribute("name", "db_soil_type_pct_range");
+            rangeInput.setAttribute("type", "range");
+            rangeInput.setAttribute("max", "100");
+            rangeInput.setAttribute("min", "1");
+            rangeInput.setAttribute("step", "1");
+            rangeInput.setAttribute("class", "form-control");
+            rangeInput.setAttribute("onchange", "showValue('" + inputId + "');updateSoilTypeBar('" + inputId + "', this);");
+            range.appendChild(rangeInput);
+            
+            var number = document.createElement("div");
+            number.setAttribute("class", "col-sm-2");
+            var numberInput = document.createElement("input");
+            numberInput.setAttribute("id", inputId + "_input");
+            numberInput.setAttribute("name", "db_soil_type_pct");
+            numberInput.setAttribute("type", "number");
+            numberInput.setAttribute("max", "100");
+            numberInput.setAttribute("min", "1");
+            numberInput.setAttribute("step", "1");
+            numberInput.setAttribute("class", "form-control");
+            numberInput.setAttribute("onchange", "showRange('" + inputId + "');updateSoilTypeBar('" + inputId + "', this);");
+            number.appendChild(numberInput);
+            
+            var bar = document.createElement("div");
+            bar.setAttribute("id", inputId + "_bar");
+            if (i % 2 === 0) {
+                bar.setAttribute("class", "progress-bar progress-bar-success");
+            } else {
+                bar.setAttribute("class", "progress-bar progress-bar-info");
+            }
+            bar.setAttribute("role", "progressbar");
+            bar.innerHTML = types[i].label;
+            
+            if (pctArr !== undefined && i < pctArr.length) {
+                rangeInput.setAttribute("value", pctArr[i]);
+                numberInput.setAttribute("value", pctArr[i]);
+                bar.setAttribute("style", "width:" + pctArr[i] + "%");
+            } else {
+                rangeInput.setAttribute("value", avgPct);
+                numberInput.setAttribute("value", avgPct);
+                bar.setAttribute("style", "width:" + avgPct + "%");
+            }
+            
+            node.appendChild(label);
+            node.appendChild(range);
+            node.appendChild(number);
+            node.appendChild(label2);
+            typeList.appendChild(node);
+            typeBar.appendChild(bar);
+        }
+    }
+    
+    function updateSoilTypeBar(inputId, comp) {
+        var bar = document.getElementById(inputId + "_bar");
+        bar.setAttribute("style", "width:" + comp.value + "%");
+        checkSoilTypeSum();
+    }
+    
+    function checkSoilTypeSum() {
+        var errFlg = false;
+        var types = document.getElementById('soil_type_db').selectedOptions;
+        var total = 0;
+        for (var i = 0; i < types.length; i++) {
+            var id = "db_soil_type_" + i + "_input";
+            var input = document.getElementById(id);
+            total += Number(input.value);
+        }
+        if (total.toFixed(0) > 100) {
+            showError("soil_type_db", "Please adjust partition for soil type to make sure the sum is no more than 100", true);
+            errFlg = true;
+        } else {
+            showError("soil_type_db", "", false);
+        }
+        return errFlg;
+    }
+    
     function validateSoilWater() {
+        var errFlg = false;
         var jsonStr = document.getElementById('soil_file_json').value;
         if (jsonStr === "" || jsonStr === '{"soils":}') {
             showError("soil_file", "Please upload your soil file", true);
-            return false;
+            errFlg = true;
         } else {
             showError("soil_file", "", false);
-            return true;
         }
+        
+        var area = document.getElementById('planted_area').value;
+        if (area === "" || Number(area) < 0.001) {
+            showError("planted_area", "Please provide the planted area (arces)", true);
+            errFlg = true;
+        } else {
+            showError("planted_area", "", false);
+        }
+        
+        var types = document.getElementById('soil_type_db').selectedOptions;
+        if (types.length === 0) {
+            showError("soil_type_db", "Please select one or more soil type", true);
+            errFlg = true;
+        } else {
+            showError("soil_type_db", "", false);
+        }
+        
+        if (checkSoilTypeSum()) {
+            errFlg = true;
+        }
+        return !errFlg;
     }
 </script>
 <div class="subcontainer">
@@ -216,11 +335,20 @@
         <div id="soilTypeSB_DB" class="form-group soilTypeSB">
             <label class="control-label col-sm-3" for="soil_type_db">Soil Types :</label>
             <div class="col-sm-5">
-                <select id="crop_name_annual" name="soil_type_db" class="form-control" onchange="" title="Select soil types for simulation." multiple>
+                <select id="soil_type_db" name="soil_type_db" class="form-control" onchange="showDBSelection();" title="Select soil types for simulation." multiple>
                     <#list soilDBNameList as soilName>
-                    <option value="${soilName!}" <#if permit['dbSoilNames']?? && permit['dbSoilNames'].contains(soilName)>selected</#if>>${soilName!}</option>
+                    <option value="${soilName!}" <#if permit['dbSoilNames']?? && permit['dbSoilNames']?seq_contains(soilName)>selected</#if>>${soilName!}</option>
                     </#list>
                 </select>
+            </div>
+            <div id="soil_type_dbWarning" class="row col-sm-12 hidden">
+                <div class="col-sm-3 text-left"></div>
+                <div class="col-sm-9 text-left"><label id="soil_type_dbWarningMsg"></label></div>
+            </div>
+            <div class="col-sm-9 col-sm-push-3 text-left">
+                <label>Currently selected soil types:</label>
+                <div id="selected_soil_type_db"></div>
+                <div id="selected_soil_type_db_partition" class="progress"></div>
             </div>
         </div>
         <div id="soilTypeSB_MAP" class="form-group soilTypeSB">
@@ -242,7 +370,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-3" for="soil_unit_name">Soil Name :</label>
+            <label class="control-label col-sm-3" for="soil_unit_name">Soil Data Name :</label>
             <div class="col-sm-5">
                 <input type="text" id="soil_unit_name" name="soil_unit_name" value="${permit['soil_unit_name']!'Unspecified'}" class="form-control" placeholder="Enter Soil Name" data-toggle="tooltip" title="This field accepts characters without spaces">
             </div>
@@ -257,6 +385,10 @@
                 <input type="number" id="planted_area_input" step="10" max="${permit['plantedArea']!'1000'}" min="0.1" class="form-control" value="${permit['plantedArea']!}" placeholder="Enter Planted Area" data-toggle="tooltip" title="Planted Area" onchange="showRange('planted_area')">
             </div>
             <label class="control-label col-sm-1" for="planted_area">(Acres)</label>
+            <div id="planted_areaWarning" class="row col-sm-12 hidden">
+                <div class="col-sm-3 text-left"></div>
+                <div class="col-sm-9 text-left"><label id="planted_areaWarningMsg"></label></div>
+            </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3" for="water_hold_capacity">Water Hold Capacity :</label>

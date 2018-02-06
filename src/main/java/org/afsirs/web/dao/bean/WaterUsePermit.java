@@ -198,8 +198,12 @@ public class WaterUsePermit {
         if (soilSource.equalsIgnoreCase("DB")) {
             ret.setDbSoilNames(request.queryParamsValues("soil_type_db"));
             ArrayList<Soil> soils = DataUtil.readSoils(ret.getDbSoilNames());
-            for (Soil soil : soils) {
-                soil.setSoilTypeArea(new BigDecimal(ret.getPlantedArea()).setScale(3).doubleValue());
+            String[] pcts = request.queryParamsValues("db_soil_type_pct");
+            BigDecimal plantedArea = new BigDecimal(ret.getPlantedArea());
+            for (int i = 0; i < soils.size(); i++) {
+                Soil soil = soils.get(i);
+                BigDecimal area = plantedArea.multiply(new BigDecimal(pcts[i])).divide(new BigDecimal(100));
+                soil.setSoilTypeArea(area.setScale(3).doubleValue());
                 soil.setSoilTypePct(100);
             }
             ret.setSoils(soils);
@@ -317,7 +321,8 @@ public class WaterUsePermit {
         ret.setEt_extracted(data.getOrBlank("et_extracted"));
         ret.setWater_table_depth(data.getOrBlank("water_table_depth"));
 
-        ret.setSoil_source(data.getOrDefault("soil_source", null));
+        String soilSource = data.getOrDefault("soil_source", null);
+        ret.setSoil_source(soilSource);
         ret.setSoil_unit_name(data.getOrBlank("soil_unit_name"));
         ret.setWater_hold_capacity(data.getOrBlank("water_hold_capacity"));
         ret.setTotalArea(data.getOrBlank("total_area"));
@@ -331,7 +336,15 @@ public class WaterUsePermit {
         if (!polygonLocInfo.isEmpty()) {
             ret.setPolygon_loc_info(((org.json.simple.JSONObject) polygonLocInfo.get(0)).toJSONString());
         }
-        ret.setSoils(DataUtil.toSoils(data, ret.getWater_hold_capacity()));
+        ArrayList<Soil> soils = DataUtil.toSoils(data, ret.getWater_hold_capacity());
+        ret.setSoils(soils);
+        if ("DB".equals(soilSource)) {
+            String[] soilNames = new String[soils.size()];
+            for (int i = 0; i < soils.size(); i++) {
+                soilNames[i] = soils.get(i).getSNAME();
+            }
+            ret.setDbSoilNames(soilNames);
+        }
 
         ret.setEt_loc(data.getOrBlank("et_loc"));
         ret.setRain_loc(data.getOrBlank("rain_loc"));
