@@ -81,13 +81,14 @@
                     <tr>
                         <td>Yes</td>
                         <td>Yes</td>
-                        <td>10 or later</td>
+                        <td>Limited**</td>
                         <td>Yes</td>
                         <td>Yes</td>
                         <td>Yes</td>
                     </tr>
                 </table>
                 <p>* Browsers which are not included in the above might face issue while using the web site.</p>
+                <p>** IE only can use soil data from DB.</p>
             </div>
 
         </div>
