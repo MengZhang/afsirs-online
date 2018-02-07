@@ -286,32 +286,34 @@
     
     function validateSoilWater() {
         var errFlg = false;
-        var jsonStr = document.getElementById('soil_file_json').value;
-        if (jsonStr === "" || jsonStr === '{"soils":}') {
-            showError("soil_file", "Please upload your soil file", true);
-            errFlg = true;
-        } else {
-            showError("soil_file", "", false);
-        }
-        
-        var area = document.getElementById('planted_area').value;
-        if (area === "" || Number(area) < 0.001) {
-            showError("planted_area", "Please provide the planted area (arces)", true);
-            errFlg = true;
-        } else {
-            showError("planted_area", "", false);
-        }
-        
-        var types = document.getElementById('soil_type_db').selectedOptions;
-        if (types.length === 0) {
-            showError("soil_type_db", "Please select one or more soil type", true);
-            errFlg = true;
-        } else {
-            showError("soil_type_db", "", false);
-        }
-        
-        if (checkSoilTypeSum()) {
-            errFlg = true;
+        if (document.getElementById("soil_source_map").checked) {
+            var jsonStr = document.getElementById('soil_file_json').value;
+            if (jsonStr === "" || jsonStr === '{"soils":}') {
+                showError("soil_file", "Please upload your soil file", true);
+                errFlg = true;
+            } else {
+                showError("soil_file", "", false);
+            }
+
+            var area = document.getElementById('planted_area').value;
+            if (area === "" || Number(area) < 0.001) {
+                showError("planted_area", "Please provide the planted area (arces)", true);
+                errFlg = true;
+            } else {
+                showError("planted_area", "", false);
+            }
+        } else if (document.getElementById("soil_source_db").checked) {
+            var types = document.getElementById('soil_type_db').selectedOptions;
+            if (types.length === 0) {
+                showError("soil_type_db", "Please select one or more soil type", true);
+                errFlg = true;
+            } else {
+                showError("soil_type_db", "", false);
+            }
+
+            if (checkSoilTypeSum()) {
+                errFlg = true;
+            }
         }
         return !errFlg;
     }
