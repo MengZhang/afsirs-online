@@ -33,6 +33,12 @@
                     <li><a href="#" onClick="window.open('/doc/afsirs/AFSIRS_Technical_Manual.pdf', 'AFSIRS Technical Manual')"><span class="glyphicon glyphicon-book"></span> AFSIRS Technical Manual</a></li>
                 </ul>
             </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-question-sign"></span> Help <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" onClick="window.open('https://docs.google.com/spreadsheets/d/14JyKic5m09dNwzMGhCOkMmqERL40FZp6MBXJepZbKLU/edit#gid=0')"><span class="glyphicon glyphicon-pencil"></span> Report Issues</a></li>
+                </ul>
+            </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <#if currentUser?? >
