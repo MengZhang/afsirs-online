@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -445,6 +446,34 @@ public class DataUtil {
     }
 
     private static LinkedHashMap<String, WeatherData> readWeatherData(String fileName) {
+        HashMap<String, String> geoList = new HashMap();
+        String geoFileName;
+        if (fileName.equals("RAINLIST.txt")) {
+            geoFileName = "LongLatRAIN.txt";
+        } else {
+            geoFileName = "LongLatCLIM.txt";
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(Path.Folder.getDataFile(geoFileName)));) {
+            String line;
+//            double shortestDistance = 9999999999.00;
+            while ((line = br.readLine()) != null) {
+                String city = line.split(",")[0];
+//                String Long = line.split(",")[1];
+//                double longCity = Double.parseDouble(Long);
+//                String Lat = line.split(",")[2];
+//                double latCity = Double.parseDouble(Lat);
+                String file = line.split(",")[3];
+//                double distance = distance(latitude, latCity, longitude, longCity, 0.0, 0.0);
+                if (geoList.containsKey(city)) {
+                    LOG.warn("Repeated definition for city [{}] in {}", city, geoFileName);
+                } else {
+                    geoList.put(city, file);
+                }
+            }
+            br.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        }
         LinkedHashMap<String, WeatherData> ret = new LinkedHashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(Path.Folder.getDataFile(fileName)))) {
             String line;
@@ -452,6 +481,14 @@ public class DataUtil {
                 String city = line.split(" ")[0];
                 String file = line.split(" ")[1];
                 ret.put(city, readWeatherFile(Path.Folder.getDataFile(file)));
+                if (!city.equals(ret.get(city).getLocation())) {
+                    LOG.warn("Mismatch definition for city [{}] between {} and {}", city, fileName, file);
+                }
+                if (!geoList.containsKey(city)) {
+                    LOG.warn("Missing definition for city [{}] in {}", city, geoFileName);
+                } else if (!geoList.get(city).equals(file)) {
+                    LOG.warn("Mismatch definition for city [{}] between {} and {}", city, geoFileName, fileName);
+                }
             }
             br.close();
         } catch (Exception e) {
