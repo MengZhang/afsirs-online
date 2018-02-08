@@ -288,7 +288,7 @@
         var errFlg = false;
         if (document.getElementById("soil_source_map").checked) {
             var jsonStr = document.getElementById('soil_file_json').value;
-            if (jsonStr === "" || jsonStr === '{"soils":}') {
+            if (jsonStr === "" || jsonStr === '{"soils":}' || jsonStr === '{"soils":[]}') {
                 showError("soil_file", "Please upload your soil file", true);
                 errFlg = true;
             } else {
@@ -304,15 +304,14 @@
             }
         } else if (document.getElementById("soil_source_db").checked) {
             var types = document.getElementById('soil_type_db').selectedOptions;
+
             if (types.length === 0) {
                 showError("soil_type_db", "Please select one or more soil type", true);
                 errFlg = true;
+            } else if (checkSoilTypeSum()) {
+                errFlg = true;
             } else {
                 showError("soil_type_db", "", false);
-            }
-
-            if (checkSoilTypeSum()) {
-                errFlg = true;
             }
         }
         return !errFlg;

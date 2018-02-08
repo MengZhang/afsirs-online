@@ -74,6 +74,8 @@ public class WaterUsePermit {
     // Climate
     private String et_loc;
     private String rain_loc;
+    private String et_nearest_flg;
+    private String rain_nearest_flg;
 
     // Coefficent
     private String coefficent_type;
@@ -232,8 +234,12 @@ public class WaterUsePermit {
 //            ret.setTotalArea(totArea);
         }
 
-        ret.setEt_loc(calculateNearestStation(request.queryParams("et_loc"), "CLIMATE", ret));
-        ret.setRain_loc(calculateNearestStation(request.queryParams("rain_loc"), "RAIN", ret));
+        ret.setEt_loc(calculateNearestStation(request.queryParams("et_loc"),
+                request.queryParams("et_nearest_flg"), "CLIMATE", ret));
+        ret.setRain_loc(calculateNearestStation(request.queryParams("rain_loc"),
+                request.queryParams("rain_nearest_flg"), "RAIN", ret));
+        ret.setEt_nearest_flg(request.queryParams("et_nearest_flg"));
+        ret.setRain_nearest_flg(request.queryParams("rain_nearest_flg"));
 
         String coeffType = request.queryParams("coefficent_type");
         ret.setCoefficent_type(coeffType);
@@ -275,8 +281,8 @@ public class WaterUsePermit {
         return ret;
     }
 
-    private static String calculateNearestStation(String loc, String type, WaterUsePermit permit) {
-        if ("Nearest Station".equalsIgnoreCase(loc)) {
+    private static String calculateNearestStation(String loc, String flg, String type, WaterUsePermit permit) {
+        if ("true".equalsIgnoreCase(flg)) {
             String jsonStr = permit.getPolygon_loc_info();
             loc = DataUtil.calculateNearestStation(type, jsonStr);
         }
@@ -348,6 +354,8 @@ public class WaterUsePermit {
 
         ret.setEt_loc(data.getOrBlank("et_loc"));
         ret.setRain_loc(data.getOrBlank("rain_loc"));
+        ret.setEt_nearest_flg(data.getOrBlank("et_nearest_flg"));
+        ret.setRain_nearest_flg(data.getOrBlank("rain_nearest_flg"));
 
         ret.setCoefficent_type(data.getOrDefault("coefficent_type", null));
         ret.setDzn(data.getOrBlank("dzn"));
@@ -406,6 +414,8 @@ public class WaterUsePermit {
         input.setPolygonLocInfo(polygon_loc_info);
 
         input.setWeather(DataUtil.toWeather(et_loc, rain_loc));
+        input.setRAIN_FLG(rain_nearest_flg);
+        input.setCLIM_FLG(et_nearest_flg);
 
         input.setCoefficentType(coefficent_type);
         if (crop_type != null && !crop_type.isEmpty()) {
