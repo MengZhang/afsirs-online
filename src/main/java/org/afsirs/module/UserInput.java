@@ -78,8 +78,10 @@ public class UserInput {
     private String polygonLocInfo;
     private String WATERHOLDINGCAPACITY;
     private String soilSource;
-    private String CLIMATESTATION;
-    private String RAINFALLSTATION;
+    private String CLIMATESTATION;  // Will remove
+    private String RAINFALLSTATION; // Will remove
+    private String CLIM_FLG;
+    private String RAIN_FLG;
     private InputStreamReader climIR;
     private InputStreamReader rainfallIR;
     private InputStreamReader climIRDate;

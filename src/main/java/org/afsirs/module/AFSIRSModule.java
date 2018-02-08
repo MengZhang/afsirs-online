@@ -2061,8 +2061,8 @@ public class AFSIRSModule {
             //addUserDetails(t, USER_DETAILS[8], String.valueOf(endYear));
             addUserDetails(t, USER_DETAILS[8], String.valueOf(input.getPlantedAcres()));
             addUserDetails(t, USER_DETAILS[9], String.valueOf(input.getMapArea()));
-            addUserDetails(t, USER_DETAILS[10], input.getCLIMATESTATION());
-            addUserDetails(t, USER_DETAILS[11], input.getRAINFALLSTATION());
+            addUserDetails(t, USER_DETAILS[10], input.getCLIMATELOC());
+            addUserDetails(t, USER_DETAILS[11], input.getRAINFALLLOC());
             addUserDetails(t, USER_DETAILS[12], input.getIrrOption());
             addUserDetails(t, USER_DETAILS[13], String.valueOf(input.getIEFF()));
             addUserDetails(t, USER_DETAILS[14], String.valueOf(input.getARZI()));
@@ -2118,7 +2118,7 @@ public class AFSIRSModule {
             excelSummary.insertDataWithStyle(String.valueOf(input.getPlantedAcres()), 0, false, true);
 
             excelSummary.insertDataWithStyle(USER_DETAILS_EXCEL[8], 0, false, true);
-            excelSummary.insertDataWithStyle(input.getCLIMATESTATION(), 0, false, true);
+            excelSummary.insertDataWithStyle(input.getCLIMATELOC(), 0, false, true);
 
             excelSummary.insertEmptyLine(1);
 
@@ -3676,8 +3676,10 @@ public class AFSIRSModule {
         //page 1
         obj.put("permit_id", input.getSITE());
         obj.put("owner_name", input.getOWNER());
-        obj.put("et_loc", input.getCLIMATESTATION());
-        obj.put("rain_loc", input.getRAINFALLSTATION());
+        obj.put("et_loc", input.getCLIMATELOC());
+        obj.put("et_nearest_flg", input.getCLIM_FLG());
+        obj.put("rain_loc", input.getRAINFALLLOC());
+        obj.put("rain_nearest_flg", input.getRAIN_FLG());
         obj.put("planted_area", input.getPlantedAcres() + "");
         obj.put("total_area", input.getMapArea() + "");
         obj.put("crop_type", input.getCropType());
