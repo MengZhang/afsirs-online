@@ -87,7 +87,7 @@ public class SimulationViewUtil {
                 twoIn10Data.get(soilName)[i] = (report.getTwoin10IrrigationRequired(i + 1));
                 oneIn10Data.get(soilName)[i] = (report.getOnein10IrrigationRequired(i + 1));
                 twoIn10AvgTot += report.getWeighted2In10IrrRequired((i + 1));
-                oneIn10AvgTot += report.getWeighted2In10IrrRequired((i + 1));
+                oneIn10AvgTot += report.getWeighted1In10IrrRequired((i + 1));
             }
 
             irrReqWgtAvgData[i] = irrReqAvg;
