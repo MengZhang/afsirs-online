@@ -49,20 +49,21 @@
                     afsirsInfo = obj["asfirs"];
                 }
                 var totArea = Number(afsirsInfo[0].TotalArea);
+                var plantedArea = 0;
+                for (var i = 0; i < obj["soils"].length; i++) {
+                    plantedArea += Number(obj["soils"][i]["compArea"]);
+                }
                 obj = cmToInch(obj);
                 document.getElementById('soil_file_content').classList.remove("hidden");
                 document.getElementById('tblBody').innerHTML = toTableHtml(obj["soils"]);
                 document.getElementById('soil_file_json').value = JSON.stringify(obj);
                 document.getElementById('polygon_info').value = plygonStr;
                 document.getElementById('polygon_loc_info').value = JSON.stringify(afsirsInfo[0]);
-//                var value = document.getElementById('planted_area_input').value;
                 document.getElementById('total_area').value = totArea;
-                document.getElementById('planted_area').max = totArea;
-                document.getElementById('planted_area_input').max = totArea;
-                //if (value === "" || value > totArea) {
-                    document.getElementById('planted_area').value = totArea;
-                    document.getElementById('planted_area_input').value = totArea;
-                //}
+                document.getElementById('planted_area').max = plantedArea;
+                document.getElementById('planted_area_input').max = plantedArea;
+                document.getElementById('planted_area').value = plantedArea;
+                document.getElementById('planted_area_input').value = plantedArea;
                 showError("soil_file", "", false);
             }
         };
@@ -120,9 +121,9 @@
                 unitIdx = i;
                 unitRow = layerIdx;
                 unitRowSpan = 0;
-                unitArea = Number(soils[unitIdx]["compArea"]);
+                unitArea = Number(soils[i]["compArea"]);
             } else {
-                unitArea += Number(soils[unitIdx]["compArea"]); 
+                unitArea += Number(soils[i]["compArea"]); 
             }
             if (soils[i]["cokey"] !== cokey) {
                 var typePct = soils[typeIdx]["comppct_r"];
