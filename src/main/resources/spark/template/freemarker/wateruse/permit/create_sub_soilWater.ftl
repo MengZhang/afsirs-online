@@ -121,9 +121,9 @@
                 unitIdx = i;
                 unitRow = layerIdx;
                 unitRowSpan = 0;
-                unitArea = Number(soils[unitIdx]["compArea"]);
+                unitArea = Number(soils[i]["compArea"]);
             } else {
-                unitArea += Number(soils[unitIdx]["compArea"]); 
+                unitArea += Number(soils[i]["compArea"]); 
             }
             if (soils[i]["cokey"] !== cokey) {
                 var typePct = soils[typeIdx]["comppct_r"];
