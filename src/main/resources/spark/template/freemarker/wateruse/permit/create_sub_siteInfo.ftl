@@ -8,7 +8,6 @@
             document.getElementById("endMonthSB").disabled = false;
             document.getElementById("endDaySB").disabled = false;
             changeIrrSysListByCrop("crop_name_annual");
-            setDefEndDate();
         } else if (cropType === "perennial") {
             document.getElementById("cropNamePerennialSB").style.display = "block";
             document.getElementById("startMonthSB").disabled = true;
@@ -238,7 +237,7 @@
             <label class="control-label col-sm-3" for="crop_type">Crop :</label>
             <div class="row col-sm-6">
                 <div class="col-sm-6">
-                    <label><input type="radio" name="crop_type" id="crop_type_annual" class="form-control" value="annual" onclick="switchCropType('annual')" <#if permit['crop_type']?? && permit['crop_type'] == "annual">checked</#if>>Annual</label>
+                    <label><input type="radio" name="crop_type" id="crop_type_annual" class="form-control" value="annual" onclick="switchCropType('annual');setDefEndDate();" <#if permit['crop_type']?? && permit['crop_type'] == "annual">checked</#if>>Annual</label>
                 </div>
                 <div class="col-sm-6">
                     <label><input type="radio" name="crop_type" id="crop_type_perennial" class="form-control" value="perennial" onclick="switchCropType('perennial')" <#if permit['crop_type']?? && permit['crop_type'] == "perennial">checked</#if>>Perennial</label>
