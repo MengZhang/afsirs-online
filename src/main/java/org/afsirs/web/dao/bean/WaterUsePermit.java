@@ -487,7 +487,7 @@ public class WaterUsePermit {
         if (input.getIrrigationSystem() != 0) {
             input.addDeviation("Irrigation system", DataUtil.getIRSysNameList().get(input.getIrrigationSystem()));
         }
-        if (!input.isNetCalc()) {
+        if (input.isNetCalc()) {
             input.addDeviation("Irrigation Requirement", permit.getIrr_option());
         }
         switch (permit.getIrr_depth_type()) {
