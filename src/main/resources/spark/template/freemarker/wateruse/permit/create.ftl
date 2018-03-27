@@ -78,6 +78,9 @@
                     showDBSelection(pcts);
                 } else if (document.getElementById("soil_source_map").checked) {
                     switchSoilSource('MAP');
+                    <#if permit["latitude"]?? && permit["longitude"]??>
+                    calcDistance(${permit["latitude"]!}, ${permit["longitude"]!});
+                    </#if>
                 } else {
                     document.getElementById("soil_source_map").checked = true;
                     switchSoilSource('MAP');

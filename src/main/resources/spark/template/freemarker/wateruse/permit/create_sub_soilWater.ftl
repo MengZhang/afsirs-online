@@ -65,6 +65,9 @@
                 document.getElementById('planted_area').value = plantedArea;
                 document.getElementById('planted_area_input').value = plantedArea;
                 showError("soil_file", "", false);
+                calcDistance(afsirsInfo[0]["lat"], afsirsInfo[0]["long"]);
+                selectNearestLoc('et', document.getElementById("et_nearest_flg"));
+                selectNearestLoc('rain', document.getElementById("rain_nearest_flg"));
             }
         };
 

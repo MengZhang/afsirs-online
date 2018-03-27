@@ -49,12 +49,16 @@ public class DataUtil {
         private String location;
         private int startYear;
         private int endYear;
+        private String lat;
+        private String longi;
 
         public WeatherData cloneData() {
             WeatherData ret = new WeatherData();
             ret.setLocation(location);
             ret.setStartYear(startYear);
             ret.setEndYear(endYear);
+            ret.setLat(lat);
+            ret.setLongi(longi);
             ret.setData(Util.deepCopy(data));
             return ret;
         }
@@ -159,16 +163,16 @@ public class DataUtil {
         return SOILTYPE_DB_DATA_LIST.keySet();
     }
 
-    public static ArrayList<String> getClimateCityList() {
-        return new ArrayList(CLIMATE_DATA_LIST.keySet());
+    public static ArrayList<WeatherData> getClimateCityList() {
+        return new ArrayList(CLIMATE_DATA_LIST.values());
     }
 
     public static WeatherData getClimateData(String etLoc) {
         return CLIMATE_DATA_LIST.get(etLoc).cloneData();
     }
 
-    public static ArrayList<String> getRainfallCityList() {
-        return new ArrayList(RAINFALL_DATA_LIST.keySet());
+    public static ArrayList<WeatherData> getRainfallCityList() {
+        return new ArrayList(RAINFALL_DATA_LIST.values());
     }
 
     public static WeatherData getRainfallData(String rainLoc) {
@@ -446,7 +450,7 @@ public class DataUtil {
     }
 
     private static LinkedHashMap<String, WeatherData> readWeatherData(String fileName) {
-        HashMap<String, String> geoList = new HashMap();
+        HashMap<String, String[]> geoList = new HashMap();
         String geoFileName;
         if (fileName.equals("RAINLIST.txt")) {
             geoFileName = "LongLatRAIN.txt";
@@ -462,12 +466,12 @@ public class DataUtil {
 //                double longCity = Double.parseDouble(Long);
 //                String Lat = line.split(",")[2];
 //                double latCity = Double.parseDouble(Lat);
-                String file = line.split(",")[3];
+//                String file = line.split(",")[3];
 //                double distance = distance(latitude, latCity, longitude, longCity, 0.0, 0.0);
                 if (geoList.containsKey(city)) {
                     LOG.warn("Repeated definition for city [{}] in {}", city, geoFileName);
                 } else {
-                    geoList.put(city, file);
+                    geoList.put(city, line.split(","));
                 }
             }
             br.close();
@@ -486,8 +490,11 @@ public class DataUtil {
                 }
                 if (!geoList.containsKey(city)) {
                     LOG.warn("Missing definition for city [{}] in {}", city, geoFileName);
-                } else if (!geoList.get(city).equals(file)) {
+                } else if (!geoList.get(city)[3].equals(file)) {
                     LOG.warn("Mismatch definition for city [{}] between {} and {}", city, geoFileName, fileName);
+                } else {
+                    ret.get(city).setLongi(geoList.get(city)[1]);
+                    ret.get(city).setLat(geoList.get(city)[2]);
                 }
             }
             br.close();
