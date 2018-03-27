@@ -9,7 +9,6 @@ import static org.afsirs.web.util.DBUtil.getConnection;
 import org.afsirs.web.util.MongoDBHandler;
 import org.bson.Document;
 import org.mindrot.jbcrypt.BCrypt;
-import spark.Request;
 
 public class UserDAO {
 
