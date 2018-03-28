@@ -1,1 +1,1 @@
-web:    java -jar target/afsirs-online.jar
+web:    java -Xmx512m -jar target/afsirs-online.jar
