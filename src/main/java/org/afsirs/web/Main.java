@@ -47,7 +47,7 @@ public class Main {
         try {
         port(port);
         staticFiles.location("/public");
-        staticFiles.expireTime(6000L);
+        staticFiles.expireTime(600L);
 
         // Set up before-filters (called before each get/post)
 //        before("*",                  Filters.addTrailingSlashes);
