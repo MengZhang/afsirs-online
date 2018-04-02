@@ -66,8 +66,8 @@ public class WaterUsePermit {
     private String total_area;
     private String mapSoilJsonFile;
     private String water_hold_capacity;
-//    private String latitude;
-//    private String longitude;
+    private String latitude;
+    private String longitude;
     private String plantedArea;
     private String totalArea;
 
@@ -213,7 +213,11 @@ public class WaterUsePermit {
             String jsonStr = ret.getSoil_json();
             ret.setSoils(DataUtil.toSoils(jsonStr));
             ret.setPolygon_info(request.queryParams("polygon_info"));
-            ret.setPolygon_loc_info(request.queryParams("polygon_loc_info"));
+            String locInfo = request.queryParams("polygon_loc_info");
+            ret.setPolygon_loc_info(locInfo);
+            JSONObject data = JsonUtil.parseFrom(locInfo);
+            ret.setLatitude(data.getOrBlank("lat"));
+            ret.setLongitude(data.getOrBlank("long"));
 //            JSONObject data = JsonUtil.parseFrom(jsonStr);
 //            List<Map> asfirs = (List) data.get("asfirs");
 //            if (asfirs == null) {
@@ -340,7 +344,12 @@ public class WaterUsePermit {
         }
         JSONArray polygonLocInfo = (JSONArray) data.getOrDefault("afsirs", data.getOrDefault("asfirs", new JSONArray()));
         if (!polygonLocInfo.isEmpty()) {
-            ret.setPolygon_loc_info(((org.json.simple.JSONObject) polygonLocInfo.get(0)).toJSONString());
+            org.json.simple.JSONObject locInfo = ((org.json.simple.JSONObject) polygonLocInfo.get(0));
+            ret.setPolygon_loc_info(locInfo.toJSONString());
+            if (locInfo.containsKey("lat") && locInfo.containsKey("long")) {
+                ret.setLatitude(locInfo.getOrDefault("lat", "").toString());
+                ret.setLongitude(locInfo.getOrDefault("long", "").toString());
+            }
         }
         ArrayList<Soil> soils = DataUtil.toSoils(data, ret.getWater_hold_capacity());
         ret.setSoils(soils);

@@ -46,6 +46,7 @@ public class Path {
             private static final String PACKAGE = Simulation.class.getSimpleName().toLowerCase();
             public static final String AFSIRS = PACKAGE + "/afsirs.ftl";
             public static final String AFSIRS_RESULT = PACKAGE + "/afsirs_result.ftl";
+            public static final String AFSIRS_RESULT_ASYN = PACKAGE + "/afsirs_result_asyn.ftl";
         }
         
         public static class WaterUse {
