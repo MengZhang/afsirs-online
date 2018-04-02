@@ -60,8 +60,8 @@ public class SimulationPageController {
             if (permit == null) {
                 attributes.put("operation_result", "Failed");
             } else {
-                
                 attributes.put("afsirs_input", setDeviation(permit.toAFSIRSInputData(userId), permit));
+                attributes.put("user_id", userId);
             }
             return getAfsirsResultPage(request, attributes);
         }
