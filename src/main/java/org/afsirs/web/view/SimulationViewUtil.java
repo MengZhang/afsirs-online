@@ -39,6 +39,10 @@ public class SimulationViewUtil {
         setSimulationCommonParam(request, attributes);
         return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.Simulation.AFSIRS));
     }
+    
+    public static String getAfsirsResultPageAsyn(Request request, Map<String, Object> attributes) {
+        return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.Simulation.AFSIRS_RESULT_ASYN));
+    }
 
     public static String getAfsirsResultPage(Request request, Map<String, Object> attributes) {
         setCommonParam(request, attributes);
