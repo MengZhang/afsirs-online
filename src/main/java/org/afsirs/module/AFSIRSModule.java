@@ -860,7 +860,7 @@ public class AFSIRSModule {
                         }
                     }
                     if (!flag) {
-                        DRZI[JD] = DU[NL];
+                        DRZI[JD] = DU[NL - 1];
                     }
 
                     //Calculate irrigated zone available firstSoil water for each day from root zone expansion
@@ -923,7 +923,7 @@ public class AFSIRSModule {
                         }
                     }
                     if (!flag) {
-                        DRZ[JD] = DU[NL];
+                        DRZ[JD] = DU[NL - 1];
                         if (DRZ[JD] < 2.0 * DRZI[JD]) {
                             DRZ[JD] = 2.0 * DRZI[JD];
                         }

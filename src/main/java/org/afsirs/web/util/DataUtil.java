@@ -614,6 +614,10 @@ public class DataUtil {
                 nl++;
             }
 
+            // skip soil type without layers
+            if (nl < 1) {
+                continue;
+            }
             Soil soil = new Soil(soilName, soilSeriesKey, compKey, soilSeriesName, soilSymbolNum, nl);
             soil.setValues(wc, wcl, wcu, du, txt);
 
