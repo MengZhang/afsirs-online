@@ -215,9 +215,10 @@ public class SummaryReportExcelFormat {
          } catch (Exception e) {
          System.out.println("Some values were null");
          }*/
-        DecimalFormat df = new DecimalFormat("0.000");
-        df.setRoundingMode(RoundingMode.CEILING);
-        cell.setCellValue(Double.parseDouble(df.format(d)));
+//        DecimalFormat df = new DecimalFormat("0.000");
+//        df.setRoundingMode(RoundingMode.HALF_UP);
+//        cell.setCellValue(Double.parseDouble(df.format(d)));
+        cell.setCellValue(d);
 
         if (styleType > 0) {
             XSSFCellStyle style = getCellStyle(styleType);
