@@ -17,6 +17,7 @@
             document.getElementById("irr_depth_type").options[2].disabled = true;
             document.getElementById("irr_depth_type").options[3].disabled = false;
             document.getElementById("irr_depth_type").selectedIndex = 3;
+            changeIrrDepDefinition(false);
         } else {
             document.getElementById("irr_depth_type").options[0].disabled = false;
             document.getElementById("irr_depth_type").options[1].disabled = false;
@@ -25,6 +26,7 @@
             if (document.getElementById("irr_depth_type").selectedIndex === 3) {
                 document.getElementById("irr_depth_type").selectedIndex = 0;
             }
+            changeIrrDepDefinition(false);
         }
         if (document.getElementById("irr_option_net").checked) {
             document.getElementById("irr_efficiency").value = "1.0";
@@ -52,8 +54,8 @@
                 irrDepInput.disabled = false;
             } else {
                 var str = "inches, Depth of water to apply per irrigation (>= 0.1)";
-                setStatus(irrDep, false, 300, 0.1, 0.1, 30, str);
-                setStatus(irrDepInput, false, 300, 0.1, 10, 30, str);
+                setStatus(irrDep, false, getIrrDepMax(), 0.1, 0.1, getIrrDepMax()/10, str);
+                setStatus(irrDepInput, false, getIrrDepMax(), 0.1, 10, getIrrDepMax()/10, str);
                 document.getElementById("irr_depth_unit").innerHTML = "(inches)";
             }
         } else if (irrDepType.value === "2") {
@@ -71,6 +73,15 @@
             setStatus(irrDep, true, 100, 50, 0.1, "", str);
             setStatus(irrDepInput, true, 100, 50, 5, "", str);
             document.getElementById("irr_depth_unit").innerHTML = "";
+        }
+    }
+    
+    function getIrrDepMax() {
+        var irrType = document.getElementById("irr_type");
+        if (irrType.value === "2") {
+            return 10;
+        } else {
+            return 300;
         }
     }
 
@@ -128,10 +139,10 @@
             <#if permit['irr_depth_type']??>
             <#if permit['irr_depth_type']?number == 1>
             <div class="col-sm-4">
-                <input type="range" id="irr_depth" name="irr_depth" step="0.1" max="300" min="0.1" class="form-control" value="${permit['irr_depth']!}" placeholder="inches, Depth of water to apply per irrigation (>= 0.1)" data-toggle="tooltip" title="inches, Depth of water to apply per irrigation (>= 0.1)" onchange="showValue('irr_depth')" disabled>
+                <input type="range" id="irr_depth" name="irr_depth" step="0.1" max="getIrrDepMax()" min="0.1" class="form-control" value="${permit['irr_depth']!}" placeholder="inches, Depth of water to apply per irrigation (>= 0.1)" data-toggle="tooltip" title="inches, Depth of water to apply per irrigation (>= 0.1)" onchange="showValue('irr_depth')" disabled>
             </div>
             <div class="col-sm-2">
-                <input type="number" id="irr_depth_input" name="irr_depth_input" step="10" max="300" min="0.1" class="form-control" value="${permit['irr_depth']!}" placeholder="inches, Depth of water to apply per irrigation (>= 0.1)" data-toggle="tooltip" title="inches, Depth of water to apply per irrigation (>= 0.1)" onchange="showRange('irr_depth')" disabled>
+                <input type="number" id="irr_depth_input" name="irr_depth_input" step="10" max="getIrrDepMax()" min="0.1" class="form-control" value="${permit['irr_depth']!}" placeholder="inches, Depth of water to apply per irrigation (>= 0.1)" data-toggle="tooltip" title="inches, Depth of water to apply per irrigation (>= 0.1)" onchange="showRange('irr_depth')" disabled>
             </div>
             <label id="irr_depth_unit" class="control-label col-sm-1" for="irr_depth">(inches)</label>
             <#elseif permit['irr_depth_type']?number == 2>
