@@ -30,7 +30,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
  */
 public class Util {
 
-    public static final String SOIL_MAP_BASE_URL = "/SoilMap/";
+    public static final String SOIL_MAP_BASE_URL = "http://afsirs-online-test.herokuapp.com/SoilMap/";
 
     public static String calculateNearestStation(String type, File jsonFile) throws IOException {
 //        String station;
