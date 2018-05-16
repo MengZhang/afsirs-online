@@ -1466,10 +1466,16 @@ require([
 function checkAll(source) {
     //console.log("Inside checkall");
     var checkboxes = document.getElementsByName('link');
+    var checked = source.innerHTML === "Select All";
     //console.log(checkboxes);
     for (var i = 0; i < checkboxes.length; i++){
-        checkboxes[i].checked = source.checked;
+        checkboxes[i].checked = checked;
         checkAllSub(checkboxes[i]);
+    }
+    if (checked) {
+        source.innerHTML = "Unselect All";
+    } else {
+        source.innerHTML = "Select All";
     }
 }
 
