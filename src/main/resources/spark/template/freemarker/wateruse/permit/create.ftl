@@ -63,13 +63,13 @@
                 openTab('SiteInfo');
                 hideComp("cropNameSB");
                 if (document.getElementById("crop_type_annual").checked) {
-                    switchCropType('annual');
+                    switchCropType('annual', true);
                     setDateRange();
                 } else if (document.getElementById("crop_type_perennial").checked) {
-                    switchCropType('perennial');
+                    switchCropType('perennial', true);
                 } else {
                     document.getElementById("crop_type_perennial").checked = true;
-                    switchCropType('perennial');
+                    switchCropType('perennial', true);
                 }
                 hideComp("soilTypeSB");
                 if (document.getElementById("soil_source_db").checked) {

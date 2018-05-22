@@ -1,5 +1,5 @@
 <script>
-    function switchCropType(cropType) {
+    function switchCropType(cropType, initFlg) {
         hideComp("cropNameSB");
         if (cropType === "annual") {
             document.getElementById("cropNameAnnualSB").style.display = "block";
@@ -16,7 +16,9 @@
             document.getElementById("endDaySB").disabled = true;
             changeIrrSysListByCrop("crop_name_perennial");
         }
-        document.getElementById("coefficent_type_default").checked = true;
+        if (!initFlg) {
+            document.getElementById("coefficent_type_default").checked = true;
+        }
         switchCropData();
     }
 
