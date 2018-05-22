@@ -53,7 +53,7 @@
             <label class="control-label col-sm-3" for="crop_type">Crop Data:</label>
             <div class="row col-sm-6">
                 <div class="col-sm-4">
-                    <label><input type="radio" name="coefficent_type" id="coefficent_type_default" class="form-control" value="default" onclick="switchCropData()" <#if !(permit['coefficent_type']??) || permit['coefficent_type'] == "default">checked</#if>>Default</label>
+                    <label><input type="radio" name="coefficent_type" id="coefficent_type_default" class="form-control" value="default" onclick="switchCropData()" <#if !(permit['coefficent_type']??) ||  permit['coefficent_type'] == "default">checked</#if>>Default</label>
                 </div>
                 <div class="col-sm-4">
                     <label><input type="radio" name="coefficent_type" id="coefficent_type_mannual" class="form-control" value="mannual" onclick="switchCropData()" <#if permit['coefficent_type']?? && permit['coefficent_type'] == "mannual">checked</#if>>Mannual Input</label>
