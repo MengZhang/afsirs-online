@@ -82,4 +82,10 @@ public class JSONObject extends org.json.simple.JSONObject {
             return new ArrayList();
         }
     }
+    
+    @Override
+    public JSONObject put(Object key, Object value) {
+        super.put(key, value);
+        return this;
+    }
 }

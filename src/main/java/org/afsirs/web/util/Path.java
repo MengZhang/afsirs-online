@@ -13,6 +13,7 @@ public class Path {
         @Getter public static final String LOGIN = "/login";
         @Getter public static final String LOGOUT = "/logout";
         @Getter public static final String UPLOAD = "/upload";
+        @Getter public static final String Worker = "/worker";
         
         public static class Simulation {
             private static final String PACKAGE = "/" + Simulation.class.getSimpleName().toLowerCase();
@@ -33,6 +34,12 @@ public class Path {
             private static final String PACKAGE = "/" + DataTools.class.getSimpleName().toLowerCase();
             @Getter public static final String SOILMAP = PACKAGE + "/soilmap";
         }
+        
+//        public static class Worker {
+//            private static final String PACKAGE = "/" + Worker.class.getSimpleName().toLowerCase();;
+//            @Getter public static final String LOGIN = PACKAGE + "/login";
+//            @Getter public static final String LOGOUT = PACKAGE + "/logout";
+//        }
     }
     
     public static class Template {

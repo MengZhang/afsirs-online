@@ -10,15 +10,18 @@ import org.afsirs.web.controller.DataToolsPageController;
 import org.afsirs.web.controller.PageController;
 import org.afsirs.web.controller.SimulationPageController;
 import org.afsirs.web.controller.WaterUsePageController;
+import org.afsirs.web.controller.WorkerController;
 import org.afsirs.web.util.DataUtil;
 import org.afsirs.web.util.Filters;
 import org.afsirs.web.util.Path;
 import org.slf4j.LoggerFactory;
+import spark.Spark;
 import static spark.Spark.after;
 import static spark.Spark.get;
 import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.staticFiles;
+import static spark.Spark.webSocket;
 import spark.template.freemarker.FreeMarkerEngine;
 
 /**
@@ -48,6 +51,8 @@ public class Main {
         port(port);
         staticFiles.location("/public");
         staticFiles.expireTime(600L);
+        webSocket(Path.Web.Worker, WorkerController.class);
+        Spark.webSocketIdleTimeoutMillis(60000);
 
         // Set up before-filters (called before each get/post)
 //        before("*",                  Filters.addTrailingSlashes);
@@ -74,7 +79,7 @@ public class Main {
         
         get(Path.Web.DataTools.SOILMAP,             DataToolsPageController.serveSoilMapPage);
         
-        get("*",                     PageController.serveNotFoundPage, new FreeMarkerEngine());
+//        get("*",                     PageController.serveNotFoundPage, new FreeMarkerEngine());
 
         //Set up after-filters (called after each get/post)
         after("*",                   Filters.addGzipHeader);
