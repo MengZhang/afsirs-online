@@ -1,7 +1,7 @@
 package org.afsirs.web.dao.bean;
 
 import java.util.HashMap;
-import org.afsirs.web.util.JSONObject;
+import org.afsirs.module.util.JSONObject;
 import org.eclipse.jetty.websocket.api.Session;
 
 /**

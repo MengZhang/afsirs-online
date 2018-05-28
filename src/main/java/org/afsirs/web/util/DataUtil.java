@@ -23,6 +23,8 @@ import lombok.Data;
 import org.afsirs.module.Irrigation;
 import org.afsirs.module.Soil;
 import org.afsirs.module.Weather;
+import org.afsirs.module.util.JSONObject;
+import org.afsirs.module.util.JsonUtil;
 import org.afsirs.module.util.Util;
 import static org.afsirs.module.util.Util.round;
 import static org.afsirs.web.Main.LOG;
@@ -571,9 +573,9 @@ public class DataUtil {
 
     public static ArrayList<Soil> toSoils(JSONObject data, String WHC) {
         ArrayList<Soil> ret = new ArrayList();
-        ArrayList<org.json.simple.JSONObject> soilArr = (ArrayList) data.getOrDefault("soils", new ArrayList());
+        ArrayList<JSONObject> soilArr = data.getObjArr("soils");
         String soilVersion = data.getOrBlank("version");
-        for (org.json.simple.JSONObject soilJS : soilArr) {
+        for (JSONObject soilJS : soilArr) {
             JSONObject soilJ = new JSONObject(soilJS);
             String soilSeriesName = soilJ.getOrBlank("mukeyName");
             String soilSeriesKey = soilJ.getOrBlank("mukey");
@@ -585,7 +587,7 @@ public class DataUtil {
             String soilTypeArea = soilJ.getOrBlank("compArea");
             String soilTypePct = soilJ.getOrBlank("comppct_r");
 
-            ArrayList<org.json.simple.JSONObject> soilLayersNodes = (ArrayList) soilJ.getOrDefault("soilLayer", new ArrayList());
+            ArrayList<JSONObject> soilLayersNodes = soilJ.getObjArr("soilLayer");
 
             int nl = 0;
             double[] wc = new double[soilLayersNodes.size()];
@@ -594,7 +596,7 @@ public class DataUtil {
             double[] du = new double[soilLayersNodes.size()];
             String[] txt = new String[3];
 
-            for (org.json.simple.JSONObject nodeJS : soilLayersNodes) {
+            for (JSONObject nodeJS : soilLayersNodes) {
                 //System.out.println ("NL we are looking for: " + NL);
                 JSONObject node = new JSONObject(nodeJS);
                 wcu[nl] = node.getAsDouble("sldul");

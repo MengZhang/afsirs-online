@@ -1,6 +1,7 @@
 package org.afsirs.web.util;
 
 import java.io.IOException;
+import org.afsirs.module.util.JSONObject;
 import static org.afsirs.web.Main.LOG;
 import org.afsirs.web.dao.bean.WebSocketMsg;
 import org.afsirs.web.dao.bean.WebSocketMsg.WSAction;

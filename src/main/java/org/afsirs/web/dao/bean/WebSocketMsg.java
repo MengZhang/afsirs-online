@@ -2,8 +2,8 @@ package org.afsirs.web.dao.bean;
 
 import lombok.Data;
 import lombok.Getter;
-import org.afsirs.web.util.JSONObject;
-import org.afsirs.web.util.JsonUtil;
+import org.afsirs.module.util.JSONObject;
+import org.afsirs.module.util.JsonUtil;
 
 /**
  *
