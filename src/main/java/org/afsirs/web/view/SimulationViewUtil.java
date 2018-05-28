@@ -11,7 +11,6 @@ import org.afsirs.module.AFSIRSModule;
 import org.afsirs.module.AFSIRSOutput;
 import org.afsirs.module.SimResult;
 import org.afsirs.module.SoilSeriesSummaryReport;
-import org.afsirs.module.SoilSpecificPeriodData;
 import org.afsirs.module.UserInput;
 import org.afsirs.web.util.Path;
 import static org.afsirs.web.view.ViewUtil.setCommonParam;
@@ -49,7 +48,9 @@ public class SimulationViewUtil {
         setSimulationCommonParam(request, attributes);
 //        File out = Path.Folder.getUserWaterUsePermitOutputDir(ViewUtil.getUserID(request));
         UserInput input = (UserInput) attributes.get("afsirs_input");
-        SimResult simRet = AFSIRSModule.run(input);
+        SimResult simRetOrg = AFSIRSModule.run(input);
+        String json = simRetOrg.toJson();
+        SimResult simRet = SimResult.fromJson(json);
         AFSIRSOutput.run(simRet, input);
 
         LinkedHashMap<String, double[]> irrReqData = new LinkedHashMap();
@@ -71,7 +72,6 @@ public class SimulationViewUtil {
         wgtAvgDataArr.put(twoIn10Key, new ArrayList());
 //        double areaSum = simRet.getTotalArea();
 
-        ArrayList<SoilSpecificPeriodData> PDATA = AFSIRSModule.getGraphData(simRet, 0);
         ArrayList<SoilSeriesSummaryReport> summaryList = simRet.getSummaryList();
         for (SoilSeriesSummaryReport report : summaryList) {
             String soilName = report.getSoilName();
@@ -80,7 +80,7 @@ public class SimulationViewUtil {
             oneIn10Data.put(soilName, new double[12]);
         }
 
-        for (int i = 0; i < PDATA.get(0).getSoilDataPoints().length; i++) {
+        for (int i = 0; i < simRet.getTotalMonth(); i++) {
 
             for (SoilSeriesSummaryReport report : summaryList) {
                 String soilName = report.getSoilName();
