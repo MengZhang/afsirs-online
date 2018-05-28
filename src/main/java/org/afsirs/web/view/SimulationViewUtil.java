@@ -8,10 +8,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.servlet.ServletOutputStream;
 import org.afsirs.module.AFSIRSModule;
+import org.afsirs.module.AFSIRSOutput;
 import org.afsirs.module.SimResult;
 import org.afsirs.module.SoilSeriesSummaryReport;
 import org.afsirs.module.SoilSpecificPeriodData;
-import org.afsirs.module.SummaryReport;
 import org.afsirs.module.UserInput;
 import org.afsirs.web.util.Path;
 import static org.afsirs.web.view.ViewUtil.setCommonParam;
@@ -47,9 +47,10 @@ public class SimulationViewUtil {
     public static String getAfsirsResultPage(Request request, Map<String, Object> attributes) {
         setCommonParam(request, attributes);
         setSimulationCommonParam(request, attributes);
-        File out = Path.Folder.getUserWaterUsePermitOutputDir(ViewUtil.getUserID(request));
+//        File out = Path.Folder.getUserWaterUsePermitOutputDir(ViewUtil.getUserID(request));
         UserInput input = (UserInput) attributes.get("afsirs_input");
-        SimResult simRet = AFSIRSModule.run(input, out);
+        SimResult simRet = AFSIRSModule.run(input);
+        AFSIRSOutput.run(simRet, input);
 
         LinkedHashMap<String, double[]> irrReqData = new LinkedHashMap();
         LinkedHashMap<String, double[]> twoIn10Data = new LinkedHashMap();

@@ -57,7 +57,7 @@
         <dependency>
             <groupId>org.afsirs</groupId>
             <artifactId>AFSIRS-Module</artifactId>
-            <version>6.3.2-SNAPSHOT</version>
+            <version>6.3.2.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
