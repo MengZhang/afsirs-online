@@ -24,7 +24,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
  * @author Meng Zhang
  */
 @WebSocket
-public class WorkerController {
+public class WorkerWSController {
 
     @OnWebSocketConnect
     public void onConnect(Session user) throws Exception {
