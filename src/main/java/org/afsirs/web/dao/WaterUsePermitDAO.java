@@ -42,10 +42,10 @@ public class WaterUsePermitDAO {
         ArrayList<WaterUsePermit> ret = new ArrayList<>();
         ArrayList<Document> dbRetArr;
         if (UserDAO.isAdmin(userId)) {
-            dbRetArr = MongoDBHandler.list(getConnection(AFSIRSCollection.WaterUserPermit));
+            dbRetArr = MongoDBHandler.list(getConnection(AFSIRSCollection.WaterUsePermit));
         } else {
             dbRetArr = MongoDBHandler.search(
-                getConnection(AFSIRSCollection.WaterUserPermit),
+                getConnection(AFSIRSCollection.WaterUsePermit),
                 new Document("user_id", userId));
         }
         
@@ -60,7 +60,7 @@ public class WaterUsePermitDAO {
         if (id == null || id.isEmpty()) {
             return null;
         }
-        Document dbRet = MongoDBHandler.find(getConnection(AFSIRSCollection.WaterUserPermit),
+        Document dbRet = MongoDBHandler.find(getConnection(AFSIRSCollection.WaterUsePermit),
                 MongoDBHandler.getFindCritia(
                         new String[]{"permit_id", "user_id"},
                         new String[]{id, userId}));
@@ -81,7 +81,7 @@ public class WaterUsePermitDAO {
             try {
                 Document data = Document.parse(json);
                 data.put("user_id", currentUser);
-                boolean ret = MongoDBHandler.add(getConnection(AFSIRSCollection.WaterUserPermit), data);
+                boolean ret = MongoDBHandler.add(getConnection(AFSIRSCollection.WaterUsePermit), data);
                 if (ret) {
                     permitIds.add(pk);
                 }
@@ -101,7 +101,7 @@ public class WaterUsePermitDAO {
             try {
                 Document data = Document.parse(json);
                 data.put("user_id", currentUser);
-                return MongoDBHandler.replace(getConnection(AFSIRSCollection.WaterUserPermit),
+                return MongoDBHandler.replace(getConnection(AFSIRSCollection.WaterUsePermit),
                         MongoDBHandler.getFindCritia(
                                 new String[]{"permit_id", "user_id"},
                                 new String[]{permit.getPermit_id(), currentUser}),
