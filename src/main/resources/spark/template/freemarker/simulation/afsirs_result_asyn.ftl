@@ -144,7 +144,7 @@
                 var progressBar = document.getElementById("progressBar");
                 progressBar.innerHTML = pct;
                 progressBar.style.width = pct;
-                if (progressVal >= 1 || progressVal < 0) {
+                if (progressVal >= 100 || progressVal < 0) {
                     progressBar.classList.add("progress-bar-success");
                     $("#progressDiv").fadeOut("slow","linear");
                 } else if (progressVal === 0) {
@@ -177,12 +177,13 @@
                         <button type="button" class="tablinks" id="AllTab">All</button>
                     </div>
                     <br><br>
-                    <div id="errorMsgDiv" class="row col-sm-10 col-sm-push-1 hidden">
+                    <div id="errorMsgDiv" class="row text-left col-sm-11 col-sm-push-1 hidden">
                         <label id="errorMsg"></label>
                     </div>
-                    <div id="progressDiv" class="row col-sm-8 col-sm-push-2 progress">
+                    <div id="progressDiv" class="row col-sm-9 col-sm-push-1 progress">
                         <div id="progressBar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%</div>
                     </div>
+                    <img id="loadingImg" src="/SoilMap/images/loading.gif" alt="loading" style="position:relative; right:30%; top:50%;"/>
                 </div>
             </fieldset>
         </div>
