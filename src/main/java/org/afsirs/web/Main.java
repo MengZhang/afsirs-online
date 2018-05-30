@@ -10,7 +10,7 @@ import org.afsirs.web.controller.DataToolsPageController;
 import org.afsirs.web.controller.PageController;
 import org.afsirs.web.controller.SimulationPageController;
 import org.afsirs.web.controller.WaterUsePageController;
-import org.afsirs.web.controller.WorkerController;
+import org.afsirs.web.controller.WorkerWSController;
 import org.afsirs.web.util.DataUtil;
 import org.afsirs.web.util.Filters;
 import org.afsirs.web.util.Path;
@@ -51,7 +51,6 @@ public class Main {
         port(port);
         staticFiles.location("/public");
         staticFiles.expireTime(600L);
-        webSocket(Path.Web.Worker, WorkerController.class);
         Spark.webSocketIdleTimeoutMillis(60000);
 
         // Set up before-filters (called before each get/post)
@@ -59,6 +58,7 @@ public class Main {
 //        before("*",                  Filters.handleLocaleChange);
 
         // Set up routes
+        webSocket(Path.Web.Worker, WorkerWSController.class);
         get(Path.Web.INDEX,          PageController.serveIndexPage);
         get("/",                     PageController.serveIndexPage);
         get(Path.Web.REGISTER,       PageController.serveRegisterPage);
