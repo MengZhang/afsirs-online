@@ -19,6 +19,8 @@ public class Path {
             private static final String PACKAGE = "/" + Simulation.class.getSimpleName().toLowerCase();
             @Getter public static final String AFSIRS = PACKAGE + "/afsirs";
             @Getter public static final String AFSIRS_RESULT = PACKAGE + "/afsirs_result";
+            @Getter public static final String AFSIRS_LOAD = PACKAGE + "/afsirs_load";
+            @Getter public static final String AFSIRS_WAIT = PACKAGE + "/afsirs_wait";
         }
         
         public static class WaterUse {
@@ -89,6 +91,10 @@ public class Path {
                 ret.mkdirs();
             }
             return ret;
+        }
+        public static File getUserWaterUsePermitOutputJsonFile(String userId, String permitId) {
+            return Paths.get(getUserWaterUsePermitOutputDir(userId).getPath(),
+                    permitId + ".json").toFile();
         }
         public static File getDataFile(String fileName) {
             return Paths.get(DATA, fileName).toFile();

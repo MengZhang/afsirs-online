@@ -14,23 +14,11 @@ import org.eclipse.jetty.websocket.api.Session;
  */
 public class WebSocketUtil {
     
-//    public static void sendMsg(Session receiver, String message) {
-//        try {
-//            receiver.getRemote().sendString(message);
-//        } catch (IOException ex) {
-//            ex.printStackTrace(System.err);
-//        }
-//    }
+    public static boolean sendMsg(Session receiver, WSAction action, WSStatus status) {
+        return sendMsg(receiver, action, status, "");
+    }
     
     public static boolean sendMsg(Session receiver, WSAction action, WSStatus status, String message) {
-        return sendMsg(receiver, action, status.getStatusCode(), message);
-    }
-    
-    public static boolean sendMsg(Session receiver, WSAction action, WSStatus status) {
-        return sendMsg(receiver, action, status.getStatusCode(), "");
-    }
-    
-    private static boolean sendMsg(Session receiver, WSAction action, int status, String message) {
         WebSocketMsg msg = new WebSocketMsg(action, status);
         if (message != null && !message.isEmpty()) {
             msg.setMessage(message);
@@ -39,10 +27,6 @@ public class WebSocketUtil {
     }
     
     public static boolean sendMsg(Session receiver, WSAction action, WSStatus status, JSONObject messages) {
-        return sendMsg(receiver, action, status.getStatusCode(), messages);
-    }
-    
-    private static boolean sendMsg(Session receiver, WSAction action, int status, JSONObject messages) {
         WebSocketMsg msg = new WebSocketMsg(action, status);
         if (messages != null) {
             msg.getMsg().putAll(messages);

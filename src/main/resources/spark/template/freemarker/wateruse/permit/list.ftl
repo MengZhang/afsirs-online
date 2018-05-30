@@ -58,9 +58,9 @@
                         <td>${permit["crop_name"]!}</td>
                         <td>${permit["et_loc"]!} / ${permit["rain_loc"]!}</td>
                         <#if currentUserRank?? && currentUserRank == "admin" >
-                        <td><a href='/simulation/afsirs?permit_id=${permit["permit_id"]!}&user_id=${permit["user_id"]!}' class="btn btn-default">Run AFSIRS</a></td>
+                        <td><a href='/simulation/afsirs_load?permit_id=${permit["permit_id"]!}&user_id=${permit["user_id"]!}' class="btn btn-default">Run AFSIRS</a></td>
                         <#else>
-                        <td><a href='/simulation/afsirs?permit_id=${permit["permit_id"]!}' class="btn btn-default">Run AFSIRS</a></td>
+                        <td><a href='/simulation/afsirs_load?permit_id=${permit["permit_id"]!}' class="btn btn-default">Run AFSIRS</a></td>
                         </#if>
                     </tr>
                     <#else>

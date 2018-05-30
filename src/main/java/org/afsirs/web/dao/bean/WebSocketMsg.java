@@ -17,6 +17,7 @@ public class WebSocketMsg {
         Login,
         Logout,
         Renew,
+        Simulation,
         UnknownAct
     }
 
@@ -25,6 +26,7 @@ public class WebSocketMsg {
         Success(200),
         Login_Failed(601),
         Renew_Failed(602),
+        Error(900),
         UnknownRet(0);
 
         private final int code;
@@ -38,12 +40,12 @@ public class WebSocketMsg {
         }
     }
 
-    @Getter JSONObject msg;
-    @Getter boolean response;
-    @Getter int status;
-    @Getter WSAction action;
-    @Getter String hash;
-    @Getter String message;
+    @Getter private JSONObject msg;
+    @Getter private boolean response;
+    @Getter private int status;
+    @Getter private WSAction action;
+    @Getter private String hash;
+    @Getter private String message;
 
     private static final String ACTION = "action";
     private static final String STATUS = "status";
@@ -60,12 +62,12 @@ public class WebSocketMsg {
         init();
     }
 
-    public WebSocketMsg(WSAction action, int status) {
+    public WebSocketMsg(WSAction action, WSStatus status) {
         this.action = action;
-        this.status = status;
+        this.status = status.getStatusCode();
         this.msg = new JSONObject()
                 .put(ACTION, action.toString())
-                .put(STATUS, String.valueOf(status));
+                .put(STATUS, status.getStatusCode());
     }
 
     private void init() {

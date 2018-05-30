@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import org.afsirs.web.controller.DataToolsPageController;
 import org.afsirs.web.controller.PageController;
 import org.afsirs.web.controller.SimulationPageController;
+import org.afsirs.web.controller.SimulationWSController;
 import org.afsirs.web.controller.WaterUsePageController;
 import org.afsirs.web.controller.WorkerWSController;
 import org.afsirs.web.util.DataUtil;
@@ -59,6 +60,8 @@ public class Main {
 
         // Set up routes
         webSocket(Path.Web.Worker, WorkerWSController.class);
+        webSocket(Path.Web.Simulation.AFSIRS_WAIT, SimulationWSController.class);
+        
         get(Path.Web.INDEX,          PageController.serveIndexPage);
         get("/",                     PageController.serveIndexPage);
         get(Path.Web.REGISTER,       PageController.serveRegisterPage);
@@ -69,7 +72,8 @@ public class Main {
         post(Path.Web.LOGOUT,        PageController.handleLogoutRequest);
         
         get(Path.Web.Simulation.AFSIRS,             SimulationPageController.serveAfsirsPage);
-        post(Path.Web.Simulation.AFSIRS,          SimulationPageController.handleAfsirsPost);
+//        post(Path.Web.Simulation.AFSIRS,          SimulationPageController.handleAfsirsPost);
+        get(Path.Web.Simulation.AFSIRS_LOAD,             SimulationPageController.serveAfsirsLoadPage);
         get(Path.Web.Simulation.AFSIRS_RESULT,          SimulationPageController.serveDownloadRequest);
         
         get(Path.Web.WaterUse.LIST,             WaterUsePageController.serveListPage);
