@@ -54,53 +54,110 @@
             }
         </style>
         <script>
+            var wsLocal;
+            var alive = true;
+            var wsAddrLocal = "ws://" + location.hostname + ":" + location.port + "/simulation/afsirs_wait";
 
-            function init() {
-                
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
-                  if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("demo").innerHTML =
-                    this.responseText;
-                  }
+            function keepLocalConn() {
+                wsLocal.onmessage = function (msg) {
+                    processLocalMsg(msg);
                 };
-                xhttp.open("GET", "ajax_info.txt", true);
-                xhttp.send();
-                
-                openTab('IrrReq');
-                drawIrrReqChart();
+                wsLocal.onclose = function () {
+                    if (alive) {
+                        wsLocal = new WebSocket(wsAddrLocal);
+                        keepLocalConn();
+                        wsLocal.onopen = sendRenewRequest;
+                    }
+                };
             }
 
-            function openTab(tabName) {
-                var i, tabcontent, tablinks;
-                tabcontent = document.getElementsByClassName("tabcontent");
-                for (i = 0; i < tabcontent.length; i++) {
-                    tabcontent[i].style.display = "none";
-                }
-                tablinks = document.getElementsByClassName("tablinks");
-                for (i = 0; i < tablinks.length; i++) {
-                    tablinks[i].className = tablinks[i].className.replace(" active", "");
-                }
-                document.getElementById(tabName + "Container").style.display = "block";
-                document.getElementById(tabName + "Tab").className += " active";
+            function initConnect() {
+                alive = true;
+                wsLocal = new WebSocket(wsAddrLocal);
+                wsLocal.onopen = sendLoginRequest;
+                keepLocalConn();
             }
 
-            function openAllTab() {
-                tabcontent = document.getElementsByClassName("tabcontent");
-                for (i = 0; i < tabcontent.length; i++) {
-                    tabcontent[i].style.display = "block";
+            //Send a message if it's not empty, then clear the input field
+            function sendMessage(webSocket, message) {
+                if (message !== "") {
+                    webSocket.send(message);
                 }
-                tablinks = document.getElementsByClassName("tablinks");
-                for (i = 0; i < tablinks.length; i++) {
-                    tablinks[i].className = tablinks[i].className.replace(" active", "");
-                }
-                document.getElementById("AllTab").className += " active";
+            }
 
-                drawIrrReqChart();
-                draw2in10Chart();
-                draw1in10Chart();
-                drawWgtAvgChart();
-                drawClimateChart();
+            function sendLoginRequest() {
+                var request = {
+                    action : "Login",
+                    user_id : "${user_id!}",
+                    permit_id : "${permit_id!}"
+                };
+                sendMessage(wsLocal, JSON.stringify(request));
+            }
+
+            function sendRenewRequest() {
+                var request = {
+                    action : "Renew",
+                    user_id : "${user_id!}",
+                    permit_id : "${permit_id!}"
+                };
+                sendMessage(wsLocal, JSON.stringify(request));
+            }
+
+            function sendLogoutRequest() {
+                var request = {
+                    action : "Logout"
+                };
+                sendMessage(wsLocal, JSON.stringify(request));
+            }
+
+            function processLocalMsg(msg) {
+                var data = JSON.parse(msg.data);
+                var status = Number(data.status);
+                if (data.action === "Login" &&  status === 200) {
+                } else if (data.action === "Logout" &&  status === 200) {
+                    wsLocal.close();
+                } else if (data.action === "Renew" &&  status === 200) {
+                } else if (data.action === "Simulation" &&  status === 200) {
+                    showProgress(data.progress_pct);
+                    if (data.progress_pct >= 100) {
+                        sendLogoutRequest();
+                        <#if currentUserRank?? && currentUserRank == "admin" >
+                        window.location = "/simulation/afsirs?permit_id=${permit_id!}&user_id=${user_id!}";
+                        <#else>
+                        window.location = "/simulation/afsirs?permit_id=${permit_id!}";
+                        </#if>
+                    }
+                } else if (status === 601) {
+                    alive = false;
+                    showErrMsg("Server connection lost, please refresh your page.");
+                } else if (status === 602) {
+                    alive = false;
+                    showErrMsg("Server connection lost, please refresh your page.");
+                } else if (status === 900) {
+                    alive = false;
+                    showErrMsg("There is error in your input data and simulation stoped.");
+                }
+            }
+            
+            function showProgress(progressVal){
+                var pct = Number(progressVal) + "%";
+                var progressBar = document.getElementById("progressBar");
+                progressBar.innerHTML = pct;
+                progressBar.style.width = pct;
+                if (progressVal >= 100 || progressVal < 0) {
+                    progressBar.classList.add("progress-bar-success");
+                    $("#progressDiv").fadeOut("slow","linear");
+                } else if (progressVal === 0) {
+                    $("#progressDiv").fadeIn();
+                    progressBar.classList.remove("progress-bar-success");
+                }
+            }
+            
+            function showErrMsg(msg) {
+                var errorMsg = document.getElementById("errorMsg");
+                errorMsg.innerHTML = "<span class='glyphicon glyphicon-remove-sign'></span> " + msg;
+                errorMsg.className = "text-danger";
+                document.getElementById("errorMsgDiv").style.display = "block";
             }
         </script>
     </head>
@@ -112,34 +169,27 @@
                 <legend>AFSIRS Simulation Result</legend>
                 <div class="row">
                     <div class="tab">
-                        <button type="button" class="tablinks active" onclick="openTab('IrrReq');drawIrrReqChart();" id="IrrReqTab">Irrigation Requirement</button>
-                        <button type="button" class="tablinks" onclick="openTab('2in10');draw2in10Chart();" id="2in10Tab">2-in-10</button>
-                        <button type="button" class="tablinks" onclick="openTab('1in10');draw1in10Chart();" id="1in10Tab">1-in-10</button>
-                        <button type="button" class="tablinks" onclick="openTab('WgtAvg');drawWgtAvgChart();" id="WgtAvgTab">Weighted Avg</button>
-                        <button type="button" class="tablinks" onclick="openTab('Climate');drawClimateChart();" id="ClimateTab">Rain and ET</button>
-                        <button type="button" class="tablinks" onclick="openAllTab()" id="AllTab">All</button>
+                        <button type="button" class="tablinks active" id="IrrReqTab">Irrigation Requirement</button>
+                        <button type="button" class="tablinks" id="2in10Tab">2-in-10</button>
+                        <button type="button" class="tablinks" id="1in10Tab">1-in-10</button>
+                        <button type="button" class="tablinks" id="WgtAvgTab">Weighted Avg</button>
+                        <button type="button" class="tablinks" id="ClimateTab">Rain and ET</button>
+                        <button type="button" class="tablinks" id="AllTab">All</button>
                     </div>
                     <br><br>
-                    <div id="progressDiv" class="row col-md-12 progress" style="display:none">
+                    <div id="errorMsgDiv" class="row text-left col-sm-11 col-sm-push-1 hidden">
+                        <label id="errorMsg"></label>
+                    </div>
+                    <div id="progressDiv" class="row col-sm-9 col-sm-push-1 progress">
                         <div id="progressBar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%</div>
                     </div>
-                    <div class="row col-md-12 tabcontent" id="IrrReqContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-                    <div class="row col-md-12 tabcontent" id="2in10Container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-                    <div class="row col-md-12 tabcontent" id="1in10Container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-                    <div class="row col-md-12 tabcontent" id="WgtAvgContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-                    <div class="row col-md-12 tabcontent" id="ClimateContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                    <img id="loadingImg" src="/SoilMap/images/loading.gif" alt="loading" style="position:relative; right:30%; top:50%;"/>
                 </div>
             </fieldset>
         </div>
         <div class="row">
             <#if currentUserRank?? && currentUserRank == "admin" >
             <div class="text-right col-md-6">
-                <div>
-                    <button type="button" class="btn btn-success text-right" onclick="window.open('/simulation/afsirs_result?permit_id=${permit_id!}&user_id=${user_id!}&file_type=pdf')">Summary PDF</button>
-                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=${permit_id!}&user_id=${user_id!}&file_type=excel'">Summary EXCEL</button>
-                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=${permit_id!}&user_id=${user_id!}&file_type=calcExcel'">Calculation EXCEL</button>
-                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=${permit_id!}&user_id=${user_id!}&file_type=text'">Raw Text</button>
-                </div>
             </div>
             <div class="text-right col-md-4">
                 <div>
@@ -149,12 +199,6 @@
             </div>
             <#else>
             <div class="text-right col-md-6">
-                <div>
-                    <button type="button" class="btn btn-success text-right" onclick="window.open('/simulation/afsirs_result?permit_id=${permit_id!}&file_type=pdf')">Summary PDF</button>
-                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=${permit_id!}&file_type=excel'">Summary EXCEL</button>
-                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=${permit_id!}&file_type=calcExcel'">Calculation EXCEL</button>
-                    <button type="button" class="btn btn-success text-right" onclick="window.location.href = '/simulation/afsirs_result?permit_id=${permit_id!}&file_type=text'">Raw Text</button>
-                </div>
             </div>
             <div class="text-right col-md-4">
                 <div>
@@ -168,7 +212,7 @@
 
         <script>
             $(document).ready(function () {
-                init();
+                initConnect();
             });
         </script>
 

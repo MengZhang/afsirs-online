@@ -15,14 +15,14 @@ import org.afsirs.module.AFSIRSModule;
 import org.afsirs.module.Irrigation;
 import org.afsirs.module.Soil;
 import org.afsirs.module.UserInput;
+import org.afsirs.module.util.JSONArray;
+import org.afsirs.module.util.JSONObject;
+import org.afsirs.module.util.JsonUtil;
 import org.afsirs.web.util.DataUtil;
 import org.afsirs.web.util.DataUtil.CropData;
 import org.afsirs.web.util.DataUtil.CropDataAnnual;
 import org.afsirs.web.util.DataUtil.CropDataPerennial;
-import org.afsirs.web.util.JSONObject;
-import org.afsirs.web.util.JsonUtil;
 import org.afsirs.web.util.Path;
-import org.json.simple.JSONArray;
 import spark.Request;
 
 /**
@@ -99,6 +99,14 @@ public class WaterUsePermit {
     private ArrayList<String> aldpArr;
     private String hgt;
 
+    public void setPermit_id(String permit_id) {
+        this.permit_id = permit_id.trim();
+    }
+    
+    public String getPermit_id() {
+        return this.permit_id.trim();
+    }
+    
     public void setDbSoilNames(String[] names) {
         dbSoilNames = new LinkedHashSet<>();
         dbSoilNames.addAll(Arrays.asList(names));
@@ -337,18 +345,21 @@ public class WaterUsePermit {
         ret.setWater_hold_capacity(data.getOrBlank("water_hold_capacity"));
         ret.setTotalArea(data.getOrBlank("total_area"));
         ret.setPlantedArea(data.getOrBlank("planted_area"));
-        ret.setSoil_json(((JSONArray) data.getOrDefault("soils", new JSONArray())).toJSONString());
-        JSONArray polygonInfo = (JSONArray) data.getOrDefault("polygon", new JSONArray());
+        ret.setSoil_json(data.getObjArr("soils").toJSONString());
+        JSONArray polygonInfo = data.getObjArr("polygon");
         if (!polygonInfo.isEmpty()) {
-            ret.setPolygon_info(((org.json.simple.JSONObject) polygonInfo.get(0)).toJSONString());
+            ret.setPolygon_info(polygonInfo.getObj(0).toJSONString());
         }
-        JSONArray polygonLocInfo = (JSONArray) data.getOrDefault("afsirs", data.getOrDefault("asfirs", new JSONArray()));
+        JSONArray polygonLocInfo = data.getObjArr("afsirs");
+        if (polygonLocInfo.isEmpty()) {
+            polygonLocInfo = data.getObjArr("asfirs");
+        }
         if (!polygonLocInfo.isEmpty()) {
-            org.json.simple.JSONObject locInfo = ((org.json.simple.JSONObject) polygonLocInfo.get(0));
+            JSONObject locInfo = polygonLocInfo.getObj(0);
             ret.setPolygon_loc_info(locInfo.toJSONString());
             if (locInfo.containsKey("lat") && locInfo.containsKey("long")) {
-                ret.setLatitude(locInfo.getOrDefault("lat", "").toString());
-                ret.setLongitude(locInfo.getOrDefault("long", "").toString());
+                ret.setLatitude(locInfo.getOrBlank("lat"));
+                ret.setLongitude(locInfo.getOrBlank("long"));
             }
         }
         ArrayList<Soil> soils = DataUtil.toSoils(data, ret.getWater_hold_capacity());

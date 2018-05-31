@@ -13,11 +13,14 @@ public class Path {
         @Getter public static final String LOGIN = "/login";
         @Getter public static final String LOGOUT = "/logout";
         @Getter public static final String UPLOAD = "/upload";
+        @Getter public static final String Worker = "/worker";
         
         public static class Simulation {
             private static final String PACKAGE = "/" + Simulation.class.getSimpleName().toLowerCase();
             @Getter public static final String AFSIRS = PACKAGE + "/afsirs";
             @Getter public static final String AFSIRS_RESULT = PACKAGE + "/afsirs_result";
+            @Getter public static final String AFSIRS_LOAD = PACKAGE + "/afsirs_load";
+            @Getter public static final String AFSIRS_WAIT = PACKAGE + "/afsirs_wait";
         }
         
         public static class WaterUse {
@@ -33,6 +36,12 @@ public class Path {
             private static final String PACKAGE = "/" + DataTools.class.getSimpleName().toLowerCase();
             @Getter public static final String SOILMAP = PACKAGE + "/soilmap";
         }
+        
+//        public static class Worker {
+//            private static final String PACKAGE = "/" + Worker.class.getSimpleName().toLowerCase();;
+//            @Getter public static final String LOGIN = PACKAGE + "/login";
+//            @Getter public static final String LOGOUT = PACKAGE + "/logout";
+//        }
     }
     
     public static class Template {
@@ -82,6 +91,10 @@ public class Path {
                 ret.mkdirs();
             }
             return ret;
+        }
+        public static File getUserWaterUsePermitOutputJsonFile(String userId, String permitId) {
+            return Paths.get(getUserWaterUsePermitOutputDir(userId).getPath(),
+                    permitId + ".json").toFile();
         }
         public static File getDataFile(String fileName) {
             return Paths.get(DATA, fileName).toFile();

@@ -9,16 +9,20 @@ import java.net.URISyntaxException;
 import org.afsirs.web.controller.DataToolsPageController;
 import org.afsirs.web.controller.PageController;
 import org.afsirs.web.controller.SimulationPageController;
+import org.afsirs.web.controller.SimulationWSController;
 import org.afsirs.web.controller.WaterUsePageController;
+import org.afsirs.web.controller.WorkerWSController;
 import org.afsirs.web.util.DataUtil;
 import org.afsirs.web.util.Filters;
 import org.afsirs.web.util.Path;
 import org.slf4j.LoggerFactory;
+import spark.Spark;
 import static spark.Spark.after;
 import static spark.Spark.get;
 import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.staticFiles;
+import static spark.Spark.webSocket;
 import spark.template.freemarker.FreeMarkerEngine;
 
 /**
@@ -48,12 +52,16 @@ public class Main {
         port(port);
         staticFiles.location("/public");
         staticFiles.expireTime(600L);
+        Spark.webSocketIdleTimeoutMillis(60000);
 
         // Set up before-filters (called before each get/post)
 //        before("*",                  Filters.addTrailingSlashes);
 //        before("*",                  Filters.handleLocaleChange);
 
         // Set up routes
+        webSocket(Path.Web.Worker, WorkerWSController.class);
+        webSocket(Path.Web.Simulation.AFSIRS_WAIT, SimulationWSController.class);
+        
         get(Path.Web.INDEX,          PageController.serveIndexPage);
         get("/",                     PageController.serveIndexPage);
         get(Path.Web.REGISTER,       PageController.serveRegisterPage);
@@ -64,7 +72,8 @@ public class Main {
         post(Path.Web.LOGOUT,        PageController.handleLogoutRequest);
         
         get(Path.Web.Simulation.AFSIRS,             SimulationPageController.serveAfsirsPage);
-        post(Path.Web.Simulation.AFSIRS,          SimulationPageController.handleAfsirsPost);
+//        post(Path.Web.Simulation.AFSIRS,          SimulationPageController.handleAfsirsPost);
+        get(Path.Web.Simulation.AFSIRS_LOAD,             SimulationPageController.serveAfsirsLoadPage);
         get(Path.Web.Simulation.AFSIRS_RESULT,          SimulationPageController.serveDownloadRequest);
         
         get(Path.Web.WaterUse.LIST,             WaterUsePageController.serveListPage);
@@ -74,7 +83,7 @@ public class Main {
         
         get(Path.Web.DataTools.SOILMAP,             DataToolsPageController.serveSoilMapPage);
         
-        get("*",                     PageController.serveNotFoundPage, new FreeMarkerEngine());
+//        get("*",                     PageController.serveNotFoundPage, new FreeMarkerEngine());
 
         //Set up after-filters (called after each get/post)
         after("*",                   Filters.addGzipHeader);

@@ -3,16 +3,17 @@ package org.afsirs.web.view;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.servlet.ServletOutputStream;
-import org.afsirs.module.AFSIRSModule;
+import org.afsirs.module.AFSIRSOutput;
 import org.afsirs.module.SimResult;
 import org.afsirs.module.SoilSeriesSummaryReport;
-import org.afsirs.module.SoilSpecificPeriodData;
-import org.afsirs.module.SummaryReport;
-import org.afsirs.module.UserInput;
+import org.afsirs.web.dao.WaterUsePermitDAO;
+import org.afsirs.web.dao.bean.WaterUsePermit;
+import static org.afsirs.web.dao.bean.WaterUsePermit.setDeviation;
 import org.afsirs.web.util.Path;
 import static org.afsirs.web.view.ViewUtil.setCommonParam;
 import org.eclipse.jetty.io.EofException;
@@ -40,16 +41,31 @@ public class SimulationViewUtil {
         return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.Simulation.AFSIRS));
     }
     
-    public static String getAfsirsResultPageAsyn(Request request, Map<String, Object> attributes) {
+    public static String getAfsirsResultLoadingPage(Request request, Map<String, Object> attributes) {
+        setCommonParam(request, attributes);
+        setSimulationCommonParam(request, attributes);
+        attributes.put("user_id", ViewUtil.getUserID(request));
+        attributes.put("permit_id", request.queryParams("permit_id"));
         return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.Simulation.AFSIRS_RESULT_ASYN));
     }
 
     public static String getAfsirsResultPage(Request request, Map<String, Object> attributes) {
         setCommonParam(request, attributes);
         setSimulationCommonParam(request, attributes);
-        File out = Path.Folder.getUserWaterUsePermitOutputDir(ViewUtil.getUserID(request));
-        UserInput input = (UserInput) attributes.get("afsirs_input");
-        SimResult simRet = AFSIRSModule.run(input, out);
+//        UserInput input = (UserInput) attributes.get("afsirs_input");
+//        SimResult simRetOrg = AFSIRSModule.run(input);
+//        String json = simRetOrg.toJson();
+
+        String userId = ViewUtil.getUserID(request);
+        String permitId = request.queryParams("permit_id");
+        File jsonFile = Path.Folder.getUserWaterUsePermitOutputJsonFile(ViewUtil.getUserID(request), permitId);
+        
+        WaterUsePermit permit = WaterUsePermitDAO.find(permitId, userId);
+        if (permit == null) {
+            return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.NOT_FOUND)); // TODO
+        }
+        SimResult simRet = SimResult.fromJson(jsonFile);
+        AFSIRSOutput.run(simRet, setDeviation(permit.toAFSIRSInputData(userId), permit));
 
         LinkedHashMap<String, double[]> irrReqData = new LinkedHashMap();
         LinkedHashMap<String, double[]> twoIn10Data = new LinkedHashMap();
@@ -70,7 +86,6 @@ public class SimulationViewUtil {
         wgtAvgDataArr.put(twoIn10Key, new ArrayList());
 //        double areaSum = simRet.getTotalArea();
 
-        ArrayList<SoilSpecificPeriodData> PDATA = AFSIRSModule.getGraphData(simRet, 0);
         ArrayList<SoilSeriesSummaryReport> summaryList = simRet.getSummaryList();
         for (SoilSeriesSummaryReport report : summaryList) {
             String soilName = report.getSoilName();
@@ -79,7 +94,7 @@ public class SimulationViewUtil {
             oneIn10Data.put(soilName, new double[12]);
         }
 
-        for (int i = 0; i < PDATA.get(0).getSoilDataPoints().length; i++) {
+        for (int i = 0; i < simRet.getTotalMonth(); i++) {
 
             for (SoilSeriesSummaryReport report : summaryList) {
                 String soilName = report.getSoilName();
@@ -143,7 +158,8 @@ public class SimulationViewUtil {
         }
         attributes.put("climateData", climateData);
 
-        attributes.put("permit_id", request.queryParams("permit_id"));
+        attributes.put("permit_id", permitId);
+        attributes.put("user_id", userId);
         return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.Simulation.AFSIRS_RESULT));
     }
 
