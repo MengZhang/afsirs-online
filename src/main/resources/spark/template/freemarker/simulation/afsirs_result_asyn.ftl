@@ -56,7 +56,7 @@
         <script>
             var wsLocal;
             var alive = true;
-            var wsAddrLocal = "ws://" + location.hostname + ":" + location.port + "/simulation/afsirs_wait";
+            var wsAddrLocal = "wss://" + location.hostname + ":" + location.port + "/simulation/afsirs_wait";
 
             function keepLocalConn() {
                 wsLocal.onmessage = function (msg) {
