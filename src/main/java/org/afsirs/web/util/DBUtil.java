@@ -22,7 +22,7 @@ public class DBUtil {
     public enum AFSIRSCollection {
         
         User("users"),
-        WaterUserPermit("water_use_permit");
+        WaterUsePermit("water_use_permit");
 
         private final String name;
 

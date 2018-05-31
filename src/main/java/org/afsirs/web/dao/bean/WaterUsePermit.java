@@ -99,6 +99,14 @@ public class WaterUsePermit {
     private ArrayList<String> aldpArr;
     private String hgt;
 
+    public void setPermit_id(String permit_id) {
+        this.permit_id = permit_id.trim();
+    }
+    
+    public String getPermit_id() {
+        return this.permit_id.trim();
+    }
+    
     public void setDbSoilNames(String[] names) {
         dbSoilNames = new LinkedHashSet<>();
         dbSoilNames.addAll(Arrays.asList(names));
