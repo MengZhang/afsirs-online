@@ -145,8 +145,12 @@ public class SimulationDAO {
 //            SimResult simRetOrg = AFSIRSModule.run(input);
             SimResult simRetOrg = new SimResult();
             Session session;
+            boolean append = false;
             for (int i = 0; i < input.getSoils().size(); i++) {
-                SimResult tmp = AFSIRSModule.run(input, i);
+                if (input.getSoils().get(i).getNL() <= 0) {
+                    continue;
+                }
+                SimResult tmp = AFSIRSModule.run(input, i, append);
                 simRetOrg.addSoilTypeSummaryReport(tmp.getSoilTypeSummaryList().get(0));
                 simRetOrg.setTotalMonth(tmp.getTotalMonth());
                 simulation.setReady(input.getSoils().get(i).getCOMPKEY());
@@ -154,6 +158,7 @@ public class SimulationDAO {
                 if (session != null && session.isOpen()) {
                     WebSocketUtil.sendMsg(session, new WebSocketSimStatusMsg(simulation.getProcessPct()));
                 }
+                append = true;
             }
             
             // Generate JSON result file
