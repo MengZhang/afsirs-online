@@ -226,3 +226,6 @@ nb-configuration.xml
 /Permit/
 /customs.json
 /Output/
+/Output_org/
+/src/test/Resources/input/
+/src/test/Resources/outputput/
