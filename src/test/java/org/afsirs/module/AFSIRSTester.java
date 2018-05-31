@@ -37,9 +37,19 @@ public class AFSIRSTester {
                 String userId = permit.getUser_id();
                 UserInput input = setDeviation(permit.toAFSIRSInputData(userId), permit);
                 AFSIRSModule.savePermitFile(Path.Folder.getUserWaterUsePermitDir(userId), input);
-                SimResult ret = AFSIRSModule.run(input, null);
-                File comp = ret.getCalculationExcel();
-                URL resouce = this.getClass().getResource("/" + userId + "/" + permit.getPermit_id() + "-Cal.xlsx");
+                SimResult ret = new SimResult();
+                for (int i = 0; i < input.getSoils().size(); i++) {
+                    if (input.getSoils().get(i).getNL() > 0) {
+                        SimResult tmp = AFSIRSModule.run(input, i);
+                        ret.addSoilTypeSummaryReport(tmp.getSoilTypeSummaryList().get(0));
+                        ret.setTotalMonth(tmp.getTotalMonth());
+                    }
+                }
+                
+                AFSIRSOutput.run(SimResult.fromJson(ret.toJson()), input);
+                
+//                File comp = ret.getCalculationExcel();
+                URL resouce = this.getClass().getResource("/output/" + userId + "/" + permit.getPermit_id() + "-Cal.xlsx");
                 if (resouce == null) {
                     continue;
                 }
