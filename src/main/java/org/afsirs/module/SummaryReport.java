@@ -1,8 +1,14 @@
 package org.afsirs.module;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
+import org.afsirs.module.util.JSONArray;
+import org.afsirs.module.util.JSONObject;
 
 /**
  *
@@ -11,19 +17,19 @@ import lombok.Setter;
  */
 public abstract class SummaryReport {
 
-    private int curMonth;
+//    private int curMonth;           // Unused for final output files
     private double totalTwoinTen;
     private double totalOneinTen;
     private double totalAvgIrr;
     private ArrayList<Double> totalRainFall;
     private ArrayList<Double> totalEvaporationPotential;
 
-    private ArrayList<Double> peakMonthlyEvaporationPotential;
+    private ArrayList<Double> peakMonthlyEvaporationPotential;  // Unused for final output files
 
     private ArrayList<Double> totalEvaporationCrop;
-    private ArrayList<Double> peakMonthlyEvaporationCrop;
+    private ArrayList<Double> peakMonthlyEvaporationCrop;       // Unused for final output files
 
-    private ArrayList<Double> totalIrrigationRequired;
+    private ArrayList<Double> totalIrrigationRequired;          // Unused for final output files
 
     private ArrayList<Double> averageIrrigationRequired;
     private ArrayList<Double> twoin10IrrigationRequired;
@@ -39,7 +45,7 @@ public abstract class SummaryReport {
     @Getter @Setter private String soilSymbolNum;
 
     private SummaryReport() {
-        curMonth = 1;
+//        curMonth = 1;
 
         this.totalRainFall = new ArrayList<>();
 
@@ -122,13 +128,13 @@ public abstract class SummaryReport {
 //        }
 //    }
 
-    public int getCurMonth() {
-        return curMonth;
-    }
-
-    public void setCurMonth(int curMonth) {
-        this.curMonth = curMonth;
-    }
+//    public int getCurMonth() {
+//        return curMonth;
+//    }
+//
+//    public void setCurMonth(int curMonth) {
+//        this.curMonth = curMonth;
+//    }
 
     public Double getTotalRainFallByMonth(int month) {
         if (month < 1 || month > 12) {
@@ -243,7 +249,7 @@ public abstract class SummaryReport {
         return this.twoin10IrrigationRequired.get(month - 1);
     }
 
-    public void setTwoin10IrrigationRequired(int month, Double irrigationRequired) {
+    public void setTwoin10IrrigationRequired(int month, double irrigationRequired) {
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException("Month " + month + " is not in the valid range. It should be 1-12.");
         }
@@ -261,7 +267,7 @@ public abstract class SummaryReport {
         return this.onein10IrrigationRequired.get(month - 1);
     }
 
-    public void setOnein10IrrigationRequired(int month, Double irrigationRequired) {
+    public void setOnein10IrrigationRequired(int month, double irrigationRequired) {
 
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException("Month " + month + " is not in the valid range. It should be 1-12.");
@@ -347,4 +353,78 @@ public abstract class SummaryReport {
         this.totalAvgIrr = totalAvgIrr;
     }
 
+    public void readJsonData(JSONObject data) {
+        setTotalTwoinTen(data.getAsDouble("total_2in10"));
+        setTotalOneinTen(data.getAsDouble("total_1in10"));
+        setTotalAvgIrr(data.getAsDouble("total_avg_irr"));
+    
+        try {
+            readJsonData(data.getArrAsDouble("total_rain_fall"),
+                    this.getClass().getMethod("setTotalRainFall", int.class, double.class));
+            readJsonData(data.getArrAsDouble("total_evaporation_potential"),
+                    this.getClass().getMethod("setTotalEvaporation", int.class, double.class));
+            readJsonData(data.getArrAsDouble("peak_monthly_evaporation_potential"),
+                    this.getClass().getMethod("setPeakMonthlyEvaporation", int.class, double.class));
+            readJsonData(data.getArrAsDouble("total_evaporation_crop"),
+                    this.getClass().getMethod("setEvaporationCrop", int.class, double.class));
+            readJsonData(data.getArrAsDouble("peak_monthly_evaporation_crop"),
+                    this.getClass().getMethod("setPeakMonthlyEvaporationCrop", int.class, double.class));
+
+            readJsonData(data.getArrAsDouble("total_irrigation_required"),
+                    this.getClass().getMethod("addTotalIrrigationRequiredByMonth", int.class, double.class));
+
+            readJsonData(data.getArrAsDouble("average_irrigation_required"),
+                    this.getClass().getMethod("setAverageIrrigationRequired", int.class, double.class));
+            readJsonData(data.getArrAsDouble("2in10_irrigation_required"),
+                    this.getClass().getMethod("setTwoin10IrrigationRequired", int.class, double.class));
+            readJsonData(data.getArrAsDouble("1in10_irrigation_required"),
+                    this.getClass().getMethod("setOnein10IrrigationRequired", int.class, double.class));
+
+            readJsonData(data.getArrAsDouble("weighted_average_irr_required"),
+                    this.getClass().getMethod("setWeightedAvgIrrRequired", int.class, double.class));
+            readJsonData(data.getArrAsDouble("weighted_2in10_irr_required"),
+                    this.getClass().getMethod("setWeighted2In10IrrRequired", int.class, double.class));
+            readJsonData(data.getArrAsDouble("weighted_1in10_irr_required"),
+                    this.getClass().getMethod("setWeighted1In10IrrRequired", int.class, double.class));
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            ex.printStackTrace(System.err);
+        }
+        
+    }
+    
+    private void readJsonData(ArrayList<Double> arrFrom, Method method) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        for (int i = 0; i < arrFrom.size(); i++) {
+            method.invoke(this, i + 1, arrFrom.get(i));
+        }
+    }
+    
+    public JSONObject toJsonData() {
+        JSONObject data = new JSONObject();
+        data.put("musym", soilSymbolNum);
+        data.put("cokey", soilKey);
+        data.put("soilName", soilName);
+        data.put("compArea", soilArea);
+        
+        data.put("total_2in10", totalTwoinTen);
+        data.put("total_1in10", totalOneinTen);
+        data.put("total_avg_irr", totalAvgIrr);
+        
+        data.put("total_rain_fall", new JSONArray().putAll(totalRainFall));
+        data.put("total_evaporation_potential", new JSONArray().putAll(totalEvaporationPotential));
+        data.put("peak_monthly_evaporation_potential", new JSONArray().putAll(peakMonthlyEvaporationPotential));
+        data.put("total_evaporation_crop", new JSONArray().putAll(totalEvaporationCrop));
+        data.put("peak_monthly_evaporation_crop", new JSONArray().putAll(peakMonthlyEvaporationCrop));
+
+        data.put("total_irrigation_required", new JSONArray().putAll(totalIrrigationRequired));
+
+        data.put("average_irrigation_required", new JSONArray().putAll(averageIrrigationRequired));
+        data.put("2in10_irrigation_required", new JSONArray().putAll(twoin10IrrigationRequired));
+        data.put("1in10_irrigation_required", new JSONArray().putAll(onein10IrrigationRequired));
+
+        data.put("weighted_average_irr_required", new JSONArray().putAll(weightedAverageIrrRequired));
+        data.put("weighted_2in10_irr_required", new JSONArray().putAll(weighted2In10IrrRequired));
+        data.put("weighted_1in10_irr_required", new JSONArray().putAll(weighted1In10IrrRequired));
+        
+        return data;
+    }
 }

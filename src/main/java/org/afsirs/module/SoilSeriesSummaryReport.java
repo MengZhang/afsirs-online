@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import static org.afsirs.module.util.Util.getSummaryReportComparetor2;
+import static org.afsirs.module.util.Util.summaryReportComparetor2;
 import static org.afsirs.module.util.Util.isSorted2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,9 +84,9 @@ public class SoilSeriesSummaryReport extends SummaryReport {
     public ArrayList<SoilTypeSummaryReport> getSoilTypeSummaryReportList() {
         if (sortedReports.size() < reports.size()) {
             sortedReports = new ArrayList(reports.values());
-            Collections.sort(sortedReports, getSummaryReportComparetor2());
+            Collections.sort(sortedReports, summaryReportComparetor2);
         } else if (!isSorted2(sortedReports)) {
-            Collections.sort(sortedReports, getSummaryReportComparetor2());
+            Collections.sort(sortedReports, summaryReportComparetor2);
         }
         return sortedReports;
     }
@@ -170,7 +170,7 @@ public class SoilSeriesSummaryReport extends SummaryReport {
     }
 
     @Override
-    public void setTwoin10IrrigationRequired(int month, Double irrigationRequired) {
+    public void setTwoin10IrrigationRequired(int month, double irrigationRequired) {
         double orgVal = curReport.getTwoin10IrrigationRequired(month);
         double diff = irrigationRequired - orgVal;
         curReport.setTwoin10IrrigationRequired(month, irrigationRequired);
@@ -179,7 +179,7 @@ public class SoilSeriesSummaryReport extends SummaryReport {
     }
 
     @Override
-    public void setOnein10IrrigationRequired(int month, Double irrigationRequired) {
+    public void setOnein10IrrigationRequired(int month, double irrigationRequired) {
         double orgVal = curReport.getOnein10IrrigationRequired(month);
         double diff = irrigationRequired - orgVal;
         curReport.setOnein10IrrigationRequired(month, irrigationRequired);

@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.afsirs.module.SoilTypeSummaryReport;
 import org.afsirs.module.SummaryReport;
 import org.afsirs.module.UserInput;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
@@ -31,6 +30,8 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 public class Util {
 
     public static final String SOIL_MAP_BASE_URL = "http://afsirs-online-test.herokuapp.com/SoilMap/";
+    public static final Comparator summaryReportComparetor = getSummaryReportComparetor();
+    public static final Comparator summaryReportComparetor2 = getSummaryReportComparetor2();
 
     public static String calculateNearestStation(String type, File jsonFile) throws IOException {
 //        String station;
@@ -226,8 +227,8 @@ public class Util {
         }
 
     }
-
-    public static Comparator getSummaryReportComparetor() {
+    
+    private static Comparator getSummaryReportComparetor() {
         return new Comparator<SummaryReport>() {
 
             @Override
@@ -244,7 +245,7 @@ public class Util {
         };
     }
 
-    public static Comparator getSummaryReportComparetor2() {
+    private static Comparator getSummaryReportComparetor2() {
         return new Comparator<SummaryReport>() {
 
             @Override

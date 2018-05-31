@@ -1,6 +1,5 @@
 package org.afsirs.module;
 
-import com.itextpdf.text.pdf.PdfPTable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,8 +8,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import static org.afsirs.module.util.Util.getSummaryReportComparetor;
+import org.afsirs.module.util.JSONObject;
+import org.afsirs.module.util.JSONArray;
+import static org.afsirs.module.util.JsonUtil.parseFrom;
 import static org.afsirs.module.util.Util.isSorted;
+import static org.afsirs.module.util.Util.summaryReportComparetor;
 
 /**
  * The container class for simulation result
@@ -22,13 +24,14 @@ public class SimResult {
 
     private double totalArea = 0.0;
     private double plantedArea = 0.0;
-    private double[][] RAIN;
+    private double[][] RAIN;           // Unused for final output files
+    private int totalMonth = 0;
 
     // ArrayList for Soilnames with negative value error
-    private ArrayList<String> soilNames = new ArrayList<>();
+    private ArrayList<String> soilNames = new ArrayList<>();  // Unused for final output files
 
     // ArrayList to Hold all the data
-    private ArrayList<PDAT> allSoilInfo = new ArrayList<>();
+    private ArrayList<PDAT> allSoilInfo = new ArrayList<>();  // Unused for final output files
 
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
@@ -38,8 +41,47 @@ public class SimResult {
     @Setter(AccessLevel.NONE)
     private ArrayList<SoilSeriesSummaryReport> sortedSummaryList = new ArrayList<>();
 
-    private File outFile, summaryFile, summaryFileExcel, calculationExcel;
+    private File outFile; // summaryFile, summaryFileExcel, calculationExcel;
 
+    public SimResult() {}
+    
+    public static SimResult fromJson(File jsonFile) {
+        return fromJson(parseFrom(jsonFile));
+    }
+    
+    public static SimResult fromJson(String json) {
+        return fromJson(parseFrom(json));
+    }
+    
+    public static SimResult fromJson(JSONObject data) {
+        SimResult ret = new SimResult();
+        ret.setTotalArea(data.getAsDouble("total_area"));
+        ret.setPlantedArea(data.getAsDouble("planted_area"));
+        ret.setTotalMonth(data.getAsInteger("total_month"));
+        for (JSONObject simRet : data.getObjArr()) {
+            ret.addSoilTypeSummaryReport(new SoilTypeSummaryReport(simRet));
+        }
+        for (JSONObject simRet : data.getObjArr()) {
+            ret.getSoilSeriesSummaryReport(new SoilTypeSummaryReport(simRet)).readJsonData(simRet);
+        }
+        return ret;
+    }
+    
+    public String toJson() {
+        JSONObject data = new JSONObject();
+        data.put("total_area", totalArea);
+        data.put("planted_area", plantedArea);
+        data.put("total_month", totalMonth);
+        data.put("afsirs_version", Messages.getVersion());
+        JSONArray arr = new JSONArray();
+        data.put("data", arr);
+        for (SoilTypeSummaryReport report : getSoilTypeSummaryList()) {
+            arr.add(report.toJsonData());
+        }
+        
+        return data.toJSONString();
+    }
+    
     public void addSoilTypeSummaryReport(SoilTypeSummaryReport report) {
         String soilSeriesKey = report.getSoilSeriesKey();
         if (summaryList.containsKey(soilSeriesKey)) {
@@ -52,9 +94,9 @@ public class SimResult {
     public ArrayList<SoilSeriesSummaryReport> getSummaryList() {
         if (sortedSummaryList.size() < summaryList.size()) {
             sortedSummaryList = getSoilSeriesSummaryList();
-            Collections.sort(sortedSummaryList, getSummaryReportComparetor());
+            Collections.sort(sortedSummaryList, summaryReportComparetor);
         } else if (!isSorted(sortedSummaryList)) {
-            Collections.sort(sortedSummaryList, getSummaryReportComparetor());
+            Collections.sort(sortedSummaryList, summaryReportComparetor);
         }
         return sortedSummaryList;
     }
