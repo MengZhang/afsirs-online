@@ -1817,7 +1817,11 @@ public class AFSIRSModule {
         }
     }
     
-        public static SimResult run(UserInput input, int soilIdx) {
+    public static SimResult run(UserInput input, int soilIdx) {
+        return run(input, soilIdx, soilIdx != 0);
+    }
+    
+    public static SimResult run(UserInput input, int soilIdx, boolean append) {
 
 //        saveInputData(outputDir, input);
         SimResult ret = new SimResult();
@@ -1829,10 +1833,11 @@ public class AFSIRSModule {
             ret.setTotalArea(input.getPlantedAcres());
         }
 //        try {
-        try (BufferedWriter bwOutputFile = new BufferedWriter(new FileWriter(ret.getOutFile(), false))) {
+        try (BufferedWriter bwOutputFile = new BufferedWriter(new FileWriter(ret.getOutFile(), append))) {
             
-
-            initOutputFile(bwOutputFile, input);
+            if (!append) {
+                initOutputFile(bwOutputFile, input);
+            }
 
             ArrayList<Soil> soils = input.getSoils();
             double totalArea = 0.0;
