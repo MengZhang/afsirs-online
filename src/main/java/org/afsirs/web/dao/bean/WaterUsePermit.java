@@ -100,11 +100,17 @@ public class WaterUsePermit {
     private String hgt;
 
     public void setPermit_id(String permit_id) {
-        this.permit_id = permit_id.trim();
+        if (permit_id != null) {
+            this.permit_id = permit_id.trim();
+        }
     }
     
     public String getPermit_id() {
-        return this.permit_id.trim();
+        if (this.permit_id != null) {
+            return this.permit_id.trim();
+        } else {
+            return null;
+        }
     }
     
     public void setDbSoilNames(String[] names) {
