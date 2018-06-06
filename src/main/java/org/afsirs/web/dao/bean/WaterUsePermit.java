@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.MonthDay;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -492,17 +492,17 @@ public class WaterUsePermit {
             CropDataAnnual crop = (CropDataAnnual) DataUtil.getCropDataAnnual().get(permit.getCrop_name());
             int max = crop.getMaxDays();
             int min = crop.getMinDays();
-            Period p;
+            long days;
             if (input.getMO1() > input.getMON() || (input.getMO1() == input.getMON() && input.getDAY1() > input.getDAYN())) {
-                p = Period.between(
+                days = ChronoUnit.DAYS.between(
                         LocalDate.of(2001, Month.of(input.getMO1()), input.getDAY1()),
                         LocalDate.of(2002, Month.of(input.getMON()), input.getDAYN()));
             } else {
-                p = Period.between(
+                days = ChronoUnit.DAYS.between(
                         LocalDate.of(2001, Month.of(input.getMO1()), input.getDAY1()),
                         LocalDate.of(2001, Month.of(input.getMON()), input.getDAYN()));
             }
-            if (p.getDays() > max || p.getDays() < min) {
+            if (days > max || days < min) {
                 MonthDay start = MonthDay.of(input.getMO1(), input.getDAY1());
                 MonthDay end = MonthDay.of(input.getMON(), input.getDAYN());
                 input.addDeviation("Date Range", start.format(DateTimeFormatter.ofPattern("MM-dd")) + " ~ " + end.format(DateTimeFormatter.ofPattern("MM-dd")) + " which is outside the normal range");
@@ -532,13 +532,13 @@ public class WaterUsePermit {
             input.addDeviation("Irrigation application efficiency", input.getIEFF() + "");
         }
         if (irSys.getArea() != input.getARZI()) {
-            input.addDeviation("Fraction of soil surface irrigated", input.getFRIR() + "");
+            input.addDeviation("Fraction of soil surface irrigated", input.getARZI() + "");
         }
         if (irSys.getEx() != input.getEXIR()) {
-            input.addDeviation("Fraction of ET extracted", input.getFRIR() + "");
+            input.addDeviation("Fraction of ET extracted", input.getEXIR() + "");
         }
         if (irSys.getDwt() != input.getDWT()) {
-            input.addDeviation("Depth of water table", input.getFRIR() + "");
+            input.addDeviation("Depth of water table", input.getDWT() + "");
         }
 
         // Soil
