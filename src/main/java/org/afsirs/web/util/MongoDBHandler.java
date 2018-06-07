@@ -32,6 +32,10 @@ public class MongoDBHandler {
         return list(collection, 0, Integer.MAX_VALUE);
     }
 
+    public static ArrayList<Document> list(MongoCollection<Document> collection, Bson projection) {
+        return list(collection, 0, Integer.MAX_VALUE, projection);
+    }
+
     public static ArrayList<Document> list(MongoCollection<Document> collection, int skip, int limit) {
 
         ArrayList<Document> ret = new ArrayList();
@@ -64,12 +68,16 @@ public class MongoDBHandler {
         if (projection == null) {
             return collection.find(search).first();
         } else {
-            return collection.find(search).projection(search).first();
+            return collection.find(search).projection(projection).first();
         }
     }
 
     public static ArrayList<Document> search(MongoCollection<Document> collection, Bson search) {
         return search(collection, search, 0, Integer.MAX_VALUE);
+    }
+
+    public static ArrayList<Document> search(MongoCollection<Document> collection, Bson search, Bson projection) {
+        return search(collection, search, 0, Integer.MAX_VALUE, projection);
     }
 
     public static ArrayList<Document> search(MongoCollection<Document> collection, Bson search, int skip, int limit) {
@@ -81,7 +89,7 @@ public class MongoDBHandler {
         if (projection == null) {
             collection.find(search).skip(skip).limit(limit).forEach((Block<Document>) ret::add);
         } else {
-            collection.find(search).projection(search).skip(skip).limit(limit).forEach((Block<Document>) ret::add);
+            collection.find(search).projection(projection).skip(skip).limit(limit).forEach((Block<Document>) ret::add);
         }
         return ret;
     }

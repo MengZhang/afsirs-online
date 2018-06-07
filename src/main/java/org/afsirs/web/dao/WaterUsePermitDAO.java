@@ -1,5 +1,6 @@
 package org.afsirs.web.dao;
 
+import com.mongodb.client.model.Projections;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.eclipse.jetty.util.ConcurrentHashSet;
 public class WaterUsePermitDAO {
 
     private static final ConcurrentHashSet<WUPKey> permitIds = syncUserRecords();
+    private static final String[] listParams = {"user_id", "permit_id", "crop_name", "et_loc", "rain_loc"};
 
     @Data
     public static class WUPKey {
@@ -42,11 +44,12 @@ public class WaterUsePermitDAO {
         ArrayList<WaterUsePermit> ret = new ArrayList<>();
         ArrayList<Document> dbRetArr;
         if (UserDAO.isAdmin(userId)) {
-            dbRetArr = MongoDBHandler.list(getConnection(AFSIRSCollection.WaterUsePermit));
+            dbRetArr = MongoDBHandler.list(getConnection(AFSIRSCollection.WaterUsePermit), Projections.include(listParams));
         } else {
             dbRetArr = MongoDBHandler.search(
                 getConnection(AFSIRSCollection.WaterUsePermit),
-                new Document("user_id", userId));
+                new Document("user_id", userId),
+                Projections.include(listParams));
         }
         
         for (Document data : dbRetArr) {
