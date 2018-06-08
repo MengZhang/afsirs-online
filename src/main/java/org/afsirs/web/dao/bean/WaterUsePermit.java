@@ -369,14 +369,20 @@ public class WaterUsePermit {
             }
         }
         ArrayList<Soil> soils = DataUtil.toSoils(data, ret.getWater_hold_capacity());
-        ret.setSoils(soils);
         if ("DB".equals(soilSource)) {
             String[] soilNames = new String[soils.size()];
             for (int i = 0; i < soils.size(); i++) {
                 soilNames[i] = soils.get(i).getSNAME();
             }
             ret.setDbSoilNames(soilNames);
+            
+            ArrayList<Soil> dbSoils = DataUtil.readSoils(ret.getDbSoilNames());
+            for (int i = 0; i < soils.size() && i < dbSoils.size(); i++) {
+                Soil dbSoil = dbSoils.get(i);
+                soils.get(i).setValues(ret.getWater_hold_capacity(), dbSoil.getWCL(), dbSoil.getWCU(), dbSoil.getDU(), new String[3]);
+            }
         }
+        ret.setSoils(soils);
 
         ret.setEt_loc(data.getOrBlank("et_loc"));
         ret.setRain_loc(data.getOrBlank("rain_loc"));
