@@ -215,7 +215,11 @@
                 <input type="hidden" name="update_flg" value="${update_flg!'false'}">
                 <input type="hidden" name="user_id" value="${permit['user_id']!}">
                 <fieldset>
+                    <#if permit['permit_id']??>
+                    <legend>Edit Permit - ${permit['permit_id']!'[Unknow]'}</legend>
+                    <#else>
                     <legend>Create New Permit</legend>
+                    </#if>
 
                     <div class="tab">
                         <button type="button" class="tablinks active" onclick="openTab('SiteInfo')" id= "SiteInfoTab">General</button>
