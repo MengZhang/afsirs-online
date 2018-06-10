@@ -122,6 +122,10 @@ public class SimulationDAO {
         }
     }
     
+    public static void cancelSimulation(Simulation simulation) {
+        simulations.remove(simulation.getKey());
+    }
+    
     public static class SimulationRunner implements Callable<File> {
         
         private final WaterUsePermit permit;
@@ -135,53 +139,60 @@ public class SimulationDAO {
         @Override
         public File call() throws IOException {
             
-            // Run simulation
-            String userId = permit.getUser_id();
-            File json = Path.Folder.getUserWaterUsePermitOutputJsonFile(userId, permit.getPermit_id());
-            if (json.exists()) {
-                json.delete();
-            }
-            UserInput input = setDeviation(permit.toAFSIRSInputData(userId), permit);
-//            SimResult simRetOrg = AFSIRSModule.run(input);
-            SimResult simRetOrg = new SimResult();
-            Session session;
-            boolean append = false;
-            for (int i = 0; i < input.getSoils().size(); i++) {
-                if (input.getSoils().get(i).getNL() <= 0) {
-                    continue;
+            try {
+                // Run simulation
+                String userId = permit.getUser_id();
+                File json = Path.Folder.getUserWaterUsePermitOutputJsonFile(userId, permit.getPermit_id());
+                if (json.exists()) {
+                    json.delete();
                 }
-                SimResult tmp = AFSIRSModule.run(input, i, append);
-                simRetOrg.addSoilTypeSummaryReport(tmp.getSoilTypeSummaryList().get(0));
-                simRetOrg.setTotalMonth(tmp.getTotalMonth());
-                simulation.setReady(input.getSoils().get(i).getCOMPKEY());
+                UserInput input = setDeviation(permit.toAFSIRSInputData(userId), permit);
+    //            SimResult simRetOrg = AFSIRSModule.run(input);
+                SimResult simRetOrg = new SimResult();
+                Session session;
+                boolean append = false;
+                for (int i = 0; i < input.getSoils().size(); i++) {
+                    if (input.getSoils().get(i).getNL() <= 0) {
+                        continue;
+                    }
+                    SimResult tmp = AFSIRSModule.run(input, i, append);
+                    simRetOrg.addSoilTypeSummaryReport(tmp.getSoilTypeSummaryList().get(0));
+                    simRetOrg.setTotalMonth(tmp.getTotalMonth());
+                    simulation.setReady(input.getSoils().get(i).getCOMPKEY());
+                    session = simulation.getSession();
+                    if (session != null && session.isOpen()) {
+                        WebSocketUtil.sendMsg(session, new WebSocketSimStatusMsg(simulation.getProcessPct()));
+                    }
+                    append = true;
+                }
+                // Generate JSON result file
+                try (FileWriter writer = new FileWriter(json)) {
+                    writer.write(simRetOrg.toJson());
+                    writer.flush();
+                }
+
+                // Callback
+    //            for (Soil soil : permit.getSoils()) {
+    //                simulation.setReady(soil.getCOMPKEY());
+    //            }
                 session = simulation.getSession();
                 if (session != null && session.isOpen()) {
-                    WebSocketUtil.sendMsg(session, new WebSocketSimStatusMsg(simulation.getProcessPct()));
+                    if (simulation.isReady()) {
+                        WebSocketUtil.sendMsg(session, new WebSocketSimStatusMsg(simulation.getProcessPct()));
+                    } else {
+                        WebSocketUtil.sendMsg(session, new WebSocketSimStatusMsg(Simulation, Error));
+                    }
                 }
-                append = true;
+                finishSimulation(simulation);
+                return json;
+            } catch (Exception ex) {
+                ex.printStackTrace(System.err);
+                cancelSimulation(simulation);
+//                WebSocketUtil.sendMsg(simulation.getSession(), new WebSocketSimStatusMsg(Simulation, Error));
+                WebSocketUtil.sendMsg(simulation.getSession(), Simulation, Error, ex.toString());
+                return null;
             }
-            
-            // Generate JSON result file
-            try (FileWriter writer = new FileWriter(json)) {
-                writer.write(simRetOrg.toJson());
-                writer.flush();
-            }
-            
-            // Callback
-//            for (Soil soil : permit.getSoils()) {
-//                simulation.setReady(soil.getCOMPKEY());
-//            }
-            session = simulation.getSession();
-            if (session != null && session.isOpen()) {
-                if (simulation.isReady()) {
-                    WebSocketUtil.sendMsg(session, new WebSocketSimStatusMsg(simulation.getProcessPct()));
-                } else {
-                    WebSocketUtil.sendMsg(session, new WebSocketSimStatusMsg(Simulation, Error));
-                }
-            }
-            finishSimulation(simulation);
-            return json;
         }
-        
+
     }
 }
