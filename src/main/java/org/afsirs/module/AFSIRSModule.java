@@ -1268,9 +1268,9 @@ public class AFSIRSModule {
             }
 
             for (int JD = 0; JD < JNSAVE; JD++) {
-                ETP_S[0][JD] = ETP[NYR + 1][JD];
-                RAIN_S[0][JD] = RAIN[NYR + 1][JD];
-                IRR_S[0][JD] = IRR[NYR + 1][JD];
+                ETP_S[0][JD] = ETP[NYR][JD];
+                RAIN_S[0][JD] = RAIN[NYR][JD];
+                IRR_S[0][JD] = IRR[NYR][JD];
             }
 
             if (J1SAVE - JNSAVE >= 2) {
