@@ -63,8 +63,6 @@ public class WaterUsePermit {
     private String soil_json;
     private String polygon_info;
     private String polygon_loc_info;
-    private String total_area;
-    private String mapSoilJsonFile;
     private String water_hold_capacity;
     private String latitude;
     private String longitude;
