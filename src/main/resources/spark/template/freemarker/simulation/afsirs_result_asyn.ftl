@@ -129,16 +129,19 @@
                         <#else>
                         window.location = "/simulation/afsirs?permit_id=${permit_id!}";
                         </#if>
+                        showInfoMsg("Loading result graphs...");
                     }
                 } else if (status === 601) {
                     alive = false;
                     showErrMsg("Server connection lost, please refresh your page.");
                 } else if (status === 602) {
                     alive = false;
-                    showErrMsg("Server connection lost, please refresh your page.");
+                    if (document.getElementById("progressBar").style.width !== "100%") {
+                       showErrMsg("Server connection lost, please refresh your page.");
+                    }
                 } else if (status === 900) {
                     alive = false;
-                    showErrMsg("There is error in your input data and simulation stoped.");
+                    showErrMsg("There is an error happened in your simulation, caused by [" + data.message + "]");
                 }
             }
             
@@ -162,6 +165,13 @@
                 errorMsg.className = "text-danger";
                 document.getElementById("errorMsgDiv").style.display = "block";
             }
+            
+            function showInfoMsg(msg) {
+                var errorMsg = document.getElementById("errorMsg");
+                errorMsg.innerHTML = msg;
+                errorMsg.className = "text-primary";
+                document.getElementById("errorMsgDiv").style.display = "block";
+            }
         </script>
     </head>
 
@@ -180,14 +190,17 @@
                         <button type="button" class="tablinks" id="AllTab">All</button>
                     </div>
                     <br><br>
-                    <div id="errorMsgDiv" class="row text-left col-sm-11 col-sm-push-1 hidden">
+                    <div id="errorMsgDiv" class="row text-left col-sm-11 col-sm-push-1">
                         <label id="errorMsg"></label>
                     </div>
                     <div id="progressDiv" class="row col-sm-9 col-sm-push-1 progress">
                         <div id="progressBar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%</div>
                     </div>
-                    <img id="loadingImg" src="/SoilMap/images/loading.gif" alt="loading" style="position:relative; right:30%; top:50%;"/>
+                    <div class="row text-left col-sm-6 col-sm-push-6">
+                        <img id="loadingImg" src="/SoilMap/images/loading.gif" alt="loading" style="position:relative; right:30%; top:60%;"/>
+                    </div>
                 </div>
+                
             </fieldset>
         </div>
         <div class="row">

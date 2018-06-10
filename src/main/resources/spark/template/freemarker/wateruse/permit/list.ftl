@@ -43,7 +43,7 @@
                 <#else>
                 <table id="t01">
                     <tr>
-                        <th>Name</th>
+                        <th>Permit ID</th>
                         <th>Crop</th>
                         <th id="descCol">Location(ET/Rain)</th>
                         <th>Option</th>
