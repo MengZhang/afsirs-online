@@ -197,7 +197,7 @@
                         <div id="progressBar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%</div>
                     </div>
                     <div class="row text-left col-sm-6 col-sm-push-6">
-                        <img id="loadingImg" src="/SoilMap/images/loading.gif" alt="loading" style="position:relative; right:30%; top:60%;"/>
+                        <img id="loadingImg" src="/images/loading.gif" alt="loading" style="position:relative; right:30%; top:60%;"/>
                     </div>
                 </div>
                 
