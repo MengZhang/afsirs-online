@@ -132,7 +132,7 @@ require([
     var geometryProcessor;
 
     //area
-    var polyArea;
+    var polyArea = Number(document.getElementById("total_area").value);
     var soilArea;
 
     //infowindow
@@ -141,9 +141,10 @@ require([
 
     //parameters
     var url = window.location.href;
-    var fileName;
-    var dateName;
-    var unit;
+//    var fileName;
+//    var dateName;
+    var unit = document.getElementById("soil_unit_name").value;
+    var editFlg = false;
 
     var buttonToggle = false;
     //center of polygon
@@ -252,33 +253,39 @@ require([
             //dom.byId("result1").innerHTML += "Thank you! ";
         }
     }, "progButtonNode").startup();
-        
-    //to get the polygon Json from URL. 
-    var uri_dec;
-    function getPolygonJson(url){
-        var fileNameTemp = "";
-        var longi = -81.5;
-        var lat = 28.3;
-        var zoom = 9;
-        
-        if(url.indexOf("json") != -1){
+
+    //to get the polygon Json from URL.
+    function getPolygonJson(url) {
+        var longi = Number(document.getElementById("longitude").value);
+        var lat = Number(document.getElementById("latitude").value);
+        var zoom = Number(document.getElementById("zoom").value);
+        var uri_dec = document.getElementById("polygon_info").value;
+
+        if (url.indexOf("json") !== -1) {
             var queryStart = url.indexOf("json") + 5,
-            queryEnd   = url.indexOf("#") + 1 || url.length + 1,
-            query = url.slice(queryStart, queryEnd - 1);
+                    queryEnd = url.indexOf("#") + 1 || url.length + 1,
+                    query = url.slice(queryStart, queryEnd - 1);
             //console.log("Encoded :" + query);
             uri_dec = decodeURIComponent(query);
             ////console.log("Decoded :" + uri_dec);
+        }
+        
+        if (uri_dec !== "") {
             var jsonLoc = loadPolygon(uri_dec);
             longi = jsonLoc.long;
             lat = jsonLoc.lat;
-            zoom = jsonLoc.zoom;
-            
+            if (zoom === "" || zoom === undefined) {
+                zoom = jsonLoc.zoom;
+            }
+        } else {
+            zoom = 9;
         }
+
         //console.log("Index of "+url.indexOf("long") +"::" +url.indexOf("lat"));
-        if(url.indexOf("long") != -1 || url.indexOf("lat") != -1 || url.indexOf("zoom") != -1){
+        if (url.indexOf("long") !== -1 || url.indexOf("lat") !== -1 || url.indexOf("zoom") !== -1) {
             //console.log("Inside long");
             var queryStart = url.indexOf("?") + 1;
-            var queryEnd  = url.indexOf("#") + 1 || url.length + 1;
+            var queryEnd = url.indexOf("#") + 1 || url.length + 1;
             var query = url.slice(queryStart, queryEnd - 1);
             var params = query.split("&");
             //console.log(split1);
@@ -292,17 +299,15 @@ require([
                     zoom = parseInt(tmp[1]);
                 }
             }
-            //console.log("Longi :" +longi);
-            //console.log("Lat :" +lat);
-            var latLongPoint = new esri.geometry.Point(longi, lat, new esri.SpatialReference({ wkid: 4326 }));
-            //mapOnClickSoilGLayer(graphic);
-            map.setZoom(zoom);
-            map.centerAt(latLongPoint);
         }
-        else{
-            fileName = "not specified";
-            unit = "not specified";
-        } 
+        
+        //console.log("Longi :" +longi);
+        //console.log("Lat :" +lat);
+        var latLongPoint = new esri.geometry.Point(longi, lat, new esri.SpatialReference({wkid: 4326}));
+        //mapOnClickSoilGLayer(graphic);
+        map.setZoom(zoom);
+        map.centerAt(latLongPoint);
+
     }
     //Load earlier polygon
     //loadPolygon();
@@ -314,31 +319,31 @@ require([
         //Polygon edit tool
         editToolbar = new edit(map);
         selectState(StateEnum.ZONESELECT);
-        currentClick = polygon.getPoint(0,1);
-            //create a random color for the symbols
-            var r = Math.floor(Math.random() * 250);
-            var g = Math.floor(Math.random() * 100);
-            var b = Math.floor(Math.random() * 100);
+        currentClick = polygon.getPoint(0, 1);
+        //create a random color for the symbols
+        var r = Math.floor(Math.random() * 250);
+        var g = Math.floor(Math.random() * 100);
+        var b = Math.floor(Math.random() * 100);
 
-            var symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([r, g, b, 0.9]), 4), new dojo.Color([r, g, b, 0]));
-            var infoTemplate = new esri.InfoTemplate("queryRegion", "content");
-            var graphic = new esri.Graphic(polygon, symbol);
-            //soilGLayer.add(graphic);
-            //mapOnClickSoilGLayer(graphic);
-            var center = polygon.getCentroid();
-            centroid = center;
-            var longi = center.getLongitude();
-            var lat = center.getLatitude();
-            var latLongPoint = new esri.geometry.Point(longi, lat, new esri.SpatialReference({ wkid: 4326 })); // TODO check if this should be hard-coded
-            //mapOnClickSoilGLayer(graphic);
-            map.setZoom(14);
-            map.centerAt(latLongPoint);
-            //console.log("Adding call to save polygon");
-            //console.log("polygon " + polygon);
-            addSoilGLayerPolygon(polygon);
-            polygonToggle();
-            //console.log("Poly toggle");
-            return {"long":longi, "lat":lat, "zoom":14};
+//        var symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([r, g, b, 0.9]), 4), new dojo.Color([r, g, b, 0]));
+//        var infoTemplate = new esri.InfoTemplate("queryRegion", "content");
+//        var graphic = new esri.Graphic(polygon, symbol);
+        //soilGLayer.add(graphic);
+        //mapOnClickSoilGLayer(graphic);
+        var center = polygon.getCentroid();
+        centroid = center;
+        var longi = center.getLongitude();
+        var lat = center.getLatitude();
+//        var latLongPoint = new esri.geometry.Point(longi, lat, new esri.SpatialReference({wkid: 4326})); // TODO check if this should be hard-coded
+        //mapOnClickSoilGLayer(graphic);
+//        map.setZoom(14);
+//        map.centerAt(latLongPoint);
+        //console.log("Adding call to save polygon");
+        //console.log("polygon " + polygon);
+        addSoilGLayerPolygon(polygon);
+        polygonToggle();
+        //console.log("Poly toggle");
+        return {"long": longi, "lat": lat, "zoom": 14};
     }
 
     //event handlers
@@ -495,65 +500,68 @@ require([
     //Date on File Name
     function getDateFileName() {
         var dtObj = new Date();
-        dateName = (dtObj.getMonth()+1)+"/"+dtObj.getDate()+"/"+dtObj.getFullYear()+"_"+dtObj.getHours()+":"+dtObj.getMinutes();
+        return (dtObj.getMonth() + 1) + "/" + dtObj.getDate() + "/" + dtObj.getFullYear() + "_" + dtObj.getHours() + ":" + dtObj.getMinutes();
     }
 
     //get arguments passed by URL like site name and unit name 
     function getParams(url) {
         //console.log("URL :" +url);
-        var fileNameTemp = ""; 
-        if(url.indexOf("?") != -1) {
-            fileName = "not specified";
-            unit = "not specified";
+        if (url.indexOf("?") !== -1) {
             var queryStart = url.indexOf("?") + 1,
-            queryEnd   = url.indexOf("#") + 1 || url.length + 1,
-            query = url.slice(queryStart, queryEnd - 1),
-            split1 = query.split("&");
+                    queryEnd = url.indexOf("#") + 1 || url.length + 1,
+                    query = url.slice(queryStart, queryEnd - 1),
+                    split1 = query.split("&");
             //console.log(split1);
             for (i = 0; i < split1.length; i++) {
                 var split2 = split1[i].split("=");
-                if (split2[0] === "site") {
-                    fileName = split2[1].split("%20").join('_');
-                } else if (split2[0] === "unit") {
+//                if (split2[0] === "site") {
+//                    fileName = split2[1].split("%20").join('_');
+//                } else
+                if (split2[0] === "unit") {
                     unit = split2[1].split("%20").join('_');
+//                    fileName = unit;
                 }
             }
             /*if(unit.length >7){
-                unit = unit.substring(0,7);
-            }*/
+             unit = unit.substring(0,7);
+             }*/
             //console.log(fileName,unit);
-            if (fileName !== "not specified") {
-	            var permitIdLB = document.getElementById("permit_id_lb");
-		        permitIdLB.innerHTML = fileName;
-		        permitIdLB.contentEditable = false;
-		        permitIdLB.style.border = "solid";
-		        permitIdLB.style.borderColor = "white";
-		        document.getElementById("map_name_lb").innerHTML = fileName;
-		        document.getElementById("permit_id_edit_mark").style.display = "none";
-	    	}
-	    	if (unit !== "not specified") {
-	        	document.getElementById("map_name_lb").innerHTML = unit;
-	        } else {
-	        	unit = fileName;
-	        }
-        } else {
-            fileName = "not specified";
-            unit = "not specified";
-            //console.log(fileName,unit);
-        } 
+//            if (fileName !== "not specified") {
+//                var permitIdLB = document.getElementById("map_name_lb");
+//                permitIdLB.innerHTML = fileName;
+//                permitIdLB.contentEditable = false;
+//                permitIdLB.style.border = "solid";
+//                permitIdLB.style.borderColor = "white";
+//                document.getElementById("map_name_lb").innerHTML = fileName;
+//                document.getElementById("permit_id_edit_mark").style.display = "none";
+//            }
+            if (unit !== "") {
+                var mapNameLB = document.getElementById("map_name_lb");
+                mapNameLB.innerHTML = unit;
+                mapNameLB.contentEditable = false;
+                mapNameLB.style.border = "solid";
+                mapNameLB.style.borderColor = "white";
+                mapNameLB.innerHTML = unit;
+                document.getElementById("map_name_edit_mark").style.display = "none";
+//                fileName = unit;
+            }
+        }
     }
-    
+
     function getInputParams() {
-    	var permitId = document.getElementById("permit_id_lb").innerHTML;
-    	var mapName = document.getElementById("map_name_lb").innerHTML;
-        fileName = "not specified";
-        unit = "not specified";
-    	if (permitId !== "Enter permit ID") {
-    		fileName = permitId;
-    	}
-    	if (mapName !== "Enter map name") {
-    		unit = mapName;
-    	}
+//    	var permitId = document.getElementById("permit_id_lb").innerHTML;
+        var mapName = document.getElementById("map_name_lb").innerHTML.trim();
+//        fileName = "not specified";
+//        unit = "not specified";
+//    	if (permitId !== "Enter permit ID") {
+//    		fileName = permitId;
+//    	}
+        if (mapName !== "Enter map name") {
+            unit = mapName;
+        } else {
+            unit = "";
+        }
+//            fileName = mapName;
     }
 
     //loading gif visibility handlers
@@ -807,26 +815,24 @@ require([
             var rawGeometries = [];
             County = []; // TODO this might be removed for support multiple plygon query
 
-            function showSoilFeature(){}
-
-            function processResults(featureSet){
-                featureSet.features.forEach(function(graphic){
+            function processResults(featureSet) {
+                featureSet.features.forEach(function (graphic) {
 //                    rawGeometries.push({mukey: graphic.attributes.MUKEY, geometry: graphic.geometry});
-                    rawGeometries.push({mukey: graphic.attributes.MUKEY, geometry: graphic.geometry, county: graphic.attributes.AREASYMBOL, musym:graphic.attributes.MUSYM});
+                    rawGeometries.push({mukey: graphic.attributes.MUKEY, geometry: graphic.geometry, county: graphic.attributes.AREASYMBOL, musym: graphic.attributes.MUSYM});
                 });
                 resultSetCount++;
                 ////console.log("GQ resultSetCount" +resultSetCount);
-                if(resultSetCount === 1){
+                if (resultSetCount === 1) {
                     var graphicResultCount = 0;
-                    rawGeometries.forEach(function(rawGeometry){
+                    rawGeometries.forEach(function (rawGeometry) {
                         rawGeometriessmall = [];
                         soilArea = [];
                         var syncMukey = rawGeometry.mukey;
-                        rawGeometriessmall[0] =  rawGeometry.geometry; 
-                        geometryService.intersect(rawGeometriessmall, editToolbar.getCurrentState().graphic.geometry, function(result){
-                            graphicResultCount++;
-                            result.forEach(function(geometry){
-                                if(geometry != null){
+                        rawGeometriessmall[0] = rawGeometry.geometry;
+                        geometryService.intersect(rawGeometriessmall, editToolbar.getCurrentState().graphic.geometry, function (result) {
+                            
+                            result.forEach(function (geometry) {
+                                if (geometry !== null && geometry !== undefined) {
                                     geometryArray = [];
                                     geometryArray[0] = geometry;
                                     var currentMukey = rawGeometry.mukey;
@@ -835,35 +841,39 @@ require([
                                         County.push(county);
                                     }
                                     ////console.log("GQ County  " +County); 
-                                    var polyArea1 = 0;
-                                    (function wrapper(currentMukey){
-                                        calculateGeometry(geometryArray, function areaCallback(result){
+                                    (function wrapper(currentMukey) {
+                                        calculateGeometry(geometryArray, function areaCallback(result) {
                                             var obj = {
-                                            mukey: currentMukey, 
-                                            polyarea: result.areas[0].toFixed(3),
-                                            county: county
+                                                mukey: currentMukey,
+                                                polyarea: result.areas[0].toFixed(3),
+                                                county: county
                                             }
                                             ////console.log("value : "+ JSON.stringify(obj));
                                             soilArea.push(obj);
+                                            graphicResultCount++;
+                                            var symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 255, 0]), 1), new dojo.Color([43, 149, 255, 0.5]));
+                                            var symbol2 = new esri.symbol.TextSymbol("").setColor(new dojo.Color([255, 255, 255, 1]));
+                                            var graphic = new esri.Graphic(geometry, symbol);
+                                            graphic.setSymbol(symbol);
+                                            symbol2.setText(rawGeometry.musym);
+                                            var graphic2 = new esri.Graphic(geometry, symbol2);
+                                            graphic2.setSymbol(symbol2);
+                                            soilSelLayer.add(graphic);
+                                            soilSelLayer.add(graphic2);
+                                            showProgress(graphicResultCount / rawGeometries.length);
+                                            if (graphicResultCount === rawGeometries.length) {
+                                                hideLoadingImg();
+                                                if (editFlg) {
+                                                    document.getElementById("calcButton").disabled = false;
+                                                } else {
+                                                    dataQuery();
+                                                }
+                                            }
                                         });
                                     }(currentMukey));
-                                    var symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 255, 0]), 1), new dojo.Color([43, 149, 255, 0.5]));
-                                    var symbol2 = new esri.symbol.TextSymbol("").setColor(new dojo.Color([255, 255, 255, 1]));
-                                    var graphic = new esri.Graphic(geometry, symbol);
-                                    graphic.setSymbol(symbol);
-                                    symbol2.setText(rawGeometry.musym);
-                                    var graphic2 = new esri.Graphic(geometry, symbol2);
-                                    graphic2.setSymbol(symbol2);
-                                    soilSelLayer.add(graphic);
-                                    soilSelLayer.add(graphic2);
-                                    bool = true;
+                                    
                                 }
                             });
-                            showProgress(graphicResultCount/rawGeometries.length);
-                            if (graphicResultCount === rawGeometries.length) {
-                                hideLoadingImg();
-                                document.getElementById("calcButton").disabled = false;
-                            }
                         });
                     });
                     //hideLoadingImg();

@@ -55,6 +55,11 @@
             <version>2.25.1</version>
         </dependency>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.afsirs</groupId>
             <artifactId>AFSIRS-Module</artifactId>
             <version>6.3.3-SNAPSHOT</version>
