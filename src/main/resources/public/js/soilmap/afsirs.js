@@ -1062,150 +1062,150 @@ require([
         });
         var array = [];
         array.push({
-            "long":centroid.getLongitude(),
+            "long": centroid.getLongitude(),
             "lat": centroid.getLatitude(),
             "TotalArea": polyArea
         });
         //console.log("Array of lon lat "  + array.lat);
-        array.forEach(function(position){
-                result.afsirs.push(position);
-                
+        array.forEach(function (position) {
+            result.afsirs.push(position);
+
         });
         var arrayPolygon = [];
         arrayPolygon.push(polyJSON);
-        arrayPolygon.forEach(function(ring){
-                result.polygon.push(ring);
-                
+        arrayPolygon.forEach(function (ring) {
+            result.polygon.push(ring);
+
         });
         return JSON.stringify(result);
     }
-    function getMUKEYNames(Attributes){
+    function getMUKEYNames(Attributes) {
         showLoadingImg("");
         var resultSetCount = 0;
 
-        Attributes.forEach(function(attribute){
+        Attributes.forEach(function (attribute) {
             mapuQuery.where = "mukey = '" + attribute.mukey + "'";
             //console.log("MQ County" +attribute.county);
             ////console.log("MQ County[i] "+County[i]);
             //for(var i=0;i<County.length;i++){
-                switch(attribute.county){
-                    //Highlands County
-                    case 'FL055':
-                        mapuQueryTask = mapuQueryTask_Highlands;
+            switch (attribute.county) {
+                //Highlands County
+                case 'FL055':
+                    mapuQueryTask = mapuQueryTask_Highlands;
                     break;
-                    //Orange County
-                    case 'FL095':
-                        mapuQueryTask = mapuQueryTask_Orange;
+                //Orange County
+                case 'FL095':
+                    mapuQueryTask = mapuQueryTask_Orange;
                     break;
-                    //Osecala County
-                    case 'FL097':
-                        mapuQueryTask = mapuQueryTask_Osceola;
+                //Osecala County
+                case 'FL097':
+                    mapuQueryTask = mapuQueryTask_Osceola;
                     break;
-                    //Polk County
-                    case 'FL105':
-                        mapuQueryTask = mapuQueryTask_Polk;
+                //Polk County
+                case 'FL105':
+                    mapuQueryTask = mapuQueryTask_Polk;
                     break;
-                    //Lake County 
-                    case 'FL607':
-                        
-                        mapuQueryTask = mapuQueryTask_Lake607;
+                //Lake County 
+                case 'FL607':
+
+                    mapuQueryTask = mapuQueryTask_Lake607;
                     break;
-                    //Lake County
-                    case 'FL609':
-                        mapuQueryTask = mapuQueryTask_Lake609;
+                //Lake County
+                case 'FL609':
+                    mapuQueryTask = mapuQueryTask_Lake609;
                     break;
-                    default:
-                            //do nothing
-                            //console.log("In nothing");
-                }
-                mapuQueryTask.execute(mapuQuery, function(featureSet){
-                    featureSet.features.forEach(function(graphic){
-                        attribute.soilName = graphic.attributes.muname;
-                    });
-                    resultSetCount++;
-                    if(resultSetCount === Attributes.length)
-                        getCokeys(Attributes);
+                default:
+                    //do nothing
+                    //console.log("In nothing");
+            }
+            mapuQueryTask.execute(mapuQuery, function (featureSet) {
+                featureSet.features.forEach(function (graphic) {
+                    attribute.soilName = graphic.attributes.muname;
                 });
+                resultSetCount++;
+                if (resultSetCount === Attributes.length)
+                    getCokeys(Attributes);
+            });
         });
     }
 
-    function getCokeys(Attributes){
+    function getCokeys(Attributes) {
         var resultSetCount = 0;
-        
-        Attributes.forEach(function(attribute){
+
+        Attributes.forEach(function (attribute) {
             attribute.componentList = [];
             compQuery.where = "mukey = '" + attribute.mukey + "'";
             //console.log("CQ County" +attribute.county);
-            switch(attribute.county){
-                    //Highlands County
-                    case 'FL055':
-                        
-                        compQueryTask = compQueryTask_Highlands;
-                        
+            switch (attribute.county) {
+                //Highlands County
+                case 'FL055':
+
+                    compQueryTask = compQueryTask_Highlands;
+
                     break;
-                    //Orange County
-                    case 'FL095':
-                        
-                        compQueryTask = compQueryTask_Orange;
-                        
+                //Orange County
+                case 'FL095':
+
+                    compQueryTask = compQueryTask_Orange;
+
                     break;
-                    //Osecala County
-                    case 'FL097':
-                        
-                        compQueryTask = compQueryTask_Osceola;
-                        
+                //Osecala County
+                case 'FL097':
+
+                    compQueryTask = compQueryTask_Osceola;
+
                     break;
-                    //Polk County
-                    case 'FL105':
-                        
-                        compQueryTask = compQueryTask_Polk;
-                        
+                //Polk County
+                case 'FL105':
+
+                    compQueryTask = compQueryTask_Polk;
+
                     break;
-                    //Lake County 
-                    case 'FL607':
-                        
-                        compQueryTask = compQueryTask_Lake607;
-                        
+                //Lake County 
+                case 'FL607':
+
+                    compQueryTask = compQueryTask_Lake607;
+
                     break;
-                    //Lake County
-                    case 'FL609':
-                        
-                        compQueryTask = compQueryTask_Lake609;
-                        
+                //Lake County
+                case 'FL609':
+
+                    compQueryTask = compQueryTask_Lake609;
+
                     break;
-                    default:
-                            //do nothing
-                            //console.log("In nothing");
-                }
-            compQueryTask.execute(compQuery, function(featureSet){
+                default:
+                    //do nothing
+                    //console.log("In nothing");
+            }
+            compQueryTask.execute(compQuery, function (featureSet) {
                 var length = featureSet.features.length;
                 var maxindex = 0;
                 var maxval = featureSet.features[0].attributes.comppct_r;
-                for(var i = 0; i < length; i++){
-                    if(featureSet.features[i].attributes.comppct_r > maxval) {
+                for (var i = 0; i < length; i++) {
+                    if (featureSet.features[i].attributes.comppct_r > maxval) {
                         maxindex = i;
                         maxval = featureSet.features[i].attributes.comppct_r;
                     }
-                    var componentArea = ((attribute.soilArea * featureSet.features[i].attributes.comppct_r)/100).toFixed(3);
+                    var componentArea = ((attribute.soilArea * featureSet.features[i].attributes.comppct_r) / 100).toFixed(3);
                     //console.log("Componenet Area " + componentArea);
                     //console.log("Total Area " + polyArea);
-                    var soilPercentage = (componentArea/polyArea) * 100;
+                    var soilPercentage = (componentArea / polyArea) * 100;
                     //console.log("soilPercentage " + soilPercentage);
                     //if(featureSet.features[i].attributes.comppct_r>5){
-                    if(soilPercentage>=0){                      
+                    if (soilPercentage >= 0) {
                         attribute.componentList.push({
-                             "mukey":attribute.mukey,
-                             "musym":attribute.musym,
-                             "mukeyName":attribute.soilName,
-                             "county":attribute.county,
-                             "sl_source" : "Fl soil map",
-                             "cokey":featureSet.features[i].attributes.cokey,
-                             "soilName":featureSet.features[i].attributes.compname,
-                             "comppct_r":featureSet.features[i].attributes.comppct_r,
-                             "slro":featureSet.features[i].attributes.slro,
-                             "salb":featureSet.features[i].attributes.salb,
-                             "sadr":featureSet.features[i].attributes.sadr,
-                             "compArea": componentArea
+                            "mukey": attribute.mukey,
+                            "musym": attribute.musym,
+                            "mukeyName": attribute.soilName,
+                            "county": attribute.county,
+                            "sl_source": "Fl soil map",
+                            "cokey": featureSet.features[i].attributes.cokey,
+                            "soilName": featureSet.features[i].attributes.compname,
+                            "comppct_r": featureSet.features[i].attributes.comppct_r,
+                            "slro": featureSet.features[i].attributes.slro,
+                            "salb": featureSet.features[i].attributes.salb,
+                            "sadr": featureSet.features[i].attributes.sadr,
+                            "compArea": componentArea
                         });
                     }
                 }
@@ -1217,94 +1217,95 @@ require([
                 attribute.sadr = featureSet.features[maxindex].attributes.drainagecl;
 
                 attribute.soilLayer = [];
-                var aryLength = attribute.componentList.length-1;
-                attribute.componentList.forEach(function(component){
+                var aryLength = attribute.componentList.length - 1;
+                attribute.componentList.forEach(function (component) {
                     component.soilLayer = [];
                     chorQuery.where = "cokey = '" + component.cokey + "'";
                     //console.log("CHQ County" +attribute.county);
-                    switch(component.county){
-                    //Highlands County
-                    case 'FL055':
-                        
-                        chorQueryTask = chorQueryTask_Highlands;
-                        
-                    break;
-                    //Orange County
-                    case 'FL095':
-                        
-                        chorQueryTask = chorQueryTask_Orange;
-                        
-                    break;
-                    //Osecala County
-                    case 'FL097':
-                        
-                        chorQueryTask = chorQueryTask_Osceola;
-                        
-                    break;
-                    //Polk County
-                    case 'FL105':
-                        
-                        chorQueryTask = chorQueryTask_Polk;
-                        
-                    break;
-                    //Lake County 
-                    case 'FL607':
-                        
-                        chorQueryTask = chorQueryTask_Lake607;
-                        
-                    break;
-                    //Lake County
-                    case 'FL609':
-                        chorQueryTask = chorQueryTask_Lake609;
-                        break;
-                    default:
+                    switch (component.county) {
+                        //Highlands County
+                        case 'FL055':
+
+                            chorQueryTask = chorQueryTask_Highlands;
+
+                            break;
+                        //Orange County
+                        case 'FL095':
+
+                            chorQueryTask = chorQueryTask_Orange;
+
+                            break;
+                        //Osecala County
+                        case 'FL097':
+
+                            chorQueryTask = chorQueryTask_Osceola;
+
+                            break;
+                        //Polk County
+                        case 'FL105':
+
+                            chorQueryTask = chorQueryTask_Polk;
+
+                            break;
+                        //Lake County 
+                        case 'FL607':
+
+                            chorQueryTask = chorQueryTask_Lake607;
+
+                            break;
+                        //Lake County
+                        case 'FL609':
+                            chorQueryTask = chorQueryTask_Lake609;
+                            break;
+                        default:
                             //do nothing
                             //console.log("In nothing");
-                }
-                    chorQueryTask.execute(chorQuery, function(featureSet){
-                        featureSet.features.forEach(function(graphic){
-                            if(graphic.attributes.wthirdbar_r == null || graphic.attributes.wfifteenbar_r == null){ 
-                                var missing_data = missingVals(graphic.attributes.claytotal_r,graphic.attributes.silttotal_r,graphic.attributes.sandtotal_r);
-                                if(graphic.attributes.wthirdbar_r == null){
+                    }
+                    chorQueryTask.execute(chorQuery, function (featureSet) {
+                        featureSet.features.forEach(function (graphic) {
+                            if ((graphic.attributes.wthirdbar_r === null || graphic.attributes.wthirdbar_r === undefined)
+                                    || graphic.attributes.wfifteenbar_r === null || graphic.attributes.wfifteenbar_r === undefined) {
+                                var missing_data = missingVals(graphic.attributes.claytotal_r, graphic.attributes.silttotal_r, graphic.attributes.sandtotal_r);
+                                if (graphic.attributes.wthirdbar_r === null || graphic.attributes.wthirdbar_r === undefined) {
                                     //console.log("dul = "+ missing_data.dul+ "ll = "+missing_data.ll);
                                     graphic.attributes.wthirdbar_r = parseFloat(missing_data.dul);
                                 }
-                                if(graphic.attributes.wfifteenbar_r == null){
+                                if (graphic.attributes.wfifteenbar_r === null || graphic.attributes.wfifteenbar_r === undefined) {
                                     //console.log("ll = null");
                                     graphic.attributes.wfifteenbar_r = parseFloat(missing_data.ll);
                                     //console.log("ll new = " + graphic.attributes.wfifteenbar_r);
-                                }    
+                                }
                             }
                             //console.log(component.cokey+","+graphic.attributes.wthirdbar_r);
                             //checking the first 3 values to remove duplicates. Hypotheseis : Duplicate values come in pairs and 3 values are enough to find that.
-                            if(graphic.attributes.wthirdbar_r==oldsldul && oldsllb == graphic.attributes.hzdepb_r && oldslll == graphic.attributes.wfifteenbar_r){
+                            if (graphic.attributes.wthirdbar_r === oldsldul && oldsllb === graphic.attributes.hzdepb_r && oldslll === graphic.attributes.wfifteenbar_r) {
                                 //do nothing
                             } else {
                                 //console.log("I am here "+oldsldul+" "+component.cokey+","+graphic.attributes.wthirdbar_r);
-                                oldsldul =graphic.attributes.wthirdbar_r
-                                oldsllb=graphic.attributes.hzdepb_r
-                                oldslll=graphic.attributes.wfifteenbar_r
+                                oldsldul = graphic.attributes.wthirdbar_r;
+                                oldsllb = graphic.attributes.hzdepb_r;
+                                oldslll = graphic.attributes.wfifteenbar_r;
                                 component.soilLayer.push({
-                                    "sldul" : Number((Number(graphic.attributes.wthirdbar_r) / 100).toFixed(3)),
-                                    "sllb"  : graphic.attributes.hzdepb_r, //hzdepb
-                                    "slll"  : Number((Number(graphic.attributes.wfifteenbar_r) / 100).toFixed(3)),
-                                    "clay"  : graphic.attributes.claytotal_r,
-                                    "sand"  : graphic.attributes.sandtotal_r,
-                                    "silt"  : graphic.attributes.silttotal_r,
-                                    "slcf"  : graphic.attributes.fragvol_r,
-                                    "slbdm" : graphic.attributes.partdensity,
-                                    "sloc"  : graphic.attributes.claysizedcarb_r,
-                                    "slphw" : graphic.attributes.ph1to1h2o_r,
-                                    "slcec" : graphic.attributes.cec7_r,
-                                    "slna" : graphic.attributes.sar_r,
-                                    "slfe" : graphic.attributes.freeiron_r
+                                    "sldul": Number((Number(graphic.attributes.wthirdbar_r) / 100).toFixed(3)),
+                                    "sllb": graphic.attributes.hzdepb_r, //hzdepb
+                                    "slll": Number((Number(graphic.attributes.wfifteenbar_r) / 100).toFixed(3)),
+                                    "clay": graphic.attributes.claytotal_r,
+                                    "sand": graphic.attributes.sandtotal_r,
+                                    "silt": graphic.attributes.silttotal_r,
+                                    "slcf": graphic.attributes.fragvol_r,
+                                    "slbdm": graphic.attributes.partdensity,
+                                    "sloc": graphic.attributes.claysizedcarb_r,
+                                    "slphw": graphic.attributes.ph1to1h2o_r,
+                                    "slcec": graphic.attributes.cec7_r,
+                                    "slna": graphic.attributes.sar_r,
+                                    "slfe": graphic.attributes.freeiron_r
                                 });
                             }
                         });
                         resultSetCount++;
                         //if(resultSetCount === Attributes.length){
-                            // alert(JSON.stringify(Attributes));
-                            showPopup(Attributes);
+                        // alert(JSON.stringify(Attributes));
+                        showPopup(Attributes);
                         //}
                     });
                 });
@@ -1312,7 +1313,7 @@ require([
         });
     }
 
-    function showPopup(Attributes){
+    function showPopup(Attributes) {
         var htmlString = getWindowContent(Attributes);
         //console.log("Attributes in show popup" +JSON.stringify(Attributes));
         getInputParams();
@@ -1321,150 +1322,152 @@ require([
         document.getElementById("queryRetTable").style.display = "block";
         var retTableDir = document.getElementById("tblBody");
         retTableDir.innerHTML = htmlString;
-        
-        Attributes.forEach(function(attribute){
-            $('[data-toggle="' + attribute.mukey + '"]').popover();  
+
+        Attributes.forEach(function (attribute) {
+            $('[data-toggle="' + attribute.mukey + '"]').popover();
         });
 
         var saveButton = document.getElementById("saveButton");
         saveButton.disabled = false;
-        saveButton.onclick = function() {
+        saveButton.onclick = function () {
+            getInputParams();
+            if (unit === "") {
+                alert("Please enter a map name.");
+                return;
+            }
             var array = [];
             //console.log("Inside save " );
-            $("#tbl input[name='link']:checked").each(function() {
+            $("#tbl input[name='link']:checked").each(function () {
                 //for each checked checkbox, iterate through its parent's siblings
-	            //console.log("Sub array " + subArray);
-	            var key = this.value;
-	            $("#tbl input[name='link_" + key + "']:checked").each(function() {
-	            	subArray = $(this).parent().siblings().map(function() {
-		                return $(this).text().trim();
-		            }).get();
-		            var cokey = subArray[3];
-		            var mukey = subArray[4];
-		            //console.log("cokey " + cokey);
-		            //console.log("mukey " + mukey);
-		            //console.log("Array " + array);
-		            if(array == null){
-		                var subArray = [];
-		                subArray.push(cokey);
-		                array.push({
-		                    "mukey":mukey,
-		                    "cokeyArray": subArray
-		                });
-	                } else {
-	                    var bool = false;
-	                    array.forEach(function(obj){
-	                        if(obj.mukey==mukey){
-	                            obj.cokeyArray.push(cokey);
-	                            bool = true;
-	                        }
-	                    });
-	                    if(bool == false){
-	                        var subArray = [];
-	                        subArray.push(cokey);
-	                        array.push({
-	                            "mukey":mukey,
-	                            "cokeyArray": subArray
-	                        });
-	                    }
-	                }
-	                array.push(mukey);
-	            });
-            })
+                //console.log("Sub array " + subArray);
+                var key = this.value;
+                $("#tbl input[name='link_" + key + "']:checked").each(function () {
+                    subArray = $(this).parent().siblings().map(function () {
+                        return $(this).text().trim();
+                    }).get();
+                    var cokey = subArray[3];
+                    var mukey = subArray[4];
+                    //console.log("cokey " + cokey);
+                    //console.log("mukey " + mukey);
+                    //console.log("Array " + array);
+                    if (subArray === null || subArray === undefined) {
+                        var subArray = [];
+                        subArray.push(cokey);
+                        array.push({
+                            "mukey": mukey,
+                            "cokeyArray": subArray
+                        });
+                    } else {
+                        var bool = false;
+                        array.forEach(function (obj) {
+                            if (obj.mukey === mukey) {
+                                obj.cokeyArray.push(cokey);
+                                bool = true;
+                            }
+                        });
+                        if (bool === false) {
+                            var subArray = [];
+                            subArray.push(cokey);
+                            array.push({
+                                "mukey": mukey,
+                                "cokeyArray": subArray
+                            });
+                        }
+                    }
+                    array.push(mukey);
+                });
+            });
             //to print the value of array
             var text = getFinalJson(Attributes, array);
             var blob = new Blob([text], {type: "text/plain;charset=utf-8"});
-            //get date for fileName
-            getDateFileName();
-            getInputParams();
             //console.log("Before save ",fileName,unit);
-            saveAs(blob,unit+".json");
+            saveAs(blob, unit + ".json");
             //setTimeout(window.location.href = "http://abe.ufl.edu/bmpmodel/Shivam/v3_shivam/success.html#",2000);
         };
     }
-    
-    function getWindowContent(Attributes){
-        
+
+    function getWindowContent(Attributes) {
+
         var htmlString;
         var soilTypeHtml1 = "<table class=\"table table-striped table-condensed\" style=\"width:220px\"><thead><tr><th>Soil Type</th><th>Pct.(%)</th><th style=\"display:none;\">Mukey</th><tr></thead><tbody>";
         var soilTypeHtml3 = "</tbody></table>";
         var soilTypeHtml2;
 
-        Attributes.sort(function(a, b){
-             var areaA=parseFloat(a.soilArea), areaB=parseFloat(b.soilArea);
-             if (areaB < areaA) //sort string ascending
-              return -1;
-             if (areaB > areaA)
-              return 1;
-             return 0; //default return value (no sorting)
+        Attributes.sort(function (a, b) {
+            var areaA = parseFloat(a.soilArea), areaB = parseFloat(b.soilArea);
+            if (areaB < areaA) //sort string ascending
+                return -1;
+            if (areaB > areaA)
+                return 1;
+            return 0; //default return value (no sorting)
         });
 
-       Attributes.forEach(function(attribute){
-            attribute.componentList.forEach(function(component){
-                component.soilLayer.sort(function(a,b){
-                    var comA=a.sllb, comB=b.sllb;
-                     if (comB > comA) //sort string ascending
-                      return -1;
-                     if (comB < comA)
-                      return 1;
-                     return 0; //default return value
+        Attributes.forEach(function (attribute) {
+            attribute.componentList.forEach(function (component) {
+                component.soilLayer.sort(function (a, b) {
+                    var comA = a.sllb, comB = b.sllb;
+                    if (comB > comA) //sort string ascending
+                        return -1;
+                    if (comB < comA)
+                        return 1;
+                    return 0; //default return value
                 });
             });
         });
 
-       Attributes.forEach(function(attribute){
-            attribute.componentList.sort(function(a,b){
-                var areaA=parseFloat(a.compArea), areaB=parseFloat(b.compArea);
-                 if (areaB < areaA) //sort string ascending
-                  return -1;
-                 if (areaB > areaA)
-                  return 1;
-                 return 0; //default return value (no sorting)
+        Attributes.forEach(function (attribute) {
+            attribute.componentList.sort(function (a, b) {
+                var areaA = parseFloat(a.compArea), areaB = parseFloat(b.compArea);
+                if (areaB < areaA) //sort string ascending
+                    return -1;
+                if (areaB > areaA)
+                    return 1;
+                return 0; //default return value (no sorting)
             });
         });
 
 
 
-        Attributes.forEach(function(attribute){
-            if(htmlString==null){
-                  htmlString = "";
+        Attributes.forEach(function (attribute) {
+            if (htmlString === undefined) {
+                htmlString = "";
             }
             soilTypeHtml2 = "";
             var compHtmlStr = "";
             var ifOnlyWater = true;
-            attribute.componentList.forEach(function(component){
-            	var areaStr = component.compArea;
-            	if (Number(areaStr) === 0) {
-            		areaStr = "<0.001"
-            	}
-                if(component.soilName=="Water"){
+            attribute.componentList.forEach(function (component) {
+                var areaStr = component.compArea;
+                if (Number(areaStr) === 0) {
+                    areaStr = "<0.001";
+                }
+                if (component.soilName === "Water") {
                     compHtmlStr = compHtmlStr + "<tr style=\"display:none;\"><td><input type=\"checkbox\" disabled/></td><td>" + component.musym + "</td><td>" + component.soilName + "</td><td>" + areaStr + "</td><td style=\"display:none;\">" + component.cokey + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
                 } else {
                     ifOnlyWater = false;
                     if (attribute.unitPct >= 5) {
-                    	compHtmlStr = compHtmlStr + "<tr style=\"display:none;\"><td><input type=\"checkbox\" name=\"link_" + component.mukey + "\" checked/></td><td>" + component.musym + "</td><td>" + component.soilName + "</td><td>" + areaStr + "</td><td style=\"display:none;\">" + component.cokey + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
+                        compHtmlStr = compHtmlStr + "<tr style=\"display:none;\"><td><input type=\"checkbox\" name=\"link_" + component.mukey + "\" checked/></td><td>" + component.musym + "</td><td>" + component.soilName + "</td><td>" + areaStr + "</td><td style=\"display:none;\">" + component.cokey + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
                     } else {
-                    	compHtmlStr = compHtmlStr + "<tr style=\"display:none;\"><td><input type=\"checkbox\" name=\"link_" + component.mukey + "\"/></td><td>" + component.musym + "</td><td>" + component.soilName + "</td><td>" + areaStr + "</td><td style=\"display:none;\">" + component.cokey + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
+                        compHtmlStr = compHtmlStr + "<tr style=\"display:none;\"><td><input type=\"checkbox\" name=\"link_" + component.mukey + "\"/></td><td>" + component.musym + "</td><td>" + component.soilName + "</td><td>" + areaStr + "</td><td style=\"display:none;\">" + component.cokey + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
                     }
                     soilTypeHtml2 = soilTypeHtml2 + "<tr><td class=\"text-left\">" + component.soilName + "</td><td>" + component.comppct_r + "</td><td style=\"display:none;\">" + component.cokey + "</td></tr>";
                 }
             });
             var areaStr = attribute.soilArea;
-        	if (Number(areaStr) === 0) {
-        		areaStr = "<0.001"
-        	}
+            if (Number(areaStr) === 0) {
+                areaStr = "<0.001";
+            }
             if (ifOnlyWater) {
                 htmlString = htmlString + "<tr class=\"active\"><td><input type=\"checkbox\" disabled/></td><td>" + attribute.musym + "</td><td class=\"text-left\">" + attribute.soilName + "</td><td>" + areaStr + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
             } else {
-            	if (attribute.unitPct >= 5) {
-                	htmlString = htmlString + "<tr class=\"active\"><td><input type=\"checkbox\" name=\"link\" checked onchange=\"checkAllSub(this)\" value=\"" + attribute.mukey + "\"/></td><td>" + attribute.musym + "</td><td class=\"text-left\"><a href=\"#\" data-toggle=\""+ attribute.mukey + "\" title=\"Map Unit Composition\" data-html=\"true\" data-trigger=\"focus\" data-content='" + soilTypeHtml1 + soilTypeHtml2 + soilTypeHtml3 + "'>" + attribute.soilName + "</a></td><td>" + areaStr + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
+                if (attribute.unitPct >= 5) {
+                    htmlString = htmlString + "<tr class=\"active\"><td><input type=\"checkbox\" name=\"link\" checked onchange=\"checkAllSub(this)\" value=\"" + attribute.mukey + "\"/></td><td>" + attribute.musym + "</td><td class=\"text-left\"><a href=\"#\" data-toggle=\"" + attribute.mukey + "\" title=\"Map Unit Composition\" data-html=\"true\" data-trigger=\"focus\" data-content='" + soilTypeHtml1 + soilTypeHtml2 + soilTypeHtml3 + "'>" + attribute.soilName + "</a></td><td>" + areaStr + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
                 } else {
-                	htmlString = htmlString + "<tr class=\"active\"><td><input type=\"checkbox\" name=\"link\" onchange=\"checkAllSub(this)\" value=\"" + attribute.mukey + "\"/></td><td>" + attribute.musym + "</td><td class=\"text-left\"><a href=\"#\" data-toggle=\""+ attribute.mukey + "\" title=\"Map Unit Composition\" data-html=\"true\" data-trigger=\"focus\" data-content='" + soilTypeHtml1 + soilTypeHtml2 + soilTypeHtml3 + "'>" + attribute.soilName + "</a></td><td>" + areaStr + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
+                    htmlString = htmlString + "<tr class=\"active\"><td><input type=\"checkbox\" name=\"link\" onchange=\"checkAllSub(this)\" value=\"" + attribute.mukey + "\"/></td><td>" + attribute.musym + "</td><td class=\"text-left\"><a href=\"#\" data-toggle=\"" + attribute.mukey + "\" title=\"Map Unit Composition\" data-html=\"true\" data-trigger=\"focus\" data-content='" + soilTypeHtml1 + soilTypeHtml2 + soilTypeHtml3 + "'>" + attribute.soilName + "</a></td><td>" + areaStr + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
                 }
             }
             htmlString = htmlString + compHtmlStr;
         });
-        
+
         return htmlString;
     }
 });
@@ -1476,7 +1479,7 @@ function checkAll(source) {
     var checkboxes = document.getElementsByName('link');
     var checked = source.innerHTML === "Select All";
     //console.log(checkboxes);
-    for (var i = 0; i < checkboxes.length; i++){
+    for (var i = 0; i < checkboxes.length; i++) {
         checkboxes[i].checked = checked;
         checkAllSub(checkboxes[i]);
     }
@@ -1489,8 +1492,8 @@ function checkAll(source) {
 
 function checkAllSub(source) {
     var checkboxes = document.getElementsByName('link_' + source.value);
-    for (var i = 0; i < checkboxes.length; i++){
+    for (var i = 0; i < checkboxes.length; i++) {
         checkboxes[i].checked = source.checked;
     }
-	
+
 }
