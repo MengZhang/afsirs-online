@@ -825,6 +825,7 @@ require([
                 if (resultSetCount === 1) {
                     var graphicResultCount = 0;
                     rawGeometries.forEach(function (rawGeometry) {
+                        graphicResultCount++;
                         rawGeometriessmall = [];
                         soilArea = [];
                         var syncMukey = rawGeometry.mukey;
@@ -850,7 +851,7 @@ require([
                                             }
                                             ////console.log("value : "+ JSON.stringify(obj));
                                             soilArea.push(obj);
-                                            graphicResultCount++;
+                                            graphicResultCount += 4;
                                             var symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 255, 0]), 1), new dojo.Color([43, 149, 255, 0.5]));
                                             var symbol2 = new esri.symbol.TextSymbol("").setColor(new dojo.Color([255, 255, 255, 1]));
                                             var graphic = new esri.Graphic(geometry, symbol);
@@ -860,8 +861,8 @@ require([
                                             graphic2.setSymbol(symbol2);
                                             soilSelLayer.add(graphic);
                                             soilSelLayer.add(graphic2);
-                                            showProgress(graphicResultCount / rawGeometries.length);
-                                            if (graphicResultCount === rawGeometries.length) {
+                                            showProgress(graphicResultCount / rawGeometries.length / 5);
+                                            if (graphicResultCount === rawGeometries.length * 5) {
                                                 hideLoadingImg();
                                                 if (editFlg) {
                                                     document.getElementById("calcButton").disabled = false;
@@ -871,7 +872,7 @@ require([
                                             }
                                         });
                                     }(currentMukey));
-                                    
+                                    showProgress(graphicResultCount / rawGeometries.length / 5);
                                 }
                             });
                         });
