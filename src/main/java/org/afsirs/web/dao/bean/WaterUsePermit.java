@@ -56,6 +56,7 @@ public class WaterUsePermit {
     private String water_table_depth;
 
     // Soil
+    private String soil_id;
     private String soil_source;
     private String soil_unit_name;
     private LinkedHashSet<String> dbSoilNames;
@@ -111,9 +112,22 @@ public class WaterUsePermit {
         }
     }
     
+    public void setDbSoilNames(LinkedHashSet<String> names) {
+        if (names != null) {
+            dbSoilNames = new LinkedHashSet<>();
+            dbSoilNames.addAll(names);
+        } else {
+            dbSoilNames = null;
+        }
+    }
+    
     public void setDbSoilNames(String[] names) {
-        dbSoilNames = new LinkedHashSet<>();
-        dbSoilNames.addAll(Arrays.asList(names));
+        if (names != null) {
+            dbSoilNames = new LinkedHashSet<>();
+            dbSoilNames.addAll(Arrays.asList(names));
+        } else {
+            dbSoilNames = null;
+        }
     }
 
     public void setHgt(String hgt) {
@@ -160,6 +174,57 @@ public class WaterUsePermit {
             this.setAldpArr(toStringArray(data.getALDP()));
 
         }
+    }
+    
+    public void setSoilData(SoilData soilData) {
+        latitude = soilData.getLatitude();
+        longitude = soilData.getLongitude();
+        plantedArea = soilData.getPlantedArea();
+        polygon_info = soilData.getPolygon_info();
+        polygon_loc_info = soilData.getPolygon_loc_info();
+        soil_source = soilData.getSoil_source();
+        soil_unit_name = soilData.getSoil_unit_name();
+        totalArea = soilData.getTotalArea();
+        soil_json = soilData.getSoil_json();
+        soils.clear();
+        for (Soil soil : soilData.getSoils()) {
+            if (water_hold_capacity != null) {
+                soil.setWHC(water_hold_capacity);
+            }
+            soils.add(soil);
+        }
+        if (dbSoilNames != null) {
+            dbSoilNames.clear();
+            if (soilData.getDbSoilNames() != null) {
+                dbSoilNames.addAll(soilData.getDbSoilNames());
+            }
+        } else {
+            dbSoilNames = soilData.getDbSoilNames();
+        }
+        if ("DB".equals(soil_source) && dbSoilNames != null) {
+            ArrayList<Soil> dbSoils = DataUtil.readSoils(dbSoilNames);
+            for (int i = 0; i < soils.size() && i < dbSoils.size(); i++) {
+                Soil dbSoil = dbSoils.get(i);
+                soils.get(i).setValues(water_hold_capacity, dbSoil.getWCL(), dbSoil.getWCU(), dbSoil.getDU(), new String[3]);
+            }
+        }
+    }
+    
+    public SoilData getSoilData() {
+        SoilData ret = new SoilData();
+        ret.setLatitude(latitude);
+        ret.setLongitude(longitude);
+        ret.setPlantedArea(plantedArea);
+        ret.setPolygon_info(polygon_info);
+        ret.setPolygon_loc_info(polygon_loc_info);
+        ret.setSoil_source(soil_source);
+        ret.setSoil_unit_name(soil_unit_name);
+        ret.setTotalArea(totalArea);
+        ret.setSoil_json(soil_json);
+        ret.setDbSoilNames(dbSoilNames);
+        ret.setSoils(soils);
+        ret.setUser_id(user_id);
+        return ret;
     }
 
     private static ArrayList<String> toStringArray(double[] values) {
@@ -343,6 +408,7 @@ public class WaterUsePermit {
         ret.setEt_extracted(data.getOrBlank("et_extracted"));
         ret.setWater_table_depth(data.getOrBlank("water_table_depth"));
 
+        ret.setSoil_id(data.getObjId("soil_id"));
         String soilSource = data.getOrDefault("soil_source", null);
         ret.setSoil_source(soilSource);
         ret.setSoil_unit_name(data.getOrBlank("soil_unit_name"));

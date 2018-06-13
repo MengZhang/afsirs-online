@@ -208,7 +208,7 @@
 
         <div class="container">
             <#if operation_result == "Failed" >
-            <p>${error_message!"Permit Already Exist"}</p>
+            <p>${error_message!"Permit ID Already Exists"}</p>
             </#if>
 
             <form id="createPermitForm" action="/wateruse/permit/create" class="form-horizontal" method="post">

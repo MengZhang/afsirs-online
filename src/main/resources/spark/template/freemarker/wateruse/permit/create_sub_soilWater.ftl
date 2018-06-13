@@ -64,6 +64,7 @@
                 document.getElementById('planted_area_input').max = plantedArea;
                 document.getElementById('planted_area').value = plantedArea;
                 document.getElementById('planted_area_input').value = plantedArea;
+                document.getElementById('soil_id').value = "";
                 showError("soil_file", "", false);
                 calcDistance(afsirsInfo[0]["lat"], afsirsInfo[0]["long"]);
                 selectNearestLoc('et', document.getElementById("et_nearest_flg"));
@@ -160,9 +161,7 @@
     
     function openSoilMap() {
         var base = document.getElementById('soil_map_url').value;
-        var site = document.getElementById('permitId').value;
-        var unit = document.getElementById('soil_unit_name').value;
-        var json = document.getElementById('polygon_info').value;
+        var soilId = document.getElementById('soil_id').value;
         var totalArea = document.getElementById('total_area').value;
         var zoom = 9;
         if (totalArea !== "") {
@@ -173,21 +172,34 @@
                 zoom = 1;
             }
         }
-        var url;
-        if (json !== "") {
-            if (base.indexOf("?") > 0) {
-                base = base.substring(0, base.indexOf("?"));
-            }
-            url = base + "?site=" + site + "&unit=" + unit + "&zoom=" + zoom + "&json=" + encodeURIComponent(json);
+        if (soilId !== "") {
+            var url = base + "?soil_id=" + soilId + "&zoom=" + zoom;
+            window.open(url);
         } else {
-            if (base.indexOf("?") > 0) {
-                url = base + "&site=" + site + "&unit=" + unit + "&zoom=" + zoom;
-            } else {
-                url = base + "?site=" + site + "&unit=" + unit + "&zoom=" + zoom;
+            var unit = document.getElementById('soil_unit_name').value;
+            var json = document.getElementById('polygon_info').value;
+            var soilMapform = document.createElement("form");
+
+            soilMapform.method = "POST";
+            soilMapform.action = base;
+            soilMapform.target = "_blank";
+
+            soilMapform.appendChild(createInput("area", totalArea));
+            soilMapform.appendChild(createInput("unit", unit));
+            soilMapform.appendChild(createInput("zoom", zoom));
+            if (json !== "") {
+                soilMapform.appendChild(createInput("json", json));
             }
-            
+            document.body.appendChild(soilMapform);
+            soilMapform.submit();
         }
-        window.open(url);
+    }
+    
+    function createInput(name, value) {
+        var input = document.createElement("input");
+        input.value = value;
+        input.name = name;
+        return input;
     }
     
     function showDBSelection(pctArr) {
@@ -363,9 +375,10 @@
                 <input type="hidden" id="soil_file_json" name="soil_file_json" value='{"soils":${permit["soil_json"]!"[]"}}'>
             </div>
             <div class="col-sm-4">
+                <input type="hidden" id="soil_id" name="soil_id" value='${permit["soil_id"]!}'>
                 <input type="hidden" id="polygon_info" name="polygon_info" value='${permit["polygon_info"]!}'>
                 <input type="hidden" id="polygon_loc_info" name="polygon_loc_info" value='${permit["polygon_loc_info"]!}'>
-                <input type="hidden" id="soil_map_url" value="${soil_map_url!'/http://afsirs-online-test.herokuapp.com/SoilMap/'}">
+                <input type="hidden" id="soil_map_url" value="${soil_map_url!'/http://afsirs-online-test.herokuapp.com/datatools/soilmap'}">
                 <button type="button" class="btn btn-primary text-right" onclick="openSoilMap()">View Soil Map</button>
                 <button type="button" class="btn btn-primary text-right" onclick="" disabled>Show Soil Data</button>
             </div>
