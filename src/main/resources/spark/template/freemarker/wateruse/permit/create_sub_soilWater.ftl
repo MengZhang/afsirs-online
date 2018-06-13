@@ -186,6 +186,7 @@
 
             soilMapform.appendChild(createInput("area", totalArea));
             soilMapform.appendChild(createInput("unit", unit));
+            soilMapform.appendChild(createInput("user", "${permit['user_id']!}"));
             soilMapform.appendChild(createInput("zoom", zoom));
             if (json !== "") {
                 soilMapform.appendChild(createInput("json", json));
