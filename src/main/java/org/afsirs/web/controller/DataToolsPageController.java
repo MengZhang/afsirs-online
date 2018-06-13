@@ -29,10 +29,10 @@ public class DataToolsPageController {
     public static Route serveSoilMapPage2 = (Request request, Response response) -> {
         LOG.info("Serve Soil Map Page2");
         Map<String, Object> attributes = new HashMap<>();
-        if (!ViewUtil.isLogined(request)) {
-            response.redirect(Path.Web.LOGIN);
-            return ViewUtil.getLoginPage(request, attributes);
-        }
+//        if (!ViewUtil.isLogined(request)) {
+//            response.redirect(Path.Web.LOGIN);
+//            return ViewUtil.getLoginPage(request, attributes);
+//        }
         return DataToolsViewUtil.getSoilMapPage(request, attributes);
     };
 }

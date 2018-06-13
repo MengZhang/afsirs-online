@@ -21,7 +21,7 @@ public class DataToolsViewUtil {
         SoilData soil;
         if (soilId == null || (soil = SoilDataDAO.find(soilId)) == null) {
             soil = new SoilData();
-            soil.setUser_id((String) attributes.get("currentUser"));
+            soil.setUser_id(request.queryParams("user"));
             soil.setPolygon_info(request.queryParams("json"));
             soil.setSoil_unit_name(request.queryParams("unit"));
             soil.setTotalArea(request.queryParams("area"));
