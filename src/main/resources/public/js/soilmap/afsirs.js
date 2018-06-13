@@ -19,11 +19,11 @@ require([
     "dijit/form/TextBox",
     "dijit/Menu",
     "dijit/Dialog",
-    "dojo/_base/connect", 
+    "dojo/_base/connect",
     "dijit/registry",
     "dijit/TitlePane",
     "dojo/data/ItemFileReadStore",
-    "esri/dijit/InfoWindow", 
+    "esri/dijit/InfoWindow",
     "dojo/_base/html",
     "dijit/layout/TabContainer",
     "dojo/dom",
@@ -34,52 +34,52 @@ require([
     "esri/geometry/Point",
     "dojo/domReady!"
 ], function (map,
-    BootstrapMap,
-    draw,
-    edit,
-    geometry,
-    query,
-    geometry1,
-    GraphicsLayer,
-    ArcGISDynamicMapServiceLayer,
-    queryTask,
-    geometryService,
-    undoManager,
-    parser,
-    BorderContainer,
-    ContentPane,
-    Button,
-    TextBox,
-    Menu,
-    Dialog, 
-    connect, 
-    registry,
-    TitlePane,
-    ItemFileReadStore,
-    InfoWindow,
-    html,
-    TabContainer,
-    dom,
-    on,
-    BasemapGallery,
-    basemaps,
-    HomeButton) {
+        BootstrapMap,
+        draw,
+        edit,
+        geometry,
+        query,
+        geometry1,
+        GraphicsLayer,
+        ArcGISDynamicMapServiceLayer,
+        queryTask,
+        geometryService,
+        undoManager,
+        parser,
+        BorderContainer,
+        ContentPane,
+        Button,
+        TextBox,
+        Menu,
+        Dialog,
+        connect,
+        registry,
+        TitlePane,
+        ItemFileReadStore,
+        InfoWindow,
+        html,
+        TabContainer,
+        dom,
+        on,
+        BasemapGallery,
+        basemaps,
+        HomeButton) {
 
     var isDeveloper = true;
     var ServicePATH = "http://ifs-arcgis-1.ad.ufl.edu:6080/arcgis/rest/services";
     var MapServer = ServicePATH + "/Soil_5Counties_Merge/MapServer/";
-    var MapServer_Polk =  ServicePATH + "/Soil_Polk/MapServer/";
+    var MapServer_Polk = ServicePATH + "/Soil_Polk/MapServer/";
     var MapServer_Lake607 = ServicePATH + "/Soil_Lake607/MapServer/";
     var MapServer_Lake609 = ServicePATH + "/Soil_Lake609/MapServer/";
     var MapServer_Orange = ServicePATH + "/Soil_Orange/MapServer/";
     var MapServer_Highlands = ServicePATH + "/Soil_Highlands/MapServer/";
     var MapServer_Osceola = ServicePATH + "/Soil_Osceola/MapServer/";
-    
+
     //var BaseMap = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer";
     /*if(true)//!isDeveloper)
-        BaseMap = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer";
-    else
-        BaseMap = "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer";*/
+     BaseMap = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer";
+     else
+     BaseMap = "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer";*/
     var undoManager;
     var toolbar, editToolbar;
     var soilGLayerSelected;
@@ -110,21 +110,21 @@ require([
     var chorQueryTask;
     var compQueryTask;
     var mapuQueryTask;
-    
+
     //County Name
     var County = [];
     var getMukeyCheck = false;
     //var countyCounter = 0;
     var oldMukey = 0;
-    var oldsldul =0.0;
-    var oldsllb=0.0;
-    var oldslll=0.0;
+    var oldsldul = 0.0;
+    var oldsllb = 0.0;
+    var oldslll = 0.0;
     //state variables
     var currentState;
     var StateEnum = {
-        ZONESELECT : 1,
-        WSSELECT : 2,
-        RESET : 4
+        ZONESELECT: 1,
+        WSSELECT: 2,
+        RESET: 4
     };
     var polygonMode;
     var GeometryServicePATH = ServicePATH + "/Utilities/Geometry/GeometryServer";
@@ -150,27 +150,27 @@ require([
     var centroid;
     //JSON file of Polygon
     var polyJSON;
-  /*undoManager = new undoManager();
-    dojo.connect(undoManager, "onChange", function(){
-        //enable or disable buttons depending on current state of application
-        if (undoManager.canUndo) {
-            dijit.byId("undo").set("disabled", false);
-            dijit.byId("undo").set("iconClass", "undoIcon");
-        }
-        else {
-            dijit.byId("undo").set("disabled", true);
-            dijit.byId("undo").set("iconClass", "undoGrayIcon");
-        }
-
-        if (undoManager.canRedo) {
-            dijit.byId("redo").set("disabled", false);
-            dijit.byId("redo").set("iconClass", "redoIcon");
-        }
-        else {
-            dijit.byId("redo").set("disabled", true);
-            dijit.byId("redo").set("iconClass", "redoGrayIcon");
-        }
-    });*/
+    /*undoManager = new undoManager();
+     dojo.connect(undoManager, "onChange", function(){
+     //enable or disable buttons depending on current state of application
+     if (undoManager.canUndo) {
+     dijit.byId("undo").set("disabled", false);
+     dijit.byId("undo").set("iconClass", "undoIcon");
+     }
+     else {
+     dijit.byId("undo").set("disabled", true);
+     dijit.byId("undo").set("iconClass", "undoGrayIcon");
+     }
+     
+     if (undoManager.canRedo) {
+     dijit.byId("redo").set("disabled", false);
+     dijit.byId("redo").set("iconClass", "redoIcon");
+     }
+     else {
+     dijit.byId("redo").set("disabled", true);
+     dijit.byId("redo").set("iconClass", "redoGrayIcon");
+     }
+     });*/
 
     //proxy url
     esri.config.defaults.io.proxyUrl = "http://abe.ufl.edu/bmpmodel/Shivam/v3_shivam/proxy.php";
@@ -178,36 +178,36 @@ require([
 
     //getParameters
     getParams(url);
-    
+
     var mapDiv = new ContentPane({
-        region: "center",
-        }, "mapDiv");
+        region: "center"
+    }, "mapDiv");
     mapDiv.startup();
-    
+
     //adding map to the map div
     var map = BootstrapMap.create("mapDiv", {
-                    basemap: "hybrid",
-                    center: [-81.7, 28.4],
-                    sliderPosition: "top-left",
-                    sliderStyle: "large",
-                    visible: true,
-                    autoResize: true,
-                    zoom: 7,
-                    scrollWheelZoom: true
-                });
-                //var scalebar = new Scalebar({
-                //    map: map,
-                //    scalebarUnit: "dual"
-                //}, "scaleBar");
+        basemap: "hybrid",
+        center: [-81.7, 28.4],
+        sliderPosition: "top-left",
+        sliderStyle: "large",
+        visible: true,
+        autoResize: true,
+        zoom: 7,
+        scrollWheelZoom: true
+    });
+    //var scalebar = new Scalebar({
+    //    map: map,
+    //    scalebarUnit: "dual"
+    //}, "scaleBar");
 
     //adding home button 
     var home = new HomeButton({
         map: map
     }, "HomeButton");
-    
+
     //Change basemap 
     var basemapGalleryTP = new TitlePane({
-        title:"Switch Basemap",
+        title: "Switch Basemap",
         closable: false,
         open: false
     }, "basemapGalleryTP");
@@ -218,12 +218,12 @@ require([
     var basemapGallery = new BasemapGallery({
         showArcGISBasemaps: true,
         map: map
-      }, "basemapGallery");
+    }, "basemapGallery");
     basemapGallery.startup();
     //end
 
     //adding layers
-    if(isDeveloper){
+    if (isDeveloper) {
         soilFeatures = new ArcGISDynamicMapServiceLayer(MapServer);
         soilSelLayer = new GraphicsLayer();
         soilFeatures.setOpacity(0.05);
@@ -238,13 +238,13 @@ require([
     //button to show soil Map Unit
     var myButton = new Button({
         label: "Soil Map",
-        onClick: function(){
+        onClick: function () {
             // Do something:   
-            if(buttonToggle==false){
+            if (buttonToggle === false) {
                 soilFeatures.setOpacity(0.6);
                 buttonToggle = true;
                 //console.log('clicked');
-            }else{
+            } else {
                 soilFeatures.setOpacity(0.05);
                 buttonToggle = false;
                 //console.log('unclicked');
@@ -306,8 +306,8 @@ require([
     }
     //Load earlier polygon
     //loadPolygon();
-    function loadPolygon(uri_dec){
-        
+    function loadPolygon(uri_dec) {
+
         var text = JSON.parse(uri_dec);
         var polygon = new esri.geometry.Polygon(text);
         ////console.log(polygon);
@@ -340,11 +340,11 @@ require([
             //console.log("Poly toggle");
             return {"long":longi, "lat":lat, "zoom":14};
     }
-        
+
     //event handlers
     map.on("click", mapOnClick);
     soilGLayer.on("click", mapOnClickSoilGLayer);
-    map.on("load", function(){
+    map.on("load", function () {
         //Polygon tool
         //parser.parse();
         toolbar = new draw(map);
@@ -354,14 +354,14 @@ require([
         editToolbar = new edit(map);
         selectState(StateEnum.ZONESELECT);
 
-        if(isDeveloper){
+        if (isDeveloper) {
             dojo.connect(editToolbar, "graphic-move-stop", graphicQuery);
             dojo.connect(editToolbar, "vertex-move-stop", graphicQuery);
             dojo.connect(editToolbar, "vertex-add", graphicQuery);
             dojo.connect(editToolbar, "vertex-delete", graphicQuery);
         }
 
-       //query preparation
+        //query preparation
         soilOverlapQuery = new query();
         soilOverlapQuery.returnGeometry = true;
         soilOverlapQuery.outFields = ["*"];
@@ -393,7 +393,7 @@ require([
         mapuQuery = new query();
         mapuQuery.returnGeometry = false;
 //        mapuQuery.outFields = ["*"];
-        mapuQuery.outFields = ["muname","musym"];
+        mapuQuery.outFields = ["muname", "musym"];
 
         gQueryCTask = new queryTask(MapServer + "0");
         gQueryOTask = new queryTask(MapServer + "0");
@@ -404,57 +404,57 @@ require([
         //chorQueryTask = new queryTask(MapServer + "2");
         //compQueryTask = new queryTask(MapServer + "3");
         //mapuQueryTask = new queryTask(MapServer + "4");
-        
+
         //=============For Highlands =====================
         gQueryCTask_Highlands = new queryTask(MapServer_Highlands + "0");
         gQueryOTask_Highlands = new queryTask(MapServer_Highlands + "0");
         dQueryCTask_Highlands = new queryTask(MapServer_Highlands + "0");
         dQueryOTask_Highlands = new queryTask(MapServer_Highlands + "0");
-        
+
         chorQueryTask_Highlands = new queryTask(MapServer_Highlands + "1");
         compQueryTask_Highlands = new queryTask(MapServer_Highlands + "2");
         mapuQueryTask_Highlands = new queryTask(MapServer_Highlands + "3");
         //================================================
-        
+
         //=============For Lake607 =======================
-        gQueryCTask_Lake607  = new queryTask(MapServer_Lake607 + "0");
-        gQueryOTask_Lake607  = new queryTask(MapServer_Lake607 + "0");
-        dQueryCTask_Lake607  = new queryTask(MapServer_Lake607 + "0");
-        dQueryOTask_Lake607  = new queryTask(MapServer_Lake607 + "0");
-        
+        gQueryCTask_Lake607 = new queryTask(MapServer_Lake607 + "0");
+        gQueryOTask_Lake607 = new queryTask(MapServer_Lake607 + "0");
+        dQueryCTask_Lake607 = new queryTask(MapServer_Lake607 + "0");
+        dQueryOTask_Lake607 = new queryTask(MapServer_Lake607 + "0");
+
         chorQueryTask_Lake607 = new queryTask(MapServer_Lake607 + "1");
         compQueryTask_Lake607 = new queryTask(MapServer_Lake607 + "2");
         mapuQueryTask_Lake607 = new queryTask(MapServer_Lake607 + "3");
         //================================================
-        
+
         //=============For Lake 609 ======================
         gQueryCTask_Lake609 = new queryTask(MapServer_Lake609 + "0");
         gQueryOTask_Lake609 = new queryTask(MapServer_Lake609 + "0");
         dQueryCTask_Lake609 = new queryTask(MapServer_Lake609 + "0");
         dQueryOTask_Lake609 = new queryTask(MapServer_Lake609 + "0");
-        
+
         chorQueryTask_Lake609 = new queryTask(MapServer_Lake609 + "1");
         compQueryTask_Lake609 = new queryTask(MapServer_Lake609 + "2");
         mapuQueryTask_Lake609 = new queryTask(MapServer_Lake609 + "3");
         //================================================
-        
+
         //=============For Orange ========================
-        gQueryCTask_Orange  = new queryTask(MapServer_Orange + "0");
-        gQueryOTask_Orange  = new queryTask(MapServer_Orange + "0");
-        dQueryCTask_Orange  = new queryTask(MapServer_Orange + "0");
-        dQueryOTask_Orange  = new queryTask(MapServer_Orange + "0");
-        
-        chorQueryTask_Orange  = new queryTask(MapServer_Orange + "1");
-        compQueryTask_Orange  = new queryTask(MapServer_Orange + "2");
-        mapuQueryTask_Orange  = new queryTask(MapServer_Orange + "3");
+        gQueryCTask_Orange = new queryTask(MapServer_Orange + "0");
+        gQueryOTask_Orange = new queryTask(MapServer_Orange + "0");
+        dQueryCTask_Orange = new queryTask(MapServer_Orange + "0");
+        dQueryOTask_Orange = new queryTask(MapServer_Orange + "0");
+
+        chorQueryTask_Orange = new queryTask(MapServer_Orange + "1");
+        compQueryTask_Orange = new queryTask(MapServer_Orange + "2");
+        mapuQueryTask_Orange = new queryTask(MapServer_Orange + "3");
         //================================================ 
-        
+
         //=============For Osceola ========================
         gQueryCTask_Osceola = new queryTask(MapServer_Osceola + "0");
         gQueryOTask_Osceola = new queryTask(MapServer_Osceola + "0");
         dQueryCTask_Osceola = new queryTask(MapServer_Osceola + "0");
         dQueryOTask_Osceola = new queryTask(MapServer_Osceola + "0");
-        
+
         chorQueryTask_Osceola = new queryTask(MapServer_Osceola + "1");
         compQueryTask_Osceola = new queryTask(MapServer_Osceola + "2");
         mapuQueryTask_Osceola = new queryTask(MapServer_Osceola + "3");
@@ -465,7 +465,7 @@ require([
         gQueryOTask_Polk = new queryTask(MapServer_Polk + "0");
         dQueryCTask_Polk = new queryTask(MapServer_Polk + "0");
         dQueryOTask_Polk = new queryTask(MapServer_Polk + "0");
-        
+
         chorQueryTask_Polk = new queryTask(MapServer_Polk + "1");
         compQueryTask_Polk = new queryTask(MapServer_Polk + "2");
         mapuQueryTask_Polk = new queryTask(MapServer_Polk + "3");
@@ -484,18 +484,22 @@ require([
     dojo.connect(map, "onUpdateEnd", hideLoadingImg);
 
     //event handler for buttons
-    on(dom.byId("step2Button"),"click", polygonToggle);
-    on(dom.byId("calcButton"), "click", function(evt){dataQuery();});
-    on(dom.byId("clearButton"), "click", function(evt){selectState(StateEnum.RESET);});
+    on(dom.byId("step2Button"), "click", polygonToggle);
+    on(dom.byId("calcButton"), "click", function (evt) {
+        dataQuery();
+    });
+    on(dom.byId("clearButton"), "click", function (evt) {
+        selectState(StateEnum.RESET);
+    });
 
     //Date on File Name
-    function getDateFileName(){
+    function getDateFileName() {
         var dtObj = new Date();
         dateName = (dtObj.getMonth()+1)+"/"+dtObj.getDate()+"/"+dtObj.getFullYear()+"_"+dtObj.getHours()+":"+dtObj.getMinutes();
     }
 
     //get arguments passed by URL like site name and unit name 
-    function getParams(url){
+    function getParams(url) {
         //console.log("URL :" +url);
         var fileNameTemp = ""; 
         if(url.indexOf("?") != -1) {
@@ -553,36 +557,36 @@ require([
     }
 
     //loading gif visibility handlers
-    function showLoadingImg(){
+    function showLoadingImg() {
         esri.show(loadingImg);
         map.disableMapNavigation();
         map.hideZoomSlider();
     }
-    function hideLoadingImg(error){
+    function hideLoadingImg(error) {
         esri.hide(loadingImg);
         map.enableMapNavigation();
         map.showZoomSlider();
     }
-    function showProgress(progressVal){
-    	var pct = (Number(progressVal) * 100).toFixed(0) + "%";
-    	var progressBar = document.getElementById("progressBar");
-        	progressBar.innerHTML = pct;
-        	progressBar.style.width = pct;
+    function showProgress(progressVal) {
+        var pct = (Number(progressVal) * 100).toFixed(0) + "%";
+        var progressBar = document.getElementById("progressBar");
+        progressBar.innerHTML = pct;
+        progressBar.style.width = pct;
         if (progressVal >= 1 || progressVal < 0) {
-        	progressBar.classList.add("progress-bar-success");
-        	$("#progressDiv").fadeOut("slow","linear");
+            progressBar.classList.add("progress-bar-success");
+            $("#progressDiv").fadeOut("slow", "linear");
         } else if (progressVal === 0) {
-        	$("#progressDiv").fadeIn();
-        	progressBar.classList.remove("progress-bar-success");
+            $("#progressDiv").fadeIn();
+            progressBar.classList.remove("progress-bar-success");
         }
     }
 
     //calculate area of the polygons
-    function calculateGeometry(geometries, callback){
+    function calculateGeometry(geometries, callback) {
         showLoadingImg();
 
         geometryProcessor = callback;
-        geometryService.simplify(geometries, function(simplifiedGeometries) {
+        geometryService.simplify(geometries, function (simplifiedGeometries) {
             var areasAndLengthParams = new esri.tasks.AreasAndLengthsParameters();
             areasAndLengthParams.areaUnit = esri.tasks.GeometryService.UNIT_ACRES;
             areasAndLengthParams.calculationType = "geodesic";
@@ -591,79 +595,75 @@ require([
         });
     }
 
-    /*function onFinishGeometryCalculation(result){
-        hideLoadingImg();
-    }*/
-
     //mouse click handler
-    function mapOnClick(evt){
+    function mapOnClick(evt) {
         //deactivate edit toolbar when user click on map
         deselectSoilGLayer();
         //depending on state, handle mouse click
-        switch(currentState){
-        case StateEnum.ZONESELECT:
-            break;
-        case StateEnum.WSSELECT:
-            break;
+        switch (currentState) {
+            case StateEnum.ZONESELECT:
+                break;
+            case StateEnum.WSSELECT:
+                break;
         }
     }
 
     //state functions
-    function selectState(state){
-        switch(state){
-        case StateEnum.ZONESELECT:
-            setState(state);
-            break;
-        case StateEnum.WSSELECT:
-            //TODO: check progress?
-            setState(state);
-            break;
-        case StateEnum.RESET:
-            //TODO: reset progress
-            soilGLayer.clear();
-            document.getElementById("calcButton").disabled = true;
-            document.getElementById("saveButton").disabled = true;
-            document.getElementById("site_area_lb").innerHTML = "";
-            document.getElementById("queryRetTable").style.display = "none";
-            setState(StateEnum.ZONESELECT);
-            County = [];
-            break;
+    function selectState(state) {
+        switch (state) {
+            case StateEnum.ZONESELECT:
+                setState(state);
+                break;
+            case StateEnum.WSSELECT:
+                //TODO: check progress?
+                setState(state);
+                break;
+            case StateEnum.RESET:
+                //TODO: reset progress
+                soilGLayer.clear();
+                document.getElementById("calcButton").disabled = true;
+                document.getElementById("saveButton").disabled = true;
+                document.getElementById("site_area_lb").innerHTML = "";
+                document.getElementById("queryRetTable").style.display = "none";
+                setState(StateEnum.ZONESELECT);
+                County = [];
+                break;
         }
     }
 
-    function setState(state){
+    function setState(state) {
         setPolygonMode(false);
         deselectSoilGLayer();
-        switch(state){
-        case StateEnum.ZONESELECT:
-            currentState = state;
-            document.getElementById("contentPane2").style.display = "block";
-            document.getElementById("messages").style.display = "none";
-            //document.getElementById("contentPane3").style.display = "none";
-            //document.getElementById("submenu").style.display = "block";
-            document.getElementById("contentPane4").classList.add("active");
-            //document.getElementById("step2Button").style.visibility = 'visible';
-            //document.getElementById("calcButton").style.visibility = 'visible';
-            //document.getElementById("clearButton").style.visibility = 'visible';
-            document.getElementById("footer").style.visibility = 'visible';
-            //document.getElementById("footer").style.visibility = 'visible';
-            /*document.getElementById("step3Button").classList.remove("active");
-            document.getElementById("calcButton").classList.add("active");*/
-           
-            break;
-        case StateEnum.WSSELECT:
-            currentState = state;
-            document.getElementById("contentPane2").style.display = "none";
-            //document.getElementById("contentPane3").style.display = "block";
-            //document.getElementById("submenu").style.display = "none";
-            document.getElementById("step2Button").classList.remove("active");
-           // document.getElementById("step3Button").classList.add("active");
-            document.getElementById("calcButton").classList.add("active");
-            break;
+        switch (state) {
+            case StateEnum.ZONESELECT:
+                currentState = state;
+                document.getElementById("contentPane2").style.display = "block";
+                document.getElementById("messages").style.display = "none";
+                //document.getElementById("contentPane3").style.display = "none";
+                //document.getElementById("submenu").style.display = "block";
+                document.getElementById("contentPane4").classList.add("active");
+                //document.getElementById("step2Button").style.visibility = 'visible';
+                //document.getElementById("calcButton").style.visibility = 'visible';
+                //document.getElementById("clearButton").style.visibility = 'visible';
+                document.getElementById("footer").style.visibility = 'visible';
+                //document.getElementById("footer").style.visibility = 'visible';
+                /*document.getElementById("step3Button").classList.remove("active");
+                 document.getElementById("calcButton").classList.add("active");*/
+
+                break;
+            case StateEnum.WSSELECT:
+                currentState = state;
+                document.getElementById("contentPane2").style.display = "none";
+                //document.getElementById("contentPane3").style.display = "block";
+                //document.getElementById("submenu").style.display = "none";
+                document.getElementById("step2Button").classList.remove("active");
+                // document.getElementById("step3Button").classList.add("active");
+                document.getElementById("calcButton").classList.add("active");
+                break;
         }
     }
 
-    function polygonToggle(){
+    function polygonToggle() {
         // TODO commeted out for now, might use for future if it is necessasry to clean the last polygon before drawing a new one
 //        if (!polygonMode) {
 //            soilGLayer.clear();
@@ -674,9 +674,9 @@ require([
         document.getElementById("calcButton").disabled = !polygonMode;
     }
 
-    function setPolygonMode(state){
+    function setPolygonMode(state) {
         polygonMode = state;
-        if(polygonMode){
+        if (polygonMode) {
             toolbar.activate(esri.toolbars.Draw.POLYGON);
             //document.getElementById("polygonButton").classList.add("polygonActive");
             document.getElementById("step2Button").classList.add("active");
@@ -688,7 +688,7 @@ require([
         }
     }
 
-    function deleteSoilGLayerPolygon(){
+    function deleteSoilGLayerPolygon() {
         if (soilGLayer.graphics.length > 0 && soilGLayerSelected) {
             soilGLayer.remove(editToolbar.getCurrentState().graphic);
 
@@ -701,15 +701,14 @@ require([
 
         deselectSoilGLayer();
         //close the corresponding infowindow.
-    //    map.infoWindow.hide();
+        //    map.infoWindow.hide();
     }
-    var long;
-    var lat;
+    
     //called when user completes drawing a polygon
-    function addSoilGLayerPolygon(geometry){
+    function addSoilGLayerPolygon(geometry) {
         //console.log("Inside addSoilGLayerPolygon");
         if (soilGLayer.graphics.length >= 0 && soilGLayer.graphics.length <= 4) {
-            currentClick = geometry.getPoint(0,1);
+            currentClick = geometry.getPoint(0, 1);
             //create a random color for the symbols
             var r = Math.floor(Math.random() * 0);
             var g = Math.floor(Math.random() * 10);
@@ -739,7 +738,7 @@ require([
     }
 
     //Activate the toolbar when you click on a graphic
-    function mapOnClickSoilGLayer(graphic){
+    function mapOnClickSoilGLayer(graphic) {
         ////console.log("Inside mapOnClickSoilGLayer");
         if (currentState === StateEnum.ZONESELECT && soilGLayer.graphics.length > 0) {
             //dojo.stopEvent(evt);
@@ -749,7 +748,7 @@ require([
         }
         ////console.log("Inside mapOnClickSoilGLayer after if");
         // if(isDeveloper){
-        calculateGeometry([editToolbar.getCurrentState().graphic.geometry], function(result){
+        calculateGeometry([editToolbar.getCurrentState().graphic.geometry], function (result) {
             polyArea = result.areas[0].toFixed(3);
             ////console.log("Inside mapOnClickSoilGLayer before showLoadingImg");
             showLoadingImg();
@@ -759,8 +758,8 @@ require([
         // }
     }
 
-    function deselectSoilGLayer(){
-        if(isDeveloper)
+    function deselectSoilGLayer() {
+        if (isDeveloper)
             soilSelLayer.clear();
         editToolbar.deactivate();
         soilGLayerSelected = false;
@@ -769,7 +768,7 @@ require([
     //custom opration for undo/redo manager
     dojo.declare("customoperation.Add", esri.OperationBase, {
         label: "Add Graphic",
-        constructor: function(params){   /*graphicsLayer, addedGraphic*/
+        constructor: function (params) {   /*graphicsLayer, addedGraphic*/
             params = params || {};
             if (!params.graphicsLayer) {
                 //console.error("graphicsLayer is not provided");
@@ -783,29 +782,27 @@ require([
             }
             this._addedGraphic = params.addedGraphic;
         },
-
-        performUndo: function(){
+        performUndo: function () {
             this.graphicsLayer.add(this._addedGraphic);
         },
-
-        performRedo: function(){
+        performRedo: function () {
             this.graphicsLayer.remove(this._addedGraphic);
         }
     });
 
-    function checkResultCriteria(){
-        if(!soilGLayerSelected){
+    function checkResultCriteria() {
+        if (!soilGLayerSelected) {
             document.getElementById("messages").style.display = "block";
             //alert("Please select a polygon first.");
             return false;
-        }else{
-            document.getElementById("messages").style.display = "none";  
+        } else {
+            document.getElementById("messages").style.display = "none";
             return true;
         }
     }
 
-    function graphicQuery(){
-          if(checkResultCriteria()){
+    function graphicQuery() {
+        if (checkResultCriteria()) {
             var resultSetCount = 0;
             var rawGeometries = [];
             County = []; // TODO this might be removed for support multiple plygon query
@@ -876,7 +873,7 @@ require([
             soilSelLayer.clear();
 
             soilIntersectQuery.geometry = editToolbar.getCurrentState().graphic.geometry;
-            
+
             //console.log("before calling gQueryCTask");
             gQueryOTask.execute(soilIntersectQuery, processResults);
             showLoadingImg();
@@ -885,56 +882,56 @@ require([
         }
     }
 
-    function dataQuery(){
-         if(checkResultCriteria()){
+    function dataQuery() {
+        if (checkResultCriteria()) {
             var resultSetCount = 0;
             var rawGeometries = [];
             var Attributes = [];
             var filteredresults = [];
 
-            function processResults(featureSet){
-                featureSet.features.forEach(function(graphic){
+            function processResults(featureSet) {
+                featureSet.features.forEach(function (graphic) {
                     rawGeometries.push(graphic.geometry);
 //                    Attributes.push({mukey: graphic.attributes.MUKEY});
-                    Attributes.push({mukey: graphic.attributes.MUKEY,county: graphic.attributes.AREASYMBOL, musym:graphic.attributes.MUSYM});
+                    Attributes.push({mukey: graphic.attributes.MUKEY, county: graphic.attributes.AREASYMBOL, musym: graphic.attributes.MUSYM});
                 });
 
 
                 resultSetCount++;
 //                console.log("DQ resultSetCount" +resultSetCount);
-                if(resultSetCount === County.length){
+                if (resultSetCount === County.length) {
                     var len = Attributes.length;
 
                     var index = 0;
-                    Attributes.sort(function(a, b){
-                        if(a.mukey > b.mukey)
+                    Attributes.sort(function (a, b) {
+                        if (a.mukey > b.mukey)
                             return 1;
-                        if(a.mukey < b.mukey)
+                        if (a.mukey < b.mukey)
                             return -1;
                         return 0;
                     });
-                    soilArea.sort(function(a, b){
-                        if(a.mukey > b.mukey)
+                    soilArea.sort(function (a, b) {
+                        if (a.mukey > b.mukey)
                             return 1;
-                        if(a.mukey < b.mukey)
+                        if (a.mukey < b.mukey)
                             return -1;
                         return 0;
                     });
                     //console.log("SOil Area" +JSON.stringify(soilArea));
                     //console.log("Attributes" +JSON.stringify(Attributes));
-                    for(var i = 0; i < len; i++){
-                        if(soilArea[i]!=null){
+                    for (var i = 0; i < len; i++) {
+                        if (soilArea[i] !== null && soilArea[i] !== undefined) {
 //                            console.log("soilArea[i].polyarea" +soilArea[i].polyarea);
                             Attributes[i].soilArea = soilArea[i].polyarea;
-                            Attributes[i].unitPct = (soilArea[i].polyarea/polyArea) * 100;
+                            Attributes[i].unitPct = (soilArea[i].polyarea / polyArea) * 100;
                         }
-                    }    
+                    }
 
                     filteredresults.push(Attributes[0]);
-                    for(var i = 1; i < len; i++){
+                    for (var i = 1; i < len; i++) {
                         //console.log("filteredresults[index].mukey "+filteredresults[index].mukey);
                         //console.log("Attributes[i].mukey " +Attributes[i].mukey);
-                        if(filteredresults[index].mukey !== Attributes[i].mukey){
+                        if (filteredresults[index].mukey !== Attributes[i].mukey) {
                             filteredresults.push(Attributes[i]);
                             index++;
                         } else {
@@ -946,26 +943,26 @@ require([
                     }
                     var filterLen = filteredresults.length;
                     var id = 1;
-                    for(var i = 1; i < filterLen; i++){
-                        if(filteredresults[i] != filteredresults[i-1]) {
+                    for (var i = 1; i < filterLen; i++) {
+                        if (filteredresults[i] !== filteredresults[i - 1]) {
                             //console.log("filteredresults[id].mukey "+filteredresults[id].mukey);
                             filteredresults[id++] = filteredresults[i];
-                        }    
-                    }
-                    id = 1;
-                    for(var i = 1; i < len; i++){
-                        if(Attributes[i] != Attributes[i-1]) {
-                            //console.log("Attributes[id].mukey "+Attributes[id].mukey);
-                            Attributes[id++] = Attributes[i];
-                        }    
-                    }
-                    //console.log("filteredresults "+ JSON.stringify(filteredresults))
-                    for(var i = 1; i < filterLen; i++){
-                        if(isNaN(filteredresults[i].soilArea) == true ){
-                            getMukeyCheck == true;
                         }
                     }
-                    if(resultSetCount == County.length){
+                    id = 1;
+                    for (var i = 1; i < len; i++) {
+                        if (Attributes[i] !== Attributes[i - 1]) {
+                            //console.log("Attributes[id].mukey "+Attributes[id].mukey);
+                            Attributes[id++] = Attributes[i];
+                        }
+                    }
+                    //console.log("filteredresults "+ JSON.stringify(filteredresults))
+                    for (var i = 1; i < filterLen; i++) {
+                        if (isNaN(filteredresults[i].soilArea) === true) {
+                            getMukeyCheck = true;
+                        }
+                    }
+                    if (resultSetCount === County.length) {
                         getMUKEYNames(filteredresults);
                     }
                     hideLoadingImg("");
@@ -973,61 +970,62 @@ require([
                 }
             }
             soilIntersectQuery.geometry = editToolbar.getCurrentState().graphic.geometry;
-            County.sort(function(a, b){
-                if(a > b)
+            County.sort(function (a, b) {
+                if (a > b)
                     return 1;
-                if(a < b)
+                if (a < b)
                     return -1;
                 return 0;
             });
-            for(var i = 0; i < County.length; i++){
+            for (var i = 0; i < County.length; i++) {
                 //console.log("DQ County[i] "+County[i]);
-                switch(County[i]){
+                switch (County[i]) {
                     //Highlands County
                     case 'FL055':
                         gQueryCTask = gQueryCTask_Highlands;
                         chorQueryTask = chorQueryTask_Highlands;
                         compQueryTask = compQueryTask_Highlands;
                         mapuQueryTask = mapuQueryTask_Highlands;
-                    break;
+                        break;
                     //Orange County
                     case 'FL095':
                         gQueryCTask = gQueryCTask_Orange;
                         chorQueryTask = chorQueryTask_Orange;
                         compQueryTask = compQueryTask_Orange;
                         mapuQueryTask = mapuQueryTask_Orange;
-                    break;
+                        break;
                     //Osecala County
                     case 'FL097':
                         gQueryCTask = gQueryCTask_Osceola;
                         chorQueryTask = chorQueryTask_Osceola;
                         compQueryTask = compQueryTask_Osceola;
                         mapuQueryTask = mapuQueryTask_Osceola;
-                    break;
+                        break;
                     //Polk County
                     case 'FL105':
                         gQueryCTask = gQueryCTask_Polk;
                         chorQueryTask = chorQueryTask_Polk;
                         compQueryTask = compQueryTask_Polk;
                         mapuQueryTask = mapuQueryTask_Polk;
-                    break;
-                    //Lake County 
+                        break;
+                        //Lake County 
                     case 'FL607':
                         gQueryCTask = gQueryCTask_Lake607;
                         chorQueryTask = chorQueryTask_Lake607;
                         compQueryTask = compQueryTask_Lake607;
                         mapuQueryTask = mapuQueryTask_Lake607;
-                    break;
+                        break;
                     //Lake County
                     case 'FL609':
                         gQueryCTask = gQueryCTask_Lake609;
                         chorQueryTask = chorQueryTask_Lake609;
                         compQueryTask = compQueryTask_Lake609;
                         mapuQueryTask = mapuQueryTask_Lake609;
-                    break;
+                        break;
                     default:
                         //do nothing
                         console.log("Detect polygon with undefined county information at index " + i);
+                        alert("Detect polygon has used undefined county area");
                 }
                 gQueryCTask.execute(soilIntersectQuery, processResults);
                 showLoadingImg();
@@ -1035,17 +1033,17 @@ require([
             }
         }
     }
-    function getFinalJson(Attributes, cokeyList){
+    function getFinalJson(Attributes, cokeyList) {
         var soils = [];
         var afsirs = [];
         var polygon = [];
-        var result = {"soils": soils,"afsirs": afsirs,"polygon": polygon, "version" : "1.0.1"};
-        
-        Attributes.forEach(function(record){
-            cokeyList.forEach(function(obj){
-                if(obj.mukey==record.mukey){
-                    record.componentList.forEach(function(cokeyObj){
-                        if(obj.cokeyArray.indexOf(cokeyObj.cokey) >= 0){
+        var result = {"soils": soils, "afsirs": afsirs, "polygon": polygon, "version": "1.0.1"};
+
+        Attributes.forEach(function (record) {
+            cokeyList.forEach(function (obj) {
+                if (obj.mukey === record.mukey) {
+                    record.componentList.forEach(function (cokeyObj) {
+                        if (obj.cokeyArray.indexOf(cokeyObj.cokey) >= 0) {
                             result.soils.push(cokeyObj);
                         }
                     });
