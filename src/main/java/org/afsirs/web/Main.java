@@ -23,7 +23,6 @@ import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 import static spark.Spark.webSocket;
-import spark.template.freemarker.FreeMarkerEngine;
 
 /**
  *
@@ -82,6 +81,8 @@ public class Main {
         get(Path.Web.WaterUse.FIND,             WaterUsePageController.serveEditPage);
         
         get(Path.Web.DataTools.SOILMAP,             DataToolsPageController.serveSoilMapPage);
+        post(Path.Web.DataTools.SOILMAP,            DataToolsPageController.serveSoilMapPage2);
+        get(Path.Web.DataTools.SOILMAP_OLD,         DataToolsPageController.serveSoilMapPage);
         
 //        get("*",                     PageController.serveNotFoundPage, new FreeMarkerEngine());
 
