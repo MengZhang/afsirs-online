@@ -1,17 +1,20 @@
 package org.afsirs.web.dao;
 
 import com.mongodb.client.model.Projections;
+import static com.mongodb.client.model.Updates.set;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import lombok.Data;
 import org.afsirs.module.AFSIRSModule;
+import org.afsirs.web.dao.bean.SoilData;
 import org.afsirs.web.dao.bean.WaterUsePermit;
 import org.afsirs.web.util.DBUtil.AFSIRSCollection;
 import static org.afsirs.web.util.DBUtil.getConnection;
 import org.afsirs.web.util.MongoDBHandler;
 import org.afsirs.web.util.Path;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 
 /**
@@ -59,6 +62,24 @@ public class WaterUsePermitDAO {
 //            return listPermits(userId);
     }
 
+    public static ArrayList<WaterUsePermit> listFull(String userId) {
+        ArrayList<WaterUsePermit> ret = new ArrayList<>();
+        ArrayList<Document> dbRetArr;
+        if (UserDAO.isAdmin(userId)) {
+            dbRetArr = MongoDBHandler.list(getConnection(AFSIRSCollection.WaterUsePermit));
+        } else {
+            dbRetArr = MongoDBHandler.search(
+                getConnection(AFSIRSCollection.WaterUsePermit),
+                new Document("user_id", userId),
+                Projections.include(listParams));
+        }
+        
+        for (Document data : dbRetArr) {
+            ret.add(WaterUsePermit.readFromJson(data.toJson()));
+        }
+        return ret;
+    }
+
     public static WaterUsePermit find(String id, String userId) {
         if (id == null || id.isEmpty()) {
             return null;
@@ -79,11 +100,16 @@ public class WaterUsePermitDAO {
 //        if (permitIds.contains(pk)) {
 //            return false;
 //        }
+        ObjectId soilId = SoilDataDAO.add(permit.getSoilData(), currentUser);
+        if (soilId == null) {
+            return false;
+        }
         String json = AFSIRSModule.savePermitJson(permit.toAFSIRSInputData(currentUser));
         if (json != null && !json.isEmpty()) {
             try {
                 Document data = Document.parse(json);
                 data.put("user_id", currentUser);
+                data.put("soil_id", soilId);
                 boolean ret = MongoDBHandler.add(getConnection(AFSIRSCollection.WaterUsePermit), data);
                 if (ret) {
                     permitIds.add(pk);
@@ -118,6 +144,29 @@ public class WaterUsePermitDAO {
         }
     }
 
+    public static boolean update(WaterUsePermit permit, String currentUser, ObjectId soilId, String unitName) {
+        String json = AFSIRSModule.savePermitJson(permit.toAFSIRSInputData(currentUser));
+        if (json != null && !json.isEmpty()) {
+            try {
+                Document data = Document.parse(json);
+                data.put("user_id", currentUser);
+                return MongoDBHandler.update(getConnection(AFSIRSCollection.WaterUsePermit),
+                        MongoDBHandler.getFindCritia(
+                                new String[]{"permit_id", "user_id"},
+                                new String[]{permit.getPermit_id(), currentUser}),
+                        MongoDBHandler.getUpdateParams(
+                                new String[]{"soil_id", "soil_unit_name"},
+                                new Object[]{soilId, unitName})
+                        ) != null;
+            } catch (Exception ex) {
+                ex.printStackTrace(System.err);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     public static File getOutputFile(String userId, String permitId, String fileType) {
 
         File outDir = Path.Folder.getUserWaterUsePermitOutputDir(userId);
@@ -138,4 +187,12 @@ public class WaterUsePermitDAO {
         }
         return Paths.get(outDir.getPath(), fileName).toFile();
     }
+
+//    public static void findSB(String userId) {
+//        for (WaterUsePermit permit : list(userId)) {
+//            if (!permit.getPermit_id().equals(permit.getPermit_id().trim())) {
+//                System.out.println(permit.getUser_id() + "\t[" + permit.getPermit_id() +"]");
+//            }
+//        }
+//    }
 }

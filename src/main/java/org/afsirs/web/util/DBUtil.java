@@ -16,13 +16,12 @@ public class DBUtil {
     protected final static String DEF_LIMIT = Integer.MAX_VALUE + "";
     
     public final static String AFSIRS_DB = "afsirs_db";
-    public final static String AFSIRS_USER_COLLECTION = "users";
-    public final static String AFSIRS_WUP_COLLECTION = "water_use_permit";
     
     public enum AFSIRSCollection {
         
         User("users"),
-        WaterUsePermit("water_use_permit");
+        WaterUsePermit("water_use_permit"),
+        SoilData("soil_data");
 
         private final String name;
 

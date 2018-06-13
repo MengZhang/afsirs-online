@@ -6,6 +6,8 @@ import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 import java.util.ArrayList;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -20,12 +22,20 @@ public class MongoDBHandler {
 
     private static final Logger LOG = (Logger) LoggerFactory.getLogger(MongoDBHandler.class);
 
-    public static Bson getFindCritia(String[] keys, String[] values) {
+    public static Bson getFindCritia(String[] keys, Object[] values) {
         Bson[] params = new Bson[keys.length];
         for (int i = 0; i < keys.length; i++) {
             params[i] = eq(keys[i], values[i]);
         }
         return and(params);
+    }
+    
+    public static Bson getUpdateParams(String[] keys, Object[] values) {
+        ArrayList<Bson> updates = new ArrayList();
+        for (int i = 0; i < keys.length; i++) {
+            updates.add(set(keys[i], values[i]));
+        }
+        return combine(updates);
     }
 
     public static ArrayList<Document> list(MongoCollection<Document> collection) {
@@ -130,5 +140,12 @@ public class MongoDBHandler {
 
     public static Document replace(MongoCollection<Document> collection, Bson search, Document replace) {
         return collection.findOneAndReplace(search, replace);
+    }
+
+    public static boolean clean(MongoCollection<Document> collection) {
+        for (Document record : list(collection)) {
+            collection.deleteOne(new Document("_id", record.getObjectId("_id")));
+        }
+        return true;
     }
 }
