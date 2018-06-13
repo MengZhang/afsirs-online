@@ -107,6 +107,15 @@ public class JSONObject extends org.json.simple.JSONObject {
         }
     }
     
+    public String getObjId(String key) {
+        Object id = this.get(key);
+        if (id != null) {
+            return ((Map)id).get("$oid").toString();
+        } else {
+            return "";
+        }
+    }
+    
     @Override
     public JSONObject put(Object key, Object value) {
         super.put(key, value);

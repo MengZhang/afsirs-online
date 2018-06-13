@@ -86,6 +86,11 @@ public class Soil {
             WCU = toArray(wcu);
             DU = toArray(du);
             TXT = txt;
+            if (wcl != null) {
+                NL = wcl.size();
+            } else {
+                NL = 0;
+            }
         }
         
         private double[] toArray(ArrayList<Double> in)  {
@@ -102,6 +107,11 @@ public class Soil {
             WCU = wcu;
             DU = du;
             TXT = txt;
+            if (wcl != null) {
+                NL = wcl.length;
+            } else {
+                NL = 0;
+            }
         }
         
         public void setValues(String whc, double[] wcl, double[] wcu, double[] du, String[] txt){
@@ -110,6 +120,11 @@ public class Soil {
             DU = du;
             TXT = txt;
             setWHC(whc);
+            if (wcl != null) {
+                NL = wcl.length;
+            } else {
+                NL = 0;
+            }
         }
         
         public void setWHC(String whc) {

@@ -29,7 +29,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
  */
 public class Util {
 
-    public static final String SOIL_MAP_BASE_URL = "http://afsirs-online-test.herokuapp.com/SoilMap/";
+    public static final String SOIL_MAP_BASE_URL = "http://afsirs-online-test.herokuapp.com/datatools/soilmap/";
     public static final Comparator summaryReportComparetor = getSummaryReportComparetor();
     public static final Comparator summaryReportComparetor2 = getSummaryReportComparetor2();
 

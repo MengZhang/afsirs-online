@@ -2040,39 +2040,7 @@ public class AFSIRSModule {
         obj.put("ir_dat", input.getIVERS() + "");
         obj.put("water_table_depth", input.getDWT() + "");
         obj.put("water_hold_capacity", input.getWATERHOLDINGCAPACITY());
-        obj.put("soil_source", input.getSoilSource());
-        obj.put("soil_unit_name", input.getUNIT());
-        ArrayList soils = new ArrayList();
-        for (Soil soil : input.getSoils()) {
-            HashMap soilData = new HashMap();
-            soilData.put("mukey", soil.getSOILSERIESKEY());
-            soilData.put("musym", soil.getSoilSymbolNum());
-            soilData.put("mukeyName", soil.getSERIESNAME());
-            soilData.put("cokey", soil.getCOMPKEY());
-            soilData.put("soilName", soil.getSNAME());
-            soilData.put("compArea", soil.getSoilTypeArea() + "");
-            soilData.put("comppct_r", soil.getSoilTypePct() + "");
-            ArrayList soilLayers = new ArrayList();
-            for (int i = 0; i < soil.getNL(); i++) {
-                HashMap soilLayer = new HashMap();
-                soilLayer.put("sllb", soil.getDU()[i] + "");
-                soilLayer.put("slll", soil.getWCL()[i] + "");
-                soilLayer.put("sldul", soil.getWCU()[i] + "");
-                soilLayers.add(soilLayer);
-            }
-            soilData.put("soilLayer", soilLayers);
-            soils.add(soilData);
-            obj.put("soil_version", soil.getVersion());
-        }
-        obj.put("soils", soils);
-        JSONObject polygonInfo = input.getPolygonInfoJSONObject();
-        if (polygonInfo != null && !polygonInfo.isEmpty()) {
-            obj.put("polygon", polygonInfo.get("polygon"));
-        }
-        JSONObject polygonLocInfo = input.getPolygonLocInfoJSONObject();
-        if (polygonLocInfo != null && !polygonLocInfo.isEmpty()) {
-            obj.put("afsirs", polygonLocInfo.get("afsirs"));
-        }
+        recordSoilData(obj, input);
         obj.put("coefficent_type", input.getCoefficentType());
         if ("annual".equalsIgnoreCase(input.getCropType())) {
             obj.put("dzn", input.getDZN() + "");
@@ -2098,6 +2066,52 @@ public class AFSIRSModule {
             }
         }
 
+        return obj.toJSONString();
+    }
+    
+    private static void recordSoilData(JSONObject obj, UserInput input) {
+        obj.put("soil_source", input.getSoilSource());
+        obj.put("soil_unit_name", input.getUNIT());
+        ArrayList soils = new ArrayList();
+        for (Soil soil : input.getSoils()) {
+            HashMap soilData = new HashMap();
+            soilData.put("mukey", soil.getSOILSERIESKEY());
+            soilData.put("musym", soil.getSoilSymbolNum());
+            soilData.put("mukeyName", soil.getSERIESNAME());
+            soilData.put("cokey", soil.getCOMPKEY());
+            soilData.put("soilName", soil.getSNAME());
+            soilData.put("compArea", soil.getSoilTypeArea() + "");
+            soilData.put("comppct_r", soil.getSoilTypePct() + "");
+            if (!input.getSoilSource().equalsIgnoreCase("DB")) {
+                ArrayList soilLayers = new ArrayList();
+                for (int i = 0; i < soil.getNL(); i++) {
+                    HashMap soilLayer = new HashMap();
+                    soilLayer.put("sllb", soil.getDU()[i] + "");
+                    soilLayer.put("slll", soil.getWCL()[i] + "");
+                    soilLayer.put("sldul", soil.getWCU()[i] + "");
+                    soilLayers.add(soilLayer);
+                }
+                soilData.put("soilLayer", soilLayers);
+            }
+            soils.add(soilData);
+            obj.put("soil_version", soil.getVersion());
+        }
+        obj.put("soils", soils);
+        JSONObject polygonInfo = input.getPolygonInfoJSONObject();
+        if (polygonInfo != null && !polygonInfo.isEmpty()) {
+            obj.put("polygon", polygonInfo.get("polygon"));
+        }
+        JSONObject polygonLocInfo = input.getPolygonLocInfoJSONObject();
+        if (polygonLocInfo != null && !polygonLocInfo.isEmpty()) {
+            obj.put("afsirs", polygonLocInfo.get("afsirs"));
+        }
+    }
+    
+    public static String saveSoilDataJson(UserInput input) {
+        JSONObject obj = new JSONObject();
+        obj.put("planted_area", input.getPlantedAcres() + "");
+        obj.put("total_area", input.getMapArea() + "");
+        recordSoilData(obj, input);
         return obj.toJSONString();
     }
 
