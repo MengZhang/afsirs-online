@@ -378,7 +378,7 @@
                 <input type="hidden" id="soil_id" name="soil_id" value='${permit["soil_id"]!}'>
                 <input type="hidden" id="polygon_info" name="polygon_info" value='${permit["polygon_info"]!}'>
                 <input type="hidden" id="polygon_loc_info" name="polygon_loc_info" value='${permit["polygon_loc_info"]!}'>
-                <input type="hidden" id="soil_map_url" value="${soil_map_url!'/datatools/soilmap'}">
+                <input type="hidden" id="soil_map_url" value="${soil_map_url!'/datatools/soilmap/'}">
                 <button type="button" class="btn btn-primary text-right" onclick="openSoilMap()">View Soil Map</button>
                 <button type="button" class="btn btn-primary text-right" onclick="" disabled>Show Soil Data</button>
             </div>
