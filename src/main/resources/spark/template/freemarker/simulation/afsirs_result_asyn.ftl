@@ -56,9 +56,13 @@
         <script>
             var wsLocal;
             var alive = true;
-            var wsAddrLocal = "wss://" + location.hostname + ":" + location.port + "/simulation/afsirs_wait";
+            var port = "";
+            if (location.port !== "") {
+                port = ":" + location.port;
+            }
+            var wsAddrLocal = "wss://" + location.hostname + port + "/simulation/afsirs_wait";
             if (location.protocol === "http:") {
-                wsAddrLocal = "ws://" + location.hostname + ":" + location.port + "/simulation/afsirs_wait";
+                wsAddrLocal = "ws://" + location.hostname + port + "/simulation/afsirs_wait";
             }
 
             function keepLocalConn() {
