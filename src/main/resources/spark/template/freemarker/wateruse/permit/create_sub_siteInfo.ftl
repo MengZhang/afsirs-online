@@ -315,7 +315,7 @@
                         </#list>
                     </select>
                 </div>
-                <div class="col-sm-1"><a onclick="window.open('http://abe.ufl.edu/bmpmodel/arcGIS/Test/CropInfo.pdf')" title="Crop Growing Seasaon Length Table"><span class="glyphicon glyphicon-question-sign"></span></a></div>
+                <div class="col-sm-1"><a onclick="window.open('/doc/afsirs/CropInfo.pdf')" title="Crop Growing Seasaon Length Table"><span class="glyphicon glyphicon-question-sign"></span></a></div>
             </div>
             <div id="endMonthSBWarning" class="row col-sm-12 hidden">
                 <div class="col-sm-3 text-left"></div>
