@@ -66,7 +66,8 @@ require([
         HomeButton) {
 
     var isDeveloper = true;
-    var ServicePATH = "http://ifs-arcgis-1.ad.ufl.edu:6080/arcgis/rest/services";
+//    var ServicePATH = "http://ifs-arcgis-1.ad.ufl.edu:6080/arcgis/rest/services";
+    var ServicePATH = "https://arcgis.ifas.ufl.edu:6443/arcgis/rest/services";
     var MapServer = ServicePATH + "/Soil_5Counties_Merge/MapServer/";
     var MapServer_Polk = ServicePATH + "/Soil_Polk/MapServer/";
     var MapServer_Lake607 = ServicePATH + "/Soil_Lake607/MapServer/";
