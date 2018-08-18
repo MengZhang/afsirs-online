@@ -7,7 +7,6 @@ import static org.afsirs.web.Main.LOG;
 import org.afsirs.web.dao.SimulationDAO;
 import org.afsirs.web.dao.WaterUsePermitDAO;
 import org.afsirs.web.dao.bean.WaterUsePermit;
-import static org.afsirs.web.dao.bean.WaterUsePermit.setDeviation;
 import org.afsirs.web.util.Path;
 import static org.afsirs.web.view.SimulationViewUtil.getAfsirsDownloadResponse;
 import static org.afsirs.web.view.SimulationViewUtil.getAfsirsResultLoadingPage;
