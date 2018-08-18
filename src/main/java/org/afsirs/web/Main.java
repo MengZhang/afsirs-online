@@ -87,6 +87,7 @@ public class Main {
         
         get(Path.Web.SoilData.LIST,         SoilDataPageController.serveSoilDataListPage);
         post(Path.Web.SoilData.CREATE,      SoilDataPageController.handleSoilDataSavePost);
+        post(Path.Web.SoilData.FIND,      SoilDataPageController.handleSoilDataFindPost);
         
 //        get("*",                     PageController.serveNotFoundPage, new FreeMarkerEngine());
 

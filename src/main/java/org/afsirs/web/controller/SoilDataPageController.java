@@ -35,4 +35,14 @@ public class SoilDataPageController {
         }
         return SoilDataViewUtil.getSoilDataSaveResponse(request, attributes);
     };
+
+    public static Route handleSoilDataFindPost = (Request request, Response response) -> {
+        LOG.info("Handle Soil Data Find Post");
+        Map<String, Object> attributes = new HashMap<>();
+        if (!ViewUtil.isLogined(request)) {
+            response.redirect(Path.Web.LOGIN);
+            return ViewUtil.getLoginPage(request, attributes);
+        }
+        return SoilDataViewUtil.getSoilDataFindResponse(request, attributes);
+    };
 }

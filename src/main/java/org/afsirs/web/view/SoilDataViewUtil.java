@@ -1,6 +1,7 @@
 package org.afsirs.web.view;
 
 import java.util.Map;
+import org.afsirs.module.AFSIRSModule;
 import org.afsirs.web.dao.SoilDataDAO;
 import org.afsirs.web.dao.bean.SoilData;
 import org.afsirs.web.util.Path;
@@ -32,6 +33,15 @@ public class SoilDataViewUtil {
             return SoilDataDAO.update(soil, ViewUtil.getUserID(request));
         } else {
             return SoilDataDAO.add(soil, ViewUtil.getUserID(request)) != null;
+        }
+    }
+    
+    public static String getSoilDataFindResponse(Request request, Map<String, Object> attributes) {
+        SoilData ret = SoilDataDAO.find(request.queryParams("soil_id"));
+        if (ret != null) {
+            return AFSIRSModule.saveSoilDataJson(ret.toAFSIRSInputSoilData());
+        } else {
+            return "";
         }
     }
 }

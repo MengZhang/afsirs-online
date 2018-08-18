@@ -44,6 +44,7 @@ public class Path {
             private static final String PACKAGE = "/" + SoilData.class.getSimpleName().toLowerCase();
             @Getter public static final String LIST = PACKAGE + "/list";
             @Getter public static final String CREATE = PACKAGE + "/create";
+            @Getter public static final String FIND = PACKAGE + "/find";
         }
         
 //        public static class Worker {
