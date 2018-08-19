@@ -45,6 +45,7 @@ public class Path {
             @Getter public static final String LIST = PACKAGE + "/list";
             @Getter public static final String CREATE = PACKAGE + "/create";
             @Getter public static final String FIND = PACKAGE + "/find";
+            @Getter public static final String DELETE = PACKAGE + "/delete";
         }
         
 //        public static class Worker {

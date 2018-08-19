@@ -9,6 +9,7 @@ import org.afsirs.web.util.DBUtil.AFSIRSCollection;
 import static org.afsirs.web.util.DBUtil.getConnection;
 import org.afsirs.web.util.MongoDBHandler;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 /**
@@ -165,6 +166,20 @@ public class SoilDataDAO {
                 return false;
             }
         } else {
+            return false;
+        }
+    }
+    
+    public static boolean delete(String id, String currentUser) {
+        return delete(new ObjectId(id), currentUser);
+    }
+
+    public static boolean delete(ObjectId id, String currentUser) {
+        try {
+            return MongoDBHandler.delete(getConnection(AFSIRSCollection.SoilData),
+                    new Document("_id", id).append("user_id", currentUser));
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
             return false;
         }
     }

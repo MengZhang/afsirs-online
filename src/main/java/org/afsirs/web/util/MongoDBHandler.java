@@ -142,6 +142,10 @@ public class MongoDBHandler {
         return collection.findOneAndReplace(search, replace);
     }
 
+    public static boolean delete(MongoCollection<Document> collection, Bson search) {
+        return collection.deleteOne(search).getDeletedCount() > 0;
+    }
+
     public static boolean clean(MongoCollection<Document> collection) {
         for (Document record : list(collection)) {
             collection.deleteOne(new Document("_id", record.getObjectId("_id")));

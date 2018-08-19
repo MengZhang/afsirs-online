@@ -25,6 +25,26 @@
                 color: black;
             }
         </style>
+        <script>
+            function deleteSoilData(soilId, userId, rowBtn) {
+                rowBtn.disabled = true;
+                $.post("/soildata/delete",
+                    {
+                      soil_id: soilId,
+                      user_id: userId
+                    },
+                    function(status){
+                        rowBtn.disabled = false;
+                        if (status) {
+                            var i = rowBtn.parentNode.parentNode.rowIndex;
+                            document.getElementById("t01").deleteRow(i);
+                        } else {
+                            alert("Soil Data is not removed correctly, please try again!");
+                        }
+                    }
+                );
+            }
+        </script>>
     </head>
 
     <body>
@@ -69,16 +89,15 @@
                         <!-- Option -->
                         <#if currentUserRank?? && currentUserRank == "admin" >
                         <td>
-                            <a href='/simulation/afsirs_load?permit_id=${soil["permit_id"]!}&user_id=${soil["user_id"]!}' class="btn btn-default disabled" data-toggle="tooltip" title="Delete the permit record from system">Publish</a>
-                            <a href='/simulation/afsirs_load?permit_id=${soil["permit_id"]!}&user_id=${soil["user_id"]!}' class="btn btn-default disabled" data-toggle="tooltip" title="Delete the permit record from system">Share</a>
-                            <a href='/simulation/afsirs_load?permit_id=${soil["permit_id"]!}&user_id=${soil["user_id"]!}' class="btn btn-default disabled" data-toggle="tooltip" title="Delete the permit record from system">Delete</a>
+                            <a href='#' class="btn btn-default" onclick="" data-toggle="tooltip" title="Delete the permit record from system" style="display: none;">Publish</a>
+                            <a href='/simulation/afsirs_load?permit_id=${soil["permit_id"]!}&user_id=${soil["user_id"]!}' class="btn btn-default disabled" data-toggle="tooltip" title="Delete the permit record from system" style="display: none;">Share</a>
+                            <a href='#' class="btn btn-default" onclick='deleteSoilData("${soil.soil_id!}", "${soil.user_id!}", this);' data-toggle="tooltip" title="Delete the soil data record from system">Delete</a>
                         </td>
                         <#else>
                         <td>
-                            
-                            <a href='/simulation/afsirs_load?permit_id=${soil["permit_id"]!}' class="btn btn-default disabled" data-toggle="tooltip" title="Delete the permit record from system">Publish</a>
-                            <a href='/simulation/afsirs_load?permit_id=${soil["permit_id"]!}' class="btn btn-default disabled" data-toggle="tooltip" title="Delete the permit record from system">Share</a>
-                            <a href='/simulation/afsirs_load?permit_id=${soil["permit_id"]!}' class="btn btn-default disabled" data-toggle="tooltip" title="Delete the permit record from system">Delete</a>
+                            <a href='/simulation/afsirs_load?permit_id=${soil["permit_id"]!}' class="btn btn-default disabled" data-toggle="tooltip" title="Delete the permit record from system" style="display: none;">Publish</a>
+                            <a href='/simulation/afsirs_load?permit_id=${soil["permit_id"]!}' class="btn btn-default disabled" data-toggle="tooltip" title="Delete the permit record from system" style="display: none;">Share</a>
+                            <a href='#' class="btn btn-default" onclick='deleteSoilData("${soil.soil_id!}", "${currentUser!}", this);' data-toggle="tooltip" title="Delete the soil data record from system">Delete</a>
                         </td>
                         </#if>
                     </tr>

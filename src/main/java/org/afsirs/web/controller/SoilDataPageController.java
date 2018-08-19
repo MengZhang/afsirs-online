@@ -45,4 +45,14 @@ public class SoilDataPageController {
         }
         return SoilDataViewUtil.getSoilDataFindResponse(request, attributes);
     };
+
+    public static Route handleSoilDataDeletePost = (Request request, Response response) -> {
+        LOG.info("Handle Soil Data Delete Request");
+        Map<String, Object> attributes = new HashMap<>();
+        if (!ViewUtil.isLogined(request)) {
+            response.redirect(Path.Web.LOGIN);
+            return ViewUtil.getLoginPage(request, attributes);
+        }
+        return SoilDataViewUtil.getSoilDataDeleteResponse(request, attributes);
+    };
 }

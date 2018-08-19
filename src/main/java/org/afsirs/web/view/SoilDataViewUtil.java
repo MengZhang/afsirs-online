@@ -44,4 +44,8 @@ public class SoilDataViewUtil {
             return "";
         }
     }
+    
+    public static boolean getSoilDataDeleteResponse(Request request, Map<String, Object> attributes) {
+        return SoilDataDAO.delete(request.queryParams("soil_id"), ViewUtil.getUserID(request));
+    }
 }
