@@ -1,9 +1,12 @@
 package org.afsirs.web.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import org.afsirs.module.util.Util;
+import org.afsirs.web.dao.SoilDataDAO;
 import org.afsirs.web.dao.WaterUsePermitDAO;
+import org.afsirs.web.dao.bean.SoilData;
 import org.afsirs.web.dao.bean.WaterUsePermit;
 import org.afsirs.web.util.DataUtil;
 import static org.afsirs.web.util.DataUtil.getCropList;
@@ -41,7 +44,13 @@ public class WaterUsePermitViewUtil {
         attributes.put("soilDBNameList", DataUtil.getSoilTypeDBNameList());
         attributes.put("climateCityList", DataUtil.getClimateCityList());
         attributes.put("rainfallCityList", DataUtil.getRainfallCityList());
-        
+
+        HashMap<String, String> soils = new HashMap();
+        for (SoilData soil : SoilDataDAO.list(ViewUtil.getUserID(request))) {
+            soils.put(soil.getSoil_id(), soil.getSoil_unit_name());
+        }
+        attributes.put("savedSoilList", soils);
+
         return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.WaterUse.CREATE));
     }
     

@@ -27,6 +27,7 @@ import org.afsirs.web.util.DataUtil;
 @Data
 public class SoilData {
     
+    private String soil_id;
     private String user_id;
     private String soil_source;
     private String soil_unit_name;
@@ -39,6 +40,7 @@ public class SoilData {
     private String longitude;
     private String plantedArea;
     private String totalArea;
+    private String zoom = "9";
     
     private static final HashFunction hf = Hashing.sha256();
 
@@ -86,6 +88,7 @@ public class SoilData {
     
     public static SoilData readFromJson(JSONObject data) {
         SoilData ret = new SoilData();
+        ret.setSoil_id(data.getObjId());
         ret.setUser_id(data.getOrDefault("user_id", ""));
 
         String soilSource = data.getOrDefault("soil_source", null);
@@ -121,6 +124,18 @@ public class SoilData {
             }
             ret.setDbSoilNames(soilNames);
         }
+        if (ret.getTotalArea() != null && !ret.getTotalArea().isEmpty()) {
+            try {
+                long zoomVal = 17 - Math.round(Math.log(Double.parseDouble(ret.getTotalArea()))/Math.log(8));
+                if (zoomVal > 17) {
+                    zoomVal = 17;
+                } else if (zoomVal < 1) {
+                    zoomVal = 1;
+                }
+                ret.setZoom(zoomVal + "");
+            } catch (Exception ex) {
+            }
+        }
 
         return ret;
     }
@@ -144,7 +159,9 @@ public class SoilData {
         try {
             for (Field field : this.getClass().getDeclaredFields()) {
                 String fieldName = field.getName();
-                if (field.getType().getName().equals(String.class.getName())) {
+                if (field.getType().getName().equals(String.class.getName()) &&
+                        !fieldName.equalsIgnoreCase("soil_id") &&
+                        !fieldName.equalsIgnoreCase("zoom")) {
                     String val = (String) this.getClass().getMethod("get" + fieldName.substring(0 ,1).toUpperCase() + fieldName.substring(1)).invoke(this);
                     hasher.putBytes((fieldName + val).getBytes("UTF-8"));
                 }

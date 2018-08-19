@@ -125,11 +125,20 @@ public class WaterUsePermitDAO {
     }
 
     public static boolean update(WaterUsePermit permit, String currentUser) {
+        ObjectId soilId;
+        SoilData soil = permit.getSoilData();
+        if (soil.getSoil_id() == null || soil.getSoil_id().isEmpty()) {
+            soilId = SoilDataDAO.add(soil, currentUser);
+        } else {
+            SoilDataDAO.update(soil, currentUser);
+            soilId = new ObjectId(soil.getSoil_id());
+        }
         String json = AFSIRSModule.savePermitJson(permit.toAFSIRSInputData(currentUser));
         if (json != null && !json.isEmpty()) {
             try {
                 Document data = Document.parse(json);
                 data.put("user_id", currentUser);
+                data.put("soil_id", soilId);
                 return MongoDBHandler.replace(getConnection(AFSIRSCollection.WaterUsePermit),
                         MongoDBHandler.getFindCritia(
                                 new String[]{"permit_id", "user_id"},

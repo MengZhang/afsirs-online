@@ -37,6 +37,15 @@ public class Path {
             @Getter public static final String SOILMAP = PACKAGE + "/soilmap/";
             @Getter public static final String SOILMAP_OLD = "/SoilMap/";
             @Getter public static final String SOILMAP_LOAD = PACKAGE + "/soilmap_load";
+            
+        }
+            
+        public static class SoilData {
+            private static final String PACKAGE = "/" + SoilData.class.getSimpleName().toLowerCase();
+            @Getter public static final String LIST = PACKAGE + "/list";
+            @Getter public static final String CREATE = PACKAGE + "/create";
+            @Getter public static final String FIND = PACKAGE + "/find";
+            @Getter public static final String DELETE = PACKAGE + "/delete";
         }
         
 //        public static class Worker {
@@ -72,6 +81,11 @@ public class Path {
         public static class DataTools {
             private static final String PACKAGE = DataTools.class.getSimpleName().toLowerCase();
             public static final String SOILMAP = PACKAGE + "/soilmap.ftl";
+        }
+        
+        public static class SoilData {
+            private static final String PACKAGE = SoilData.class.getSimpleName().toLowerCase();
+            public static final String LIST = PACKAGE + "/list.ftl";
         }
     }
     

@@ -10,6 +10,7 @@ import org.afsirs.web.controller.DataToolsPageController;
 import org.afsirs.web.controller.PageController;
 import org.afsirs.web.controller.SimulationPageController;
 import org.afsirs.web.controller.SimulationWSController;
+import org.afsirs.web.controller.SoilDataPageController;
 import org.afsirs.web.controller.WaterUsePageController;
 import org.afsirs.web.controller.WorkerWSController;
 import org.afsirs.web.util.DataUtil;
@@ -82,7 +83,12 @@ public class Main {
         
         get(Path.Web.DataTools.SOILMAP,             DataToolsPageController.serveSoilMapPage);
         post(Path.Web.DataTools.SOILMAP,            DataToolsPageController.serveSoilMapPage2);
-        get(Path.Web.DataTools.SOILMAP_OLD,         DataToolsPageController.serveSoilMapPage);
+        get(Path.Web.DataTools.SOILMAP,             DataToolsPageController.serveSoilMapPage);
+        
+        get(Path.Web.SoilData.LIST,         SoilDataPageController.serveSoilDataListPage);
+        post(Path.Web.SoilData.CREATE,      SoilDataPageController.handleSoilDataSavePost);
+        post(Path.Web.SoilData.FIND,      SoilDataPageController.handleSoilDataFindPost);
+        post(Path.Web.SoilData.DELETE,      SoilDataPageController.handleSoilDataDeletePost);
         
 //        get("*",                     PageController.serveNotFoundPage, new FreeMarkerEngine());
 

@@ -23,6 +23,7 @@ import org.afsirs.web.util.DataUtil.CropData;
 import org.afsirs.web.util.DataUtil.CropDataAnnual;
 import org.afsirs.web.util.DataUtil.CropDataPerennial;
 import org.afsirs.web.util.Path;
+import org.bson.types.ObjectId;
 import spark.Request;
 
 /**
@@ -224,6 +225,7 @@ public class WaterUsePermit {
         ret.setDbSoilNames(dbSoilNames);
         ret.setSoils(soils);
         ret.setUser_id(user_id);
+        ret.setSoil_id(soil_id);
         return ret;
     }
 
@@ -264,6 +266,7 @@ public class WaterUsePermit {
         ret.setEt_extracted(request.queryParams("et_extracted"));
         ret.setWater_table_depth(request.queryParams("water_table_depth"));
 
+        ret.setSoil_id(request.queryParams("soil_id"));
         String soilSource = request.queryParams("soil_source");
         ret.setSoil_source(soilSource);
         ret.setSoil_unit_name(request.queryParams("soil_unit_name"));

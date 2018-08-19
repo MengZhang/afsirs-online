@@ -11,6 +11,7 @@
             document.getElementById('planted_area').max = "1000";
             document.getElementById('planted_area_input').max = "1000";
             document.getElementById('soil_file_content').classList.add("hidden");
+            document.getElementById('soil_unit_name').readOnly = false;
         } else {
             document.getElementById("total_area").disabled = false;
             var max = Number(document.getElementById('total_area').value);
@@ -21,9 +22,29 @@
             document.getElementById('planted_area').max = max;
             document.getElementById('planted_area_input').max = max;
             document.getElementById('soil_file_content').classList.remove("hidden");
+            document.getElementById('soil_unit_name').readOnly = !document.getElementById('soil_file_upload_flg').checked;
         }
         
         updateWthSB(soilSource);
+    }
+    
+    function switchUploadSoilData(checkbox) {
+        document.getElementById('soil_id_sb').disabled = checkbox.checked;
+        document.getElementById('soil_file').disabled = !checkbox.checked;
+        document.getElementById('soil_unit_name').readOnly = !checkbox.checked;
+    }
+    
+    function updateSelectedSoilId() {
+        var SB = document.getElementById('soil_id_sb');
+        var soilId = SB.options[SB.selectedIndex].value;
+        document.getElementById('soil_id').value = soilId;
+        document.getElementById('soil_unit_name').value = SB.options[SB.selectedIndex].innerHTML;
+        $.post("/soildata/find",
+                {
+                  soil_id: soilId
+                },
+                readSoilData
+              );
     }
 
     function readFile() {
@@ -33,6 +54,8 @@
             return;
         }
 
+        document.getElementById('soil_id_sb').selectedIndex = 0;
+        document.getElementById('soil_id').value = "";
         var file = files[0];
         var unitName = file.name.slice(0, -5);
         document.getElementById('soil_unit_name').value = unitName;
@@ -42,33 +65,7 @@
         reader.onloadend = function (evt) {
             if (evt.target.readyState === FileReader.DONE) { // DONE == 2
                 var jsonStr = evt.target.result;
-                var obj = JSON.parse(jsonStr);
-                var plygonStr = JSON.stringify(obj["polygon"][0]);
-                var afsirsInfo = obj["afsirs"];
-                if (afsirsInfo === undefined) {
-                    afsirsInfo = obj["asfirs"];
-                }
-                var totArea = Number(afsirsInfo[0].TotalArea);
-                var plantedArea = 0;
-                for (var i = 0; i < obj["soils"].length; i++) {
-                    plantedArea += Number(obj["soils"][i]["compArea"]);
-                }
-                obj = cmToInch(obj);
-                document.getElementById('soil_file_content').classList.remove("hidden");
-                document.getElementById('tblBody').innerHTML = toTableHtml(obj["soils"]);
-                document.getElementById('soil_file_json').value = JSON.stringify(obj);
-                document.getElementById('polygon_info').value = plygonStr;
-                document.getElementById('polygon_loc_info').value = JSON.stringify(afsirsInfo[0]);
-                document.getElementById('total_area').value = totArea;
-                document.getElementById('planted_area').max = plantedArea;
-                document.getElementById('planted_area_input').max = plantedArea;
-                document.getElementById('planted_area').value = plantedArea;
-                document.getElementById('planted_area_input').value = plantedArea;
-                document.getElementById('soil_id').value = "";
-                showError("soil_file", "", false);
-                calcDistance(afsirsInfo[0]["lat"], afsirsInfo[0]["long"]);
-                selectNearestLoc('et', document.getElementById("et_nearest_flg"));
-                selectNearestLoc('rain', document.getElementById("rain_nearest_flg"));
+                readSoilData(jsonStr);
             }
         };
 
@@ -76,6 +73,35 @@
         reader.readAsBinaryString(blob);
     }
     
+    function readSoilData(jsonStr) {
+        var obj = JSON.parse(jsonStr);
+        var plygonStr = JSON.stringify(obj["polygon"][0]);
+        var afsirsInfo = obj["afsirs"];
+        if (afsirsInfo === undefined) {
+            afsirsInfo = obj["asfirs"];
+        }
+        var totArea = Number(afsirsInfo[0].TotalArea);
+        var plantedArea = 0;
+        for (var i = 0; i < obj["soils"].length; i++) {
+            plantedArea += Number(obj["soils"][i]["compArea"]);
+        }
+        obj = cmToInch(obj);
+        document.getElementById('soil_file_content').classList.remove("hidden");
+        document.getElementById('tblBody').innerHTML = toTableHtml(obj["soils"]);
+        document.getElementById('soil_file_json').value = JSON.stringify(obj);
+        document.getElementById('polygon_info').value = plygonStr;
+        document.getElementById('polygon_loc_info').value = JSON.stringify(afsirsInfo[0]);
+        document.getElementById('total_area').value = totArea;
+        document.getElementById('planted_area').max = plantedArea;
+        document.getElementById('planted_area_input').max = plantedArea;
+        document.getElementById('planted_area').value = plantedArea;
+        document.getElementById('planted_area_input').value = plantedArea;
+        showError("soil_file", "", false);
+        calcDistance(afsirsInfo[0]["lat"], afsirsInfo[0]["long"]);
+        selectNearestLoc('et', document.getElementById("et_nearest_flg"));
+        selectNearestLoc('rain', document.getElementById("rain_nearest_flg"));
+    }
+
     function cmToInch(data) {
         var soils = data["soils"];
         var version = data["version"];
@@ -370,9 +396,17 @@
             </div>
         </div>
         <div id="soilTypeSB_MAP" class="form-group soilTypeSB">
-            <label class="control-label col-sm-3" for="soil_file">Upload Soil File :</label>
+            <label class="control-label col-sm-3" for="soil_file">Select Soil Data :</label>
             <div class="col-sm-5">
-                <input type="file" id="soil_file" name="soil_file" class="form-control" value="" accept=".json" onchange="readFile()" placeholder="Browse Soil File (.json)" data-toggle="tooltip" title="Browse Soil File (.json)">
+                <select id="soil_id_sb" class="form-control" onchange="updateSelectedSoilId();" title="Select Soil Data from saved records">
+                    <option value="" <#if permit['irr_depth_type']?? && permit['irr_depth_type']?number == -1>selected</#if>></option>
+                    <#list savedSoilList?keys as soilId>
+                    <option value="${soilId}" <#if permit['soil_id']?? && permit['soil_id'] == soilId>selected</#if>>${savedSoilList[soilId]!}</option>
+                    </#list>
+                </select>
+                <br/>
+                <input type="file" id="soil_file" name="soil_file" class="form-control" value="" accept=".json" onchange="readFile()" placeholder="Browse Soil File (.json)" data-toggle="tooltip" title="Browse Soil File (.json)" disabled>
+                <label class="form-check-label"><input id="soil_file_upload_flg" type="checkbox" value="true"  class="form-check-input" onchange="switchUploadSoilData(this);">&nbsp; &nbsp; Use exported soil data file (.json)</label>
                 <input type="hidden" id="soil_file_json" name="soil_file_json" value='{"soils":${permit["soil_json"]!"[]"}}'>
             </div>
             <div class="col-sm-4">
@@ -381,7 +415,6 @@
                 <input type="hidden" id="polygon_loc_info" name="polygon_loc_info" value='${permit["polygon_loc_info"]!}'>
                 <input type="hidden" id="soil_map_url" value="${soil_map_url!'/datatools/soilmap/'}">
                 <button type="button" class="btn btn-primary text-right" onclick="openSoilMap()">View Soil Map</button>
-                <button type="button" class="btn btn-primary text-right" onclick="" disabled>Show Soil Data</button>
             </div>
             <div id="soil_fileWarning" class="row col-sm-12 hidden">
                 <div class="col-sm-3 text-left"></div>

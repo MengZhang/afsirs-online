@@ -3,7 +3,6 @@ package org.afsirs.web.controller;
 import java.util.HashMap;
 import java.util.Map;
 import static org.afsirs.web.Main.LOG;
-import org.afsirs.web.dao.UserDAO;
 import org.afsirs.web.dao.WaterUsePermitDAO;
 import org.afsirs.web.dao.bean.WaterUsePermit;
 import org.afsirs.web.util.Path;

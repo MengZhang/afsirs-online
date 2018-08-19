@@ -2,16 +2,14 @@ package org.afsirs.web.dao;
 
 import com.google.common.hash.HashCode;
 import com.mongodb.client.model.Projections;
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import org.afsirs.module.AFSIRSModule;
 import org.afsirs.web.dao.bean.SoilData;
 import org.afsirs.web.util.DBUtil.AFSIRSCollection;
 import static org.afsirs.web.util.DBUtil.getConnection;
 import org.afsirs.web.util.MongoDBHandler;
-import org.afsirs.web.util.Path;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 /**
@@ -20,7 +18,7 @@ import org.bson.types.ObjectId;
  */
 public class SoilDataDAO {
 
-    private static final String[] listParams = {"_id", "user_id", "soil_unit_name"};
+    private static final String[] listParams = {"_id", "user_id", "soil_unit_name", "soil_source", "afsirs", "planted_area", "total_area"};
 
     public static ArrayList<SoilData> list(String userId) {
         ArrayList<SoilData> ret = new ArrayList<>();
@@ -111,14 +109,13 @@ public class SoilDataDAO {
         String json = AFSIRSModule.saveSoilDataJson(soil.toAFSIRSInputSoilData());
         if (json != null && !json.isEmpty()) {
             try {
-                ObjectId ret = null;
                 HashCode hash = soil.getHash();
                 String unitName = soil.getSoil_unit_name().replaceAll("((?<!_)__\\(\\d+\\))?$", "");
                 Document data = Document.parse(json);
                 data.put("user_id", currentUser);
                 data.put("data_hash", hash.toString());
                 MongoDBHandler.add(getConnection(AFSIRSCollection.SoilData), data);
-                ret = getId(hash);
+                ObjectId ret = getId(hash);
                 if (ret== null) {
                     int count = 1;
                     for (SoilData soilRet : list(currentUser)) {
@@ -158,6 +155,7 @@ public class SoilDataDAO {
             try {
                 Document data = Document.parse(json);
                 data.put("user_id", currentUser);
+                data.put("data_hash", soil.getHash().toString());
                 return MongoDBHandler.replace(getConnection(AFSIRSCollection.SoilData),
                         MongoDBHandler.getFindCritia(
                                 new String[]{"soil_unit_name", "user_id"},
@@ -168,6 +166,20 @@ public class SoilDataDAO {
                 return false;
             }
         } else {
+            return false;
+        }
+    }
+    
+    public static boolean delete(String id, String currentUser) {
+        return delete(new ObjectId(id), currentUser);
+    }
+
+    public static boolean delete(ObjectId id, String currentUser) {
+        try {
+            return MongoDBHandler.delete(getConnection(AFSIRSCollection.SoilData),
+                    new Document("_id", id).append("user_id", currentUser));
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
             return false;
         }
     }

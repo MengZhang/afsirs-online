@@ -12,7 +12,7 @@
                 text-align: left;
             }
             th#descCol {
-                width: 600px;
+                width: 400px;
             }
             table#t01 {
                 width: 100%;
@@ -51,16 +51,24 @@
                     <#list permits as permit>
                     <tr>
                         <#if currentUserRank?? && currentUserRank == "admin" >
-                        <td><a href='/wateruse/permit/find?permit_id=${permit["permit_id"]!}&user_id=${permit["user_id"]!}'>${permit["permit_id"]!}</a></td>
+                        <td><a href='/wateruse/permit/find?permit_id=${permit["permit_id"]!}&user_id=${permit["user_id"]!}' data-toggle="tooltip" title="View/Edit this permit record">${permit["permit_id"]!}</a></td>
                         <#else>
-                        <td><a href='/wateruse/permit/find?permit_id=${permit["permit_id"]!}'>${permit["permit_id"]!}</a></td>
+                        <td><a href='/wateruse/permit/find?permit_id=${permit["permit_id"]!}' data-toggle="tooltip" title="View/Edit this permit record">${permit["permit_id"]!}</a></td>
                         </#if>
                         <td>${permit["crop_name"]!}</td>
                         <td>${permit["et_loc"]!} / ${permit["rain_loc"]!}</td>
                         <#if currentUserRank?? && currentUserRank == "admin" >
-                        <td><a href='/simulation/afsirs_load?permit_id=${permit["permit_id"]!}&user_id=${permit["user_id"]!}' class="btn btn-default">Run AFSIRS</a></td>
+                        <td>
+                            <a href='/simulation/afsirs_load?permit_id=${permit["permit_id"]!}&user_id=${permit["user_id"]!}' class="btn btn-default" data-toggle="tooltip" title="Run AFSIRS module with this permit data">&nbsp;Run&nbsp;&nbsp;</a>
+                            <a href='/simulation/afsirs_load?permit_id=${permit["permit_id"]!}&user_id=${permit["user_id"]!}' class="btn btn-default disabled" data-toggle="tooltip" title="Delete the permit record from system">Delete</a>
+                            <a href='/simulation/afsirs?permit_id=${permit["permit_id"]!}&user_id=${permit["user_id"]!}' class="btn btn-default" data-toggle="tooltip" title="View the AFSIRS result from last run">Result</a>
+                        </td>
                         <#else>
-                        <td><a href='/simulation/afsirs_load?permit_id=${permit["permit_id"]!}' class="btn btn-default">Run AFSIRS</a></td>
+                        <td>
+                            <a href='/simulation/afsirs_load?permit_id=${permit["permit_id"]!}' class="btn btn-default" data-toggle="tooltip" title="Run AFSIRS module with this permit data">&nbsp;Run&nbsp;&nbsp;</a>
+                            <a href='/simulation/afsirs_load?permit_id=${permit["permit_id"]!}' class="btn btn-default disabled" data-toggle="tooltip" title="Delete the permit record from system">Delete</a>
+                            <a href='/simulation/afsirs?permit_id=${permit["permit_id"]!}' class="btn btn-default" data-toggle="tooltip" title="View the AFSIRS result from last run">Result</a>
+                        </td>
                         </#if>
                     </tr>
                     <#else>

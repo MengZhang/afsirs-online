@@ -134,6 +134,7 @@ require([
 
     //area
     var polyArea = Number(document.getElementById("total_area").value);
+    var plantedArea = 0;
     var soilArea;
 
     //infowindow
@@ -496,6 +497,13 @@ require([
     });
     on(dom.byId("clearButton"), "click", function (evt) {
         selectState(StateEnum.RESET);
+        document.getElementById("update_flg").value = false;
+        var mapNameLB = document.getElementById("map_name_lb");
+        mapNameLB.innerHTML = "Enter map name";
+        mapNameLB.contentEditable = true;
+        mapNameLB.style.border = "inset";
+        mapNameLB.style.borderColor = "default";
+        document.getElementById("map_name_edit_mark").style.display = "block";
     });
 
     //Date on File Name
@@ -632,6 +640,7 @@ require([
                 soilGLayer.clear();
                 document.getElementById("calcButton").disabled = true;
                 document.getElementById("saveButton").disabled = true;
+                document.getElementById("exportButton").disabled = true;
                 document.getElementById("site_area_lb").innerHTML = "";
                 document.getElementById("queryRetTable").style.display = "none";
                 setState(StateEnum.ZONESELECT);
@@ -1045,23 +1054,77 @@ require([
             }
         }
     }
-    function getFinalJson(Attributes, cokeyList) {
+    
+    function getCokeyList() {
+        var array = [];
+        //console.log("Inside save " );
+        $("#tbl input[name='link']:checked").each(function () {
+            //for each checked checkbox, iterate through its parent's siblings
+            //console.log("Sub array " + subArray);
+            var key = this.value;
+            $("#tbl input[name='link_" + key + "']:checked").each(function () {
+                subArray = $(this).parent().siblings().map(function () {
+                    return $(this).text().trim();
+                }).get();
+                var cokey = subArray[3];
+                var mukey = subArray[4];
+                //console.log("cokey " + cokey);
+                //console.log("mukey " + mukey);
+                //console.log("Array " + array);
+                if (subArray === null || subArray === undefined) {
+                    var subArray = [];
+                    subArray.push(cokey);
+                    array.push({
+                        "mukey": mukey,
+                        "cokeyArray": subArray
+                    });
+                } else {
+                    var bool = false;
+                    array.forEach(function (obj) {
+                        if (obj.mukey === mukey) {
+                            obj.cokeyArray.push(cokey);
+                            bool = true;
+                        }
+                    });
+                    if (bool === false) {
+                        var subArray = [];
+                        subArray.push(cokey);
+                        array.push({
+                            "mukey": mukey,
+                            "cokeyArray": subArray
+                        });
+                    }
+                }
+                array.push(mukey);
+            });
+        });
+        return array;
+    }
+    
+    function getFinalJson(Attributes) {
+        
+        var cokeyList = getCokeyList();
         var soils = [];
         var afsirs = [];
         var polygon = [];
         var result = {"soils": soils, "afsirs": afsirs, "polygon": polygon, "version": "1.0.1"};
-
+        
+        plantedArea = 0;
         Attributes.forEach(function (record) {
             cokeyList.forEach(function (obj) {
                 if (obj.mukey === record.mukey) {
                     record.componentList.forEach(function (cokeyObj) {
                         if (obj.cokeyArray.indexOf(cokeyObj.cokey) >= 0) {
                             result.soils.push(cokeyObj);
+                            plantedArea += Number(cokeyObj.compArea);
                         }
                     });
                 }
             });
         });
+        
+        result["planted_area"] = plantedArea.toFixed(3);
+        
         var array = [];
         array.push({
             "long": centroid.getLongitude(),
@@ -1081,6 +1144,7 @@ require([
         });
         return JSON.stringify(result);
     }
+
     function getMUKEYNames(Attributes) {
         showLoadingImg("");
         var resultSetCount = 0;
@@ -1180,6 +1244,7 @@ require([
                     //console.log("In nothing");
             }
             compQueryTask.execute(compQuery, function (featureSet) {
+                var compCount = 0;
                 var length = featureSet.features.length;
                 var maxindex = 0;
                 var maxval = featureSet.features[0].attributes.comppct_r;
@@ -1304,11 +1369,14 @@ require([
                                 });
                             }
                         });
-                        resultSetCount++;
-                        //if(resultSetCount === Attributes.length){
+                        compCount++;
+                        if (compCount === attribute.componentList.length) {
+                            resultSetCount++;
+                        }
+                        if(resultSetCount === Attributes.length){
                         // alert(JSON.stringify(Attributes));
-                        showPopup(Attributes);
-                        //}
+                            showPopup(Attributes);
+                        }
                     });
                 });
             });
@@ -1337,50 +1405,41 @@ require([
                 alert("Please enter a map name.");
                 return;
             }
-            var array = [];
-            //console.log("Inside save " );
-            $("#tbl input[name='link']:checked").each(function () {
-                //for each checked checkbox, iterate through its parent's siblings
-                //console.log("Sub array " + subArray);
-                var key = this.value;
-                $("#tbl input[name='link_" + key + "']:checked").each(function () {
-                    subArray = $(this).parent().siblings().map(function () {
-                        return $(this).text().trim();
-                    }).get();
-                    var cokey = subArray[3];
-                    var mukey = subArray[4];
-                    //console.log("cokey " + cokey);
-                    //console.log("mukey " + mukey);
-                    //console.log("Array " + array);
-                    if (subArray === null || subArray === undefined) {
-                        var subArray = [];
-                        subArray.push(cokey);
-                        array.push({
-                            "mukey": mukey,
-                            "cokeyArray": subArray
-                        });
+            
+            saveButton.disabled = true;
+            $.post("/soildata/create",
+                {
+                  data: getFinalJson(Attributes),
+                  soil_unit_name: unit,
+                  soil_source: "MAP",
+                  total_area: polyArea,
+                  plantedArea: plantedArea.toFixed(3),
+                  user_id: document.getElementById("user_id").value,
+                  update_flg: document.getElementById("update_flg").value
+                },
+                function(status){
+                    saveButton.disabled = false;
+                    if (status) {
+                        document.getElementById("update_flg").value = true;
+                        alert("Soil Data has been saved successfully!");
                     } else {
-                        var bool = false;
-                        array.forEach(function (obj) {
-                            if (obj.mukey === mukey) {
-                                obj.cokeyArray.push(cokey);
-                                bool = true;
-                            }
-                        });
-                        if (bool === false) {
-                            var subArray = [];
-                            subArray.push(cokey);
-                            array.push({
-                                "mukey": mukey,
-                                "cokeyArray": subArray
-                            });
-                        }
+                        alert("Soil Data is not saved correctly, please try again!");
                     }
-                    array.push(mukey);
-                });
-            });
+                }
+            );
+        };
+        
+        var exportButton = document.getElementById("exportButton");
+        exportButton.disabled = false;
+        exportButton.onclick = function () {
+           
+            getInputParams();
+            if (unit === "") {
+                alert("Please enter a map name.");
+                return;
+            }
             //to print the value of array
-            var text = getFinalJson(Attributes, array);
+            var text = getFinalJson(Attributes);
             var blob = new Blob([text], {type: "text/plain;charset=utf-8"});
             //console.log("Before save ",fileName,unit);
             saveAs(blob, unit + ".json");
@@ -1427,8 +1486,13 @@ require([
                 return 0; //default return value (no sorting)
             });
         });
-
-
+        
+        var checked_mukeys = document.getElementById("checked_mukeys");
+        var checkedMukeys = [];
+        if (checked_mukeys.value !== "") {
+            checkedMukeys = checked_mukeys.value.split(", ");
+        }
+        checked_mukeys.value = "";
 
         Attributes.forEach(function (attribute) {
             if (htmlString === undefined) {
@@ -1446,7 +1510,7 @@ require([
                     compHtmlStr = compHtmlStr + "<tr style=\"display:none;\"><td><input type=\"checkbox\" disabled/></td><td>" + component.musym + "</td><td>" + component.soilName + "</td><td>" + areaStr + "</td><td style=\"display:none;\">" + component.cokey + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
                 } else {
                     ifOnlyWater = false;
-                    if (attribute.unitPct >= 5) {
+                    if ((attribute.unitPct >= 5 && checkedMukeys.length === 0) || checkedMukeys.includes(component.mukey)) {
                         compHtmlStr = compHtmlStr + "<tr style=\"display:none;\"><td><input type=\"checkbox\" name=\"link_" + component.mukey + "\" checked/></td><td>" + component.musym + "</td><td>" + component.soilName + "</td><td>" + areaStr + "</td><td style=\"display:none;\">" + component.cokey + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
                     } else {
                         compHtmlStr = compHtmlStr + "<tr style=\"display:none;\"><td><input type=\"checkbox\" name=\"link_" + component.mukey + "\"/></td><td>" + component.musym + "</td><td>" + component.soilName + "</td><td>" + areaStr + "</td><td style=\"display:none;\">" + component.cokey + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
@@ -1461,7 +1525,7 @@ require([
             if (ifOnlyWater) {
                 htmlString = htmlString + "<tr class=\"active\"><td><input type=\"checkbox\" disabled/></td><td>" + attribute.musym + "</td><td class=\"text-left\">" + attribute.soilName + "</td><td>" + areaStr + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
             } else {
-                if (attribute.unitPct >= 5) {
+                if ((attribute.unitPct >= 5 && checkedMukeys.length === 0) || checkedMukeys.includes(attribute.mukey)) {
                     htmlString = htmlString + "<tr class=\"active\"><td><input type=\"checkbox\" name=\"link\" checked onchange=\"checkAllSub(this)\" value=\"" + attribute.mukey + "\"/></td><td>" + attribute.musym + "</td><td class=\"text-left\"><a href=\"#\" data-toggle=\"" + attribute.mukey + "\" title=\"Map Unit Composition\" data-html=\"true\" data-trigger=\"focus\" data-content='" + soilTypeHtml1 + soilTypeHtml2 + soilTypeHtml3 + "'>" + attribute.soilName + "</a></td><td>" + areaStr + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";
                 } else {
                     htmlString = htmlString + "<tr class=\"active\"><td><input type=\"checkbox\" name=\"link\" onchange=\"checkAllSub(this)\" value=\"" + attribute.mukey + "\"/></td><td>" + attribute.musym + "</td><td class=\"text-left\"><a href=\"#\" data-toggle=\"" + attribute.mukey + "\" title=\"Map Unit Composition\" data-html=\"true\" data-trigger=\"focus\" data-content='" + soilTypeHtml1 + soilTypeHtml2 + soilTypeHtml3 + "'>" + attribute.soilName + "</a></td><td>" + areaStr + "</td><td style=\"display:none;\">" + attribute.mukey + "</td></tr>";

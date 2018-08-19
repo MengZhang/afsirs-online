@@ -35,7 +35,16 @@
         <div class="container-fluid main-container">
 
             <form id="createSoilForm" action="/datatools/soilmap/create" class="form-horizontal" method="post">
+                <#if currentUserRank?? && currentUserRank == "admin" >
                 <input type="hidden" id="user_id" name="user_id" value="${soilData['user_id']!}">
+                <#else>
+                <input type="hidden" id="user_id" name="user_id" value="${currentUser!}">
+                </#if>
+                <#if soilData["polygon_info"]?? >
+                <input type="hidden" id="update_flg" name="update_flg" value="true">
+                <#else>
+                <input type="hidden" id="update_flg" name="update_flg" value="false">
+                </#if>
                 <input type="hidden" id="soil_unit_name" name="soil_unit_name" value="${soilData['soil_unit_name']!}">
                 <input type="hidden" id="latitude" name="latitude" value="${soilData['latitude']!'28.3'}">
                 <input type="hidden" id="longitude" name="longitude" value="${soilData['longitude']!'-81.5'}">
@@ -43,17 +52,21 @@
                 <input type="hidden" id="planted_area" name="planted_area" value="${soilData['plantedArea']!}">
                 <input type="hidden" id="total_area" name="total_area" value="${soilData['totalArea']!}">
                 <input type="hidden" id="zoom" name="zoom" value="${zoom!}">
+                <input type="hidden" id="checked_mukeys" name="checked_mukeys" value="${checked_mukeys!}">
                 <fieldset>
                     <legend class="text-center">AFSIRS - Farm Area Selection Tool</legend>
                     <div class="row row-map">
                         <div class="col-sm-3 sidenav">
                             <div id="nav">
                                 <div id="contentPane4" class="contentPane">
-                                    <div id="buttonPane" class="buttonPane contentPane" style="border:none">
-                                        <button id="step2Button" type="button" class="btn btn-primary"><span class="glyphicon glyphicon glyphicon-pencil"></span> Draw</button>
-                                        <button id="calcButton" type="button" class="btn btn-primary" disabled><span class="glyphicon glyphicon glyphicon-list-alt"></span> Query</button>
-                                        <button id="clearButton" type="button" class="btn btn-primary"><span class="glyphicon glyphicon 	glyphicon glyphicon-remove"></span> Clear</button>
-                                        <button id="saveButton" type="button" class="btn btn-primary" disabled><span class="glyphicon glyphicon-save-file"></span> Save</button>
+                                    <div id="buttonPane" class="text-left buttonPane contentPane" style="border:none">
+                                        <button id="step2Button" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span> Draw</button>
+                                        <button id="calcButton" type="button" class="btn btn-primary" disabled><span class="glyphicon glyphicon-list-alt"></span> Query</button>
+                                        <button id="clearButton" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-remove"></span> Clear</button>
+                                        <br/>
+                                        <br/>
+                                        <button id="saveButton" type="button" class="btn btn-primary" disabled><span class="glyphicon glyphicon-save"></span> Save</button>
+                                        <button id="exportButton" type="button" class="btn btn-primary" disabled><span class="glyphicon glyphicon-save-file"></span> Export</button>
                                     </div>
                                 </div>
                                 <div id="messages">
@@ -168,6 +181,7 @@
                                     <br>
                                     &bull; <b>Click the Save to file button</b> to save file to download folder.
                                 </p>
+                                <button id="backButton" type="button" class="btn btn-primary" onclick="window.location.href = '/soildata/list'"><span class="glyphicon glyphicon-list-alt"></span> Back to List</button>
                             </div>
                         </div>
                     </div>
