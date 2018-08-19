@@ -107,6 +107,10 @@ public class JSONObject extends org.json.simple.JSONObject {
         }
     }
     
+    public String getObjId() {
+        return getObjId("_id");
+    }
+    
     public String getObjId(String key) {
         Object id = this.get(key);
         if (id != null) {
