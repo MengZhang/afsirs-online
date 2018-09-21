@@ -179,7 +179,8 @@
                                     <br>
                                     &bull; <b>Select the soil types</b> you want to evaluate by checking the checkboxes.
                                     <br>
-                                    &bull; <b>Click the Save to file button</b> to save file to download folder.
+                                    &bull; <b>Click the Save button</b> to save data into database, or
+                                    <b>Click the Export button</b> to save file to download folder.
                                 </p>
                                 <button id="backButton" type="button" class="btn btn-primary" onclick="window.location.href = '/soildata/list'"><span class="glyphicon glyphicon-list-alt"></span> Back to List</button>
                             </div>
