@@ -59,8 +59,10 @@
             <div class="container-fluid text-left">
                 <h3>To run AFSIRS module</h3>
                 <ol>
-                    <li>Select Water Use from menu bar</li>
-                    <li>Choose Create Permit and input your site info and configure your simulation</li>
+                    <li>Select Soil Map from menu bar under Data Tools</li>
+                    <li>Draw a polygon on the map to get the soil data for your field</li>
+                    <li>Select Create Permit from menu bar under Water Use</li>
+                    <li>Input your site info and configure your simulation</li>
                     <li>Once you save your Permit, you can find it in the Permit List page</li>
                     <li>Find Run AFSIRS button on the list page, and click it to show the graph or download as PDF file</li>
                 </ol>
