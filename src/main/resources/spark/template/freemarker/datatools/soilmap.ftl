@@ -129,6 +129,7 @@
                                         <tbody id="tblBody">
                                         </tbody>
                                     </table>
+                                    <i>(Any soil type which is less than 5% of total area will be unchecked by default)</i>
                                 </div>
                             </div>
                         </div>
@@ -175,11 +176,11 @@
                                     &bull; <b>Draw a polygon</b> around the farm area you want to evaluate.
 
                                     <br>
-                                    &bull; <b>Wait until the polygon drawing process is done</b>. After that, the soil data table will show up in the left button of page .
+                                    &bull; <b>Wait until the polygon drawing process is done</b>, and the soil data table will show up in the left button of page.
                                     <br>
-                                    &bull; <b>Click the Query button to refresh the data if necessary</b>.
+                                    &bull; <b>Enter a name</b> for your data set for future references.
                                     <br>
-                                    &bull; <b>Select the soil types</b> you want to evaluate by checking the checkboxes. <i>(Any soil type which is less than 5% of total area will be <i>unchecked by default)</i>.
+                                    &bull; <b>Select the soil types</b> you want to evaluate by checking the checkboxes.
                                     <br>
                                     &bull; <b>Click the Save button</b> to save data into database, or
                                     <b>Click the Export button</b> to save file to download folder.
