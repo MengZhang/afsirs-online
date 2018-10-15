@@ -30,6 +30,7 @@ require([
     "dojo/on",
     "esri/dijit/BasemapGallery",
     "esri/basemaps",
+    "esri/symbols/PictureMarkerSymbol",
     "esri/dijit/HomeButton",
     "esri/geometry/Point",
     "dojo/domReady!"
@@ -63,7 +64,9 @@ require([
         on,
         BasemapGallery,
         basemaps,
-        HomeButton) {
+        PictureMarkerSymbol,
+        HomeButton,
+        Point) {
 
     var isDeveloper = true;
 //    var ServicePATH = "http://ifs-arcgis-1.ad.ufl.edu:6080/arcgis/rest/services";
@@ -90,6 +93,7 @@ require([
     var soilFeatures;
     var soilSelLayer;
     var soilGLayer;
+    var wthLayer;
 
     //other misc stuff
     var loadingImg;
@@ -237,6 +241,75 @@ require([
 
     soilGLayer = new GraphicsLayer();
     map.addLayer(soilGLayer);
+    wthLayer = new GraphicsLayer();
+    map.addLayer(wthLayer);
+    
+    if (rainLocs !== undefined && rainLocs.length > 0) {
+        var wstMultiPoint = {
+            "geometry":{"points":rainLocs,"spatialReference":{"wkid":4326}},
+            "symbol":{
+                "url":"/images/R.png",
+                "height":30,
+                "width":24,
+                "angle":0,
+                "xoffset":0,
+                "yoffset":0,
+                "type":"esriPMS"
+            }
+        };
+        var gra = new esri.Graphic(wstMultiPoint);
+        wthLayer.add(gra);
+        
+        for (var i = 0; i < rainLocNames.length; i++) {
+            var wstPoint = {
+                "geometry":{"points":[[rainLocNames[i]["longi"],rainLocNames[i]["lat"]]],"spatialReference":{"wkid":4326}},
+                "symbol":{
+                    "color":[255,255,0,255],
+                    "yoffset": -22,
+                    "xoffset": 0,
+                    "text":rainLocNames[i]["location"],
+                    "font":{"size":"8pt"},
+                    "type":"esriTS"
+                }
+            };
+            var gra2 = new esri.Graphic(wstPoint);
+            wthLayer.add(gra2);
+        }
+        
+    }
+    
+    if (climateLocs !== undefined && climateLocs.length > 0) {
+        var wstMultiPoint = {
+            "geometry":{"points":climateLocs,"spatialReference":{"wkid":4326}},
+            "symbol":{
+                "url":"/images/ET.png",
+                "height":30,
+                "width":24,
+                "angle":0,
+                "xoffset":0,
+                "yoffset":0,
+                "type":"esriPMS"
+            }
+        };
+        var gra = new esri.Graphic(wstMultiPoint);
+        wthLayer.add(gra);
+        
+        for (var i = 0; i < climateLocNames.length; i++) {
+            var wstPoint = {
+                "geometry":{"points":[[climateLocNames[i]["longi"],climateLocNames[i]["lat"]]],"spatialReference":{"wkid":4326}},
+                "symbol":{
+                    "color":[0,255,255,255],
+                    "yoffset": -15,
+                    "xoffset": 0,
+                    "text":climateLocNames[i]["location"],
+                    "font":{"size":"8pt"},
+                    "type":"esriTS"
+                }
+            };
+            var gra2 = new esri.Graphic(wstPoint);
+            wthLayer.add(gra2);
+        }
+    }
 
     //button to show soil Map Unit
     var myButton = new Button({

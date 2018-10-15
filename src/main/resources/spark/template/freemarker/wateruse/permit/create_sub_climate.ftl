@@ -27,11 +27,15 @@
     function calcRainDistance(lat, longi) {
         var SB = document.getElementById("rain_loc");
         for (i = 0; i < SB.options.length; i++) {
-            var loc = SB.options[i].innerHTML.split(" -- (")[0];
+            var loc = SB.options[i].value;
             <#list rainfallCityList as rain_loc>
                 <#if rain_loc['lat']?? && rain_loc['longi']??>
             if (loc === "${rain_loc['location']!}") {
-                SB.options[i].innerHTML = loc + " -- (" + getDistanceFromLatLon(lat, longi, ${rain_loc['lat']!}, ${rain_loc['longi']!}) + " mi)";
+                SB.options[i].innerHTML = loc + " (${rain_loc['startYear']?string['0']!} - ${rain_loc['endYear']?string['0']!})" + " -- (" + getDistanceFromLatLon(lat, longi, ${rain_loc['lat']!}, ${rain_loc['longi']!}) + " mi)";
+            } else
+                <#else>
+            if (loc === "${rain_loc['location']!}") {
+                SB.options[i].innerHTML = loc + " (${rain_loc['startYear']?string['0']!} - ${rain_loc['endYear']?string['0']!})";
             } else
                 </#if>
             </#list>
@@ -44,11 +48,15 @@
     function calcClimateDistance(lat, longi) {
         var SB = document.getElementById("et_loc");
         for (i = 0; i < SB.options.length; i++) {
-            var loc = SB.options[i].innerHTML.split(" -- (")[0];
+            var loc = SB.options[i].value;
             <#list climateCityList as et_loc>
                 <#if et_loc['lat']?? && et_loc['longi']??>
             if (loc === "${et_loc['location']!}") {
-                SB.options[i].innerHTML = loc + " -- (" + getDistanceFromLatLon(lat, longi, ${et_loc['lat']!}, ${et_loc['longi']!}) + " mi)";
+                SB.options[i].innerHTML = loc + " (${et_loc['startYear']?string['0']!} - ${et_loc['endYear']?string['0']!})" + " -- (" + getDistanceFromLatLon(lat, longi, ${et_loc['lat']!}, ${et_loc['longi']!}) + " mi)";
+            } else
+                <#else>
+            if (loc === "${et_loc['location']!}") {
+                SB.options[i].innerHTML = loc + " (${et_loc['startYear']?string['0']!} - ${et_loc['endYear']?string['0']!})";
             } else
                 </#if>
             </#list>
@@ -128,7 +136,7 @@
             <div class="col-sm-6">
                 <select id="et_loc" name="et_loc" class="form-control" onchange="revalidateSB(this)">
                     <#list climateCityList as et_loc>
-                    <option value="${et_loc['location']!}" <#if permit['et_loc']?? && permit['et_loc'] == et_loc['location']>selected</#if>>${et_loc['location']!}</option>
+                    <option value="${et_loc['location']!}" <#if permit['et_loc']?? && permit['et_loc'] == et_loc['location']>selected</#if>>${et_loc['location']!} (${et_loc['startYear']?string['0']!} - ${et_loc['endYear']?string["0"]!})</option>
                     </#list>
                 </select>
             </div>
@@ -148,7 +156,7 @@
             <div class="col-sm-6">
                 <select id="rain_loc" name="rain_loc" class="form-control" onchange="revalidateSB(this)">
                     <#list rainfallCityList as rain_loc>
-                    <option value="${rain_loc['location']!}" <#if permit['rain_loc']?? && permit['rain_loc'] == rain_loc['location']>selected</#if>>${rain_loc['location']!}</option>
+                    <option value="${rain_loc['location']!}" <#if permit['rain_loc']?? && permit['rain_loc'] == rain_loc['location']>selected</#if>>${rain_loc['location']!} (${rain_loc['startYear']?string['0']!} - ${rain_loc['endYear']?string['0']!})</option>
                     </#list>
                 </select>
             </div>

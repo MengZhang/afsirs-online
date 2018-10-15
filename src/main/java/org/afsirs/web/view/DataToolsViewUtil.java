@@ -5,6 +5,7 @@ import java.util.Map;
 import org.afsirs.module.Soil;
 import org.afsirs.web.dao.SoilDataDAO;
 import org.afsirs.web.dao.bean.SoilData;
+import org.afsirs.web.util.DataUtil;
 import org.afsirs.web.util.Path;
 import static org.afsirs.web.view.ViewUtil.setCommonParam;
 import spark.ModelAndView;
@@ -37,7 +38,9 @@ public class DataToolsViewUtil {
         attributes.put("zoom", request.queryParams("zoom"));
         attributes.put("soilData", soil);
         attributes.put("checked_mukeys", mukeys.toString().substring(1, mukeys.toString().length() - 1));
-        
+        attributes.put("climateCityList", DataUtil.getClimateCityList());
+        attributes.put("rainfallCityList", DataUtil.getRainfallCityList());
+
         return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.DataTools.SOILMAP));
     }
     

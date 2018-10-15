@@ -27,6 +27,37 @@
                 min-height: 50px;
             }
         </style>
+        
+        <script>
+            var climateLocs = [
+                <#list climateCityList as et_loc>
+                    <#if et_loc['lat']?? && et_loc['longi']??>
+                [${et_loc['longi']},${et_loc['lat']}]<#sep>,</#sep>
+                    </#if>
+                </#list>
+                ];
+            var climateLocNames = [
+                <#list climateCityList as et_loc>
+                    <#if et_loc['lat']?? && et_loc['longi']?? && et_loc['location']??>
+                    {"location":"${et_loc['location']}","lat":${et_loc['lat']},"longi":${et_loc['longi']}}<#sep>,</#sep>
+                    </#if>
+                </#list>
+                ];
+            var rainLocs = [
+                <#list rainfallCityList as rain_loc>
+                    <#if rain_loc['lat']?? && rain_loc['longi']??>
+                [${rain_loc['longi']},${rain_loc['lat']}]<#sep>,</#sep>
+                    </#if>
+                </#list>
+                ];
+            var rainLocNames = [
+                <#list rainfallCityList as rain_loc>
+                    <#if rain_loc['lat']?? && rain_loc['longi']?? && rain_loc['location']??>
+                {"location":"${rain_loc['location']}","lat":${rain_loc['lat']},"longi":${rain_loc['longi']}}<#sep>,</#sep>
+                    </#if>
+                </#list>
+                ];
+        </script>
     </head>
 
     <body class="claro">
@@ -73,10 +104,6 @@
                                     <h4>Alert</h4>
                                     Please select a polygon first.
                                 </div>
-                                <br>
-                                <div id="progressDiv" class="progress" style="display:none">
-                                    <div id="progressBar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%</div>
-                                </div>
                                 <hr>
                                 <div id="queryRetInfo">
 <!--                                    <div class="row">
@@ -111,6 +138,9 @@
                                     </div>
                                 </div>
                                 <br>
+                                <div id="progressDiv" class="progress" style="display:none">
+                                    <div id="progressBar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%</div>
+                                </div>
                                 <div id="queryRetTable" style="max-height:50vh;overflow-y:auto;display:none">
                                     <table id="tbl" class="table table-hover table-condensed text-center" >
                                         <thead>
@@ -129,8 +159,8 @@
                                         <tbody id="tblBody">
                                         </tbody>
                                     </table>
-                                    <i>(Any soil type which is less than 5% of total area will be unchecked by default)</i>
                                 </div>
+                                <i>(Any soil type which is less than 5% of total area will be unchecked by default)</i>
                             </div>
                         </div>
                         <div class="col-sm-7 text-left">
