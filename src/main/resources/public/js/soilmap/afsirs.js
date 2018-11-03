@@ -420,7 +420,7 @@ require([
     }
 
     //event handlers
-    map.on("click", mapOnClick);
+//    map.on("click", mapOnClick);
     soilGLayer.on("click", mapOnClickSoilGLayer);
     map.on("load", function () {
         //Polygon tool
