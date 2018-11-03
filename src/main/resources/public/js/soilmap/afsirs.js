@@ -391,8 +391,6 @@ require([
         var text = JSON.parse(uri_dec);
         var polygon = new esri.geometry.Polygon(text);
         ////console.log(polygon);
-        //Polygon edit tool
-        editToolbar = new edit(map);
         selectState(StateEnum.ZONESELECT);
         currentClick = polygon.getPoint(0, 1);
         //create a random color for the symbols
@@ -435,10 +433,10 @@ require([
         selectState(StateEnum.ZONESELECT);
 
         if (isDeveloper) {
-            dojo.connect(editToolbar, "graphic-move-stop", graphicQuery);
-            dojo.connect(editToolbar, "vertex-move-stop", graphicQuery);
-            dojo.connect(editToolbar, "vertex-add", graphicQuery);
-            dojo.connect(editToolbar, "vertex-delete", graphicQuery);
+            editToolbar.on("graphic-move-stop", graphicQuery);
+            editToolbar.on("vertex-move-stop", graphicQuery);
+            editToolbar.on("vertex-add", graphicQuery);
+            editToolbar.on("vertex-delete", graphicQuery);
         }
 
         //query preparation
