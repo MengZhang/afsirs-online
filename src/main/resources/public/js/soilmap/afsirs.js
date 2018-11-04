@@ -433,10 +433,10 @@ require([
         selectState(StateEnum.ZONESELECT);
 
         if (isDeveloper) {
-            editToolbar.on("graphic-move-stop", graphicQuery);
-            editToolbar.on("vertex-move-stop", graphicQuery);
-            editToolbar.on("vertex-add", graphicQuery);
-            editToolbar.on("vertex-delete", graphicQuery);
+            editToolbar.on("graphic-move-stop", mapOnClickSoilGLayer);
+            editToolbar.on("vertex-move-stop", mapOnClickSoilGLayer);
+            editToolbar.on("vertex-add", mapOnClickSoilGLayer);
+            editToolbar.on("vertex-delete", mapOnClickSoilGLayer);
         }
 
         //query preparation
@@ -807,19 +807,7 @@ require([
             var infoTemplate = new esri.InfoTemplate("queryRegion", "content");
             var graphic = new esri.Graphic(geometry, symbol);
             soilGLayer.add(graphic);
-            //console.log("before");
-            mapOnClickSoilGLayer(graphic);
-            //console.log("after");
-            //Hiranava - Adding new code to get center point
-            //var centroid = new esri.Point(0,0);
-            //console.log("[Hiranava] Before calculating center: ");
-            centroid = geometry.getCentroid();
-            //console.log("[Hiranava] Printing Center: " + centroid.getLongitude() + ", " + centroid.getLatitude()); 
-            //console.log("The Polygon " + geometry);
-            var center = geometry.getCentroid();
-            //console.log("The Polygon center" + center);
-            polyJSON = geometry.toJson();
-            //console.log("The Polygon JSON " + JSON.stringify(polyJSON));
+            mapOnClickSoilGLayer();
         }
         else
             alert("You can draw atmost five query polygons");
@@ -827,18 +815,22 @@ require([
     }
 
     //Activate the toolbar when you click on a graphic
-    function mapOnClickSoilGLayer(graphic) {
+    function mapOnClickSoilGLayer() {
         ////console.log("Inside mapOnClickSoilGLayer");
         if (currentState === StateEnum.ZONESELECT && soilGLayer.graphics.length > 0) {
             //dojo.stopEvent(evt);
             ////console.log("Inside  if");
-            editToolbar.activate((esri.toolbars.Edit.MOVE | esri.toolbars.Edit.EDIT_VERTICES), graphic);
+            editToolbar.activate((esri.toolbars.Edit.MOVE | esri.toolbars.Edit.EDIT_VERTICES), soilGLayer.graphics[0]);
             soilGLayerSelected = true;
         }
         ////console.log("Inside mapOnClickSoilGLayer after if");
         // if(isDeveloper){
-        calculateGeometry([editToolbar.getCurrentState().graphic.geometry], function (result) {
+        var geometry = editToolbar.getCurrentState().graphic.geometry;
+        calculateGeometry([geometry], function (result) {
             polyArea = result.areas[0].toFixed(3);
+            centroid = geometry.getCentroid();
+            polyJSON = geometry.toJson();
+            //console.log("The Polygon JSON " + JSON.stringify(polyJSON));
             ////console.log("Inside mapOnClickSoilGLayer before showLoadingImg");
             showLoadingImg();
             ////console.log("Inside mapOnClickSoilGLayer before graphicQuery");
