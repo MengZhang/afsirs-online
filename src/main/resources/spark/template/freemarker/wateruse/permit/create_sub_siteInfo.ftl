@@ -156,17 +156,17 @@
     function changeIrrSysListByCrop(cropTypeSBId) {
         var crop = document.getElementById(cropTypeSBId).value;
         var irrType = document.getElementById("irr_type");
-        irrType.options[4].disabled = crop !== "NURSERY,CNTR.";
-        irrType.options[7].disabled = crop !== "CITRUS";
-        irrType.options[8].disabled = crop !== "RICE";
+        irrType.options[4].disabled = !crop.startsWith("NURSERY,CNTR.");
+        irrType.options[7].disabled = !crop.startsWith("CITRUS");
+        irrType.options[8].disabled = !crop.startsWith("RICE");
         
-        if (crop !== "NURSERY,CNTR." && irrType.selectedIndex === 4) {
+        if (!crop.startsWith("NURSERY,CNTR.") && irrType.selectedIndex === 4) {
             irrType.selectedIndex = 0;
             setDefIrrParams();
-        } else if (crop !== "CITRUS" && irrType.selectedIndex === 7) {
+        } else if (!crop.startsWith("CITRUS") && irrType.selectedIndex === 7) {
             irrType.selectedIndex = 0;
             setDefIrrParams();
-        } else if (crop !== "RICE" && irrType.selectedIndex === 8) {
+        } else if (!crop.startsWith("RICE") && irrType.selectedIndex === 8) {
             irrType.selectedIndex = 0;
             setDefIrrParams();
         }
