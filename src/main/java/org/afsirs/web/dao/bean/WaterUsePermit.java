@@ -506,6 +506,7 @@ public class WaterUsePermit {
         input.setSoilSource(soil_source);
         input.setUNIT(soil_unit_name);
         input.setSoils(soils);
+        input.setSoilId(soil_id);
         input.setWATERHOLDINGCAPACITY(water_hold_capacity);
         input.setMapArea(new BigDecimal(totalArea).doubleValue());
         input.setPlantedAcres(new BigDecimal(plantedArea).doubleValue());
