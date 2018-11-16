@@ -29,7 +29,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
  */
 public class Util {
 
-    public static final String SOIL_MAP_BASE_URL = "/datatools/soilmap/";
+    public static final String SOIL_MAP_BASE_URL = "https://afsirs-online-test.herokuapp.com/datatools/soilmap/";
     public static final Comparator summaryReportComparetor = getSummaryReportComparetor();
     public static final Comparator summaryReportComparetor2 = getSummaryReportComparetor2();
 
@@ -187,8 +187,32 @@ public class Util {
         return getSoilMapUrl(siteName, unitName, null, null, jsonStr);
     }
 
+//    public static URL getSoilMapUrl(UserInput input) throws MalformedURLException {
+//        return getSoilMapUrl(input.getSITE(), input.getUNIT(), null, null, input.getPolygonInfo());
+//    }
+    
     public static URL getSoilMapUrl(UserInput input) throws MalformedURLException {
-        return getSoilMapUrl(input.getSITE(), input.getUNIT(), null, null, input.getPolygonInfo());
+        if (!input.getSoilId().isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            
+            sb.append(SOIL_MAP_BASE_URL).append("?soil_id=").append(input.getSoilId());
+            
+            if (input.getMapArea() > 0) {
+            try {
+                long zoomVal = 17 - Math.round(Math.log(input.getMapArea())/Math.log(8));
+                if (zoomVal > 17) {
+                    zoomVal = 17;
+                } else if (zoomVal < 1) {
+                    zoomVal = 1;
+                }
+                sb.append("&zoom=").append(zoomVal);
+            } catch (Exception ex) {
+            }
+        }
+            return new URL(sb.toString());
+        } else {
+            return new URL(SOIL_MAP_BASE_URL);
+        }
     }
 
     public static URL getSoilMapUrl(String siteName, String unitName, String longitude, String latitude, String jsonStr) throws MalformedURLException {
