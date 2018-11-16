@@ -74,6 +74,7 @@ public class UserInput {
 
 //    private SoilData soilData;
     private ArrayList<Soil> soils = new ArrayList();
+    private String soilId;
     private String polygonInfo;
     private String polygonLocInfo;
     private String WATERHOLDINGCAPACITY;

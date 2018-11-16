@@ -1445,7 +1445,7 @@ public class AFSIRSOutput {
         p = new Paragraph("Click ");
         p.setAlignment(Paragraph.ALIGN_CENTER);
         p.add(imdb);
-        p.add(" to view the field polygon on .");
+        p.add(" to view the field polygon on ");
         p.add(imdb2);
         p.add(".");
         bwOutputSummaryFile.add(p);
