@@ -48,6 +48,11 @@ public class Path {
             @Getter public static final String DELETE = PACKAGE + "/delete";
         }
         
+        public static class Demo {
+            private static final String PACKAGE = Demo.class.getSimpleName().toLowerCase();
+            public static final String IRRLIST = PACKAGE + "/irrlist";
+        }
+        
 //        public static class Worker {
 //            private static final String PACKAGE = "/" + Worker.class.getSimpleName().toLowerCase();;
 //            @Getter public static final String LOGIN = PACKAGE + "/login";
@@ -86,6 +91,11 @@ public class Path {
         public static class SoilData {
             private static final String PACKAGE = SoilData.class.getSimpleName().toLowerCase();
             public static final String LIST = PACKAGE + "/list.ftl";
+        }
+        
+        public static class Demo {
+            private static final String PACKAGE = Demo.class.getSimpleName().toLowerCase();
+            public static final String IRRLIST = PACKAGE + "/irrlist.ftl";
         }
     }
     
