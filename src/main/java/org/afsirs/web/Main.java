@@ -89,7 +89,7 @@ public class Main {
         
         get(Path.Web.DataTools.SOILMAP,             DataToolsPageController.serveSoilMapPage);
         post(Path.Web.DataTools.SOILMAP,            DataToolsPageController.serveSoilMapPage2);
-        get(Path.Web.DataTools.SOILMAP,             DataToolsPageController.serveSoilMapPage);
+        get(Path.Web.DataTools.WTHSHEET,            DataToolsPageController.serveWthSheetPage);
         
         get(Path.Web.SoilData.LIST,         SoilDataPageController.serveSoilDataListPage);
         post(Path.Web.SoilData.CREATE,      SoilDataPageController.handleSoilDataSavePost);

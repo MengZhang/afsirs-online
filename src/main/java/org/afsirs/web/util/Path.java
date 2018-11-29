@@ -35,8 +35,7 @@ public class Path {
         public static class DataTools {
             private static final String PACKAGE = "/" + DataTools.class.getSimpleName().toLowerCase();
             @Getter public static final String SOILMAP = PACKAGE + "/soilmap/";
-            @Getter public static final String SOILMAP_OLD = "/SoilMap/";
-            @Getter public static final String SOILMAP_LOAD = PACKAGE + "/soilmap_load";
+            @Getter public static final String WTHSHEET = PACKAGE + "/wthsheet/";
             
         }
             
@@ -87,6 +86,7 @@ public class Path {
         public static class DataTools {
             private static final String PACKAGE = DataTools.class.getSimpleName().toLowerCase();
             public static final String SOILMAP = PACKAGE + "/soilmap.ftl";
+            public static final String WTHSHEET = PACKAGE + "/wthsheet.ftl";
         }
         
         public static class SoilData {
