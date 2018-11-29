@@ -51,6 +51,7 @@ public class Path {
         public static class Demo {
             private static final String PACKAGE = Demo.class.getSimpleName().toLowerCase();
             public static final String IRRLIST = PACKAGE + "/irrlist";
+            public static final String AUTOMAIL = PACKAGE + "/automail";
         }
         
 //        public static class Worker {

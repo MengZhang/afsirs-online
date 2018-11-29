@@ -64,6 +64,11 @@
             <artifactId>AFSIRS-Module</artifactId>
             <version>6.3.3-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.sendgrid</groupId>
+            <artifactId>sendgrid-java</artifactId>
+            <version>4.3.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

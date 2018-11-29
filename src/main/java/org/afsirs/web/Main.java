@@ -15,6 +15,7 @@ import org.afsirs.web.controller.SoilDataPageController;
 import org.afsirs.web.controller.WaterUsePageController;
 import org.afsirs.web.controller.WorkerWSController;
 import org.afsirs.web.util.DataUtil;
+import org.afsirs.web.util.EmailUtil;
 import org.afsirs.web.util.Filters;
 import org.afsirs.web.util.Path;
 import org.slf4j.LoggerFactory;
@@ -92,11 +93,15 @@ public class Main {
         
         get(Path.Web.SoilData.LIST,         SoilDataPageController.serveSoilDataListPage);
         post(Path.Web.SoilData.CREATE,      SoilDataPageController.handleSoilDataSavePost);
-        post(Path.Web.SoilData.FIND,      SoilDataPageController.handleSoilDataFindPost);
+        post(Path.Web.SoilData.FIND,        SoilDataPageController.handleSoilDataFindPost);
         post(Path.Web.SoilData.DELETE,      SoilDataPageController.handleSoilDataDeletePost);
         
         get(Path.Web.Demo.IRRLIST, (Request request, Response response) -> {
             return new FreeMarkerEngine().render(new ModelAndView(new HashMap(), Path.Template.Demo.IRRLIST));
+                });
+        
+        get(Path.Web.Demo.AUTOMAIL, (Request request, Response response) -> {
+            return EmailUtil.sendEmail();
                 });
         
 //        get("*",                     PageController.serveNotFoundPage, new FreeMarkerEngine());
