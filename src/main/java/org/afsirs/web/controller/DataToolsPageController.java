@@ -35,4 +35,14 @@ public class DataToolsPageController {
         }
         return DataToolsViewUtil.getSoilMapPage(request, attributes);
     };
+
+    public static Route serveWthSheetPage = (Request request, Response response) -> {
+        LOG.info("Serve Weathe Sheet Page");
+        Map<String, Object> attributes = new HashMap<>();
+        if (!ViewUtil.isLogined(request)) {
+            response.redirect(Path.Web.LOGIN);
+            return ViewUtil.getLoginPage(request, attributes);
+        }
+        return DataToolsViewUtil.getWthSheetPage(request, attributes);
+    };
 }

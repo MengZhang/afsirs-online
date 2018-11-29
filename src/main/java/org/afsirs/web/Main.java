@@ -6,6 +6,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import org.afsirs.web.controller.DataToolsPageController;
 import org.afsirs.web.controller.PageController;
 import org.afsirs.web.controller.SimulationPageController;
@@ -14,9 +15,13 @@ import org.afsirs.web.controller.SoilDataPageController;
 import org.afsirs.web.controller.WaterUsePageController;
 import org.afsirs.web.controller.WorkerWSController;
 import org.afsirs.web.util.DataUtil;
+import org.afsirs.web.util.EmailUtil;
 import org.afsirs.web.util.Filters;
 import org.afsirs.web.util.Path;
 import org.slf4j.LoggerFactory;
+import spark.ModelAndView;
+import spark.Request;
+import spark.Response;
 import spark.Spark;
 import static spark.Spark.after;
 import static spark.Spark.get;
@@ -24,6 +29,7 @@ import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 import static spark.Spark.webSocket;
+import spark.template.freemarker.FreeMarkerEngine;
 
 /**
  *
@@ -83,12 +89,20 @@ public class Main {
         
         get(Path.Web.DataTools.SOILMAP,             DataToolsPageController.serveSoilMapPage);
         post(Path.Web.DataTools.SOILMAP,            DataToolsPageController.serveSoilMapPage2);
-        get(Path.Web.DataTools.SOILMAP,             DataToolsPageController.serveSoilMapPage);
+        get(Path.Web.DataTools.WTHSHEET,            DataToolsPageController.serveWthSheetPage);
         
         get(Path.Web.SoilData.LIST,         SoilDataPageController.serveSoilDataListPage);
         post(Path.Web.SoilData.CREATE,      SoilDataPageController.handleSoilDataSavePost);
-        post(Path.Web.SoilData.FIND,      SoilDataPageController.handleSoilDataFindPost);
+        post(Path.Web.SoilData.FIND,        SoilDataPageController.handleSoilDataFindPost);
         post(Path.Web.SoilData.DELETE,      SoilDataPageController.handleSoilDataDeletePost);
+        
+        get(Path.Web.Demo.IRRLIST, (Request request, Response response) -> {
+            return new FreeMarkerEngine().render(new ModelAndView(new HashMap(), Path.Template.Demo.IRRLIST));
+                });
+        
+        get(Path.Web.Demo.AUTOMAIL, (Request request, Response response) -> {
+            return EmailUtil.sendEmail();
+                });
         
 //        get("*",                     PageController.serveNotFoundPage, new FreeMarkerEngine());
 
