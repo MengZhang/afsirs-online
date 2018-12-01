@@ -11,8 +11,8 @@
                 var akcArr = [];
                 var aldpArr = [];
 //              <#list 0..11 as i>
-                akcRow.cells[${i}].textContent = "${cropDataPerennial[cropName]['AKC'][i]}";
-                aldpRow.cells[${i}].textContent = "${cropDataPerennial[cropName]['ALDP'][i]}";
+                document.getElementById("akc_row_${i}").innerHTML = ${cropDataPerennial[cropName]['AKC'][i]};
+                document.getElementById("aldp_row_${i}").innerHTML = ${cropDataPerennial[cropName]['ALDP'][i]};
                 akcArr.push("${cropDataPerennial[cropName]['AKC'][i]}");
                 aldpArr.push("${cropDataPerennial[cropName]['ALDP'][i]}");
 //              </#list>
@@ -22,11 +22,16 @@
 //          </#list>
             {}
         }
+
         
         document.getElementById('drzirr').disabled = isDefault;
         document.getElementById('drztot').disabled = isDefault;
-        akcRow.contentEditable = !isDefault;
-        aldpRow.contentEditable = !isDefault;
+        for (var i = 0; i < akcRow.cells.length; i++) {
+            document.getElementById("akc_row_" + i).contentEditable = !isDefault;
+        }
+        for (var i = 0; i < aldpRow.cells.length; i++) {
+            document.getElementById("aldp_row_" + i).contentEditable = !isDefault;
+        }
         
         activeHGT();
     }
@@ -47,10 +52,11 @@
     }
     
     function saveTableInput(compId) {
-        var row = document.getElementById(compId + "_row");
+        var rowId = compId + "_row";
+        var row = document.getElementById(rowId);
         var arr = [];
         for (i = 0; i < row.cells.length; i++) { 
-            arr.push(row.cells[i].textContent);
+            arr.push(document.getElementById(rowId + "_" + i).innerHTML);
         }
         document.getElementById(compId + "_arr").value = JSON.stringify(arr);
     }
@@ -117,14 +123,14 @@
                 </tr>
             </thead>
             <tbody>
-                <tr id="akc_row" contentEditable='true'>
+                <tr id="akc_row">
                     <#if permit["akcArr"]?? && permit["akcArr"]?size == 12>
                     <#list permit["akcArr"] as akc>
-                    <td>${akc}</td>
+                    <td><div id="akc_row_${akc?index}">${akc}</div></td>
                     </#list>
                     <#else>
-                    <#list 1..12 as i>
-                    <td>?</td>
+                    <#list 0..11 as i>
+                    <td><div id="akc_row_${i}">?</div></td>
                     </#list>
                     </#if>
                 </tr>
@@ -155,14 +161,14 @@
                 </tr>
             </thead>
             <tbody>
-                <tr id="aldp_row" contentEditable='true'>
+                <tr id="aldp_row">
                     <#if permit["aldpArr"]?? && permit["aldpArr"]?size == 12>
                     <#list permit["aldpArr"] as aldp>
-                    <td>${aldp}</td>
+                    <td><div id="aldp_row_${aldp?index}">${aldp}</div></td>
                     </#list>
                     <#else>
-                    <#list 1..12 as i>
-                    <td>?</td>
+                    <#list 0..11 as i>
+                    <td><div id="aldp_row_${i}">?</div></td>
                     </#list>
                     </#if>
                 </tr>
