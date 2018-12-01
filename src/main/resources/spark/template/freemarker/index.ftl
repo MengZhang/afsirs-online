@@ -82,16 +82,15 @@
                     </tr>
                     <tr>
                         <td>Yes</td>
+                        <td>Yes</td>
                         <td>Limited**</td>
-                        <td>Limited***</td>
                         <td>Yes</td>
                         <td>Yes</td>
                         <td>Yes</td>
                     </tr>
                 </table>
                 <p>* Browsers which are not included in the above might face issue while using the web site.</p>
-                <p>** Edge does not support the modification on monthly water-use coefficient input for perennial crop.</p>
-                <p>*** IE only can use soil data from DB.</p>
+                <p>** IE only can use soil data from DB.</p>
             </div>
 
         </div>
