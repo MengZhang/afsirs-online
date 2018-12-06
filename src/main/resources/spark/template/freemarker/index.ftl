@@ -82,7 +82,7 @@
                     </tr>
                     <tr>
                         <td>Yes</td>
-                        <td>Yes</td>
+                        <td>Limited**</td>
                         <td>Limited**</td>
                         <td>Yes</td>
                         <td>Yes</td>
@@ -90,7 +90,7 @@
                     </tr>
                 </table>
                 <p>* Browsers which are not included in the above might face issue while using the web site.</p>
-                <p>** IE only can use soil data from DB.</p>
+                <p>** By certain security configuration, Edge and IE might not work properly on Soil Map tool. Please try other browser if you have any issue with Edge or IE.</p>
             </div>
 
         </div>
