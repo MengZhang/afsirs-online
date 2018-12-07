@@ -69,15 +69,6 @@ public class SimulationPageController {
                 response.redirect(Path.Web.LOGIN);
                 return ViewUtil.getLoginPage(request, attributes);
             }
-            String userId = ViewUtil.getUserID(request);
-            String permitId = request.queryParams("permit_id");
-            WaterUsePermit permit = WaterUsePermitDAO.find(permitId, userId);
-            
-            if (permit == null) {
-                attributes.put("operation_result", "Failed");
-            } else {
-                SimulationDAO.addSimulation(permit);
-            }
             return getAfsirsResultLoadingPage(request, attributes);
         }
     };
