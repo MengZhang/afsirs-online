@@ -11,6 +11,7 @@ import javax.servlet.ServletOutputStream;
 import org.afsirs.module.AFSIRSOutput;
 import org.afsirs.module.SimResult;
 import org.afsirs.module.SoilSeriesSummaryReport;
+import org.afsirs.web.dao.SimulationDAO;
 import org.afsirs.web.dao.WaterUsePermitDAO;
 import org.afsirs.web.dao.bean.WaterUsePermit;
 import static org.afsirs.web.dao.bean.WaterUsePermit.setDeviation;
@@ -44,8 +45,17 @@ public class SimulationViewUtil {
     public static String getAfsirsResultLoadingPage(Request request, Map<String, Object> attributes) {
         setCommonParam(request, attributes);
         setSimulationCommonParam(request, attributes);
-        attributes.put("user_id", ViewUtil.getUserID(request));
-        attributes.put("permit_id", request.queryParams("permit_id"));
+        String userId = ViewUtil.getUserID(request);
+        String permitId = request.queryParams("permit_id");
+        WaterUsePermit permit = WaterUsePermitDAO.find(permitId, userId);
+
+        if (permit == null) {
+            attributes.put("operation_result", "Failed");
+        } else {
+            SimulationDAO.addSimulation(permit);
+        }
+        attributes.put("user_id", userId);
+        attributes.put("permit_id", permitId);
         return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.Simulation.AFSIRS_RESULT_ASYN));
     }
 
@@ -63,6 +73,9 @@ public class SimulationViewUtil {
         WaterUsePermit permit = WaterUsePermitDAO.find(permitId, userId);
         if (permit == null) {
             return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.NOT_FOUND)); // TODO
+        }
+        if (!jsonFile.isFile()) {
+            return getAfsirsResultLoadingPage(request, attributes);
         }
         SimResult simRet = SimResult.fromJson(jsonFile);
         AFSIRSOutput.run(simRet, setDeviation(permit.toAFSIRSInputData(userId), permit));
