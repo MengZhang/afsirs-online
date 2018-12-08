@@ -37,6 +37,11 @@
         var SB = document.getElementById(SBId);
         return SB.options[SB.selectedIndex].innerHTML;
     }
+
+    function getSelectedValue(SBId) {
+        var SB = document.getElementById(SBId);
+        return SB.options[SB.selectedIndex].value;
+    }
 </script>
 <div class="subcontainer">
     <div class="row">
