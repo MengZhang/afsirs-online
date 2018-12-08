@@ -23,14 +23,36 @@
             {}
         }
 
-        
-        document.getElementById('drzirr').disabled = isDefault;
-        document.getElementById('drztot').disabled = isDefault;
-        for (var i = 0; i < akcRow.cells.length; i++) {
-            document.getElementById("akc_row_" + i).contentEditable = !isDefault;
-        }
-        for (var i = 0; i < aldpRow.cells.length; i++) {
-            document.getElementById("aldp_row_" + i).contentEditable = !isDefault;
+        // Seepage
+        if (Number(getSelectedValue("irr_type")) !== 6) {
+            document.getElementById('drzirr').disabled = isDefault;
+            document.getElementById('drztot').disabled = isDefault;
+            for (var i = 0; i < akcRow.cells.length; i++) {
+                document.getElementById("akc_row_" + i).contentEditable = !isDefault;
+            }
+            for (var i = 0; i < aldpRow.cells.length; i++) {
+                document.getElementById("aldp_row_" + i).contentEditable = !isDefault;
+            }
+        } else {
+            document.getElementById('drzirr').disabled = true;
+            document.getElementById('drztot').disabled = true;
+            var wtd = document.getElementById("water_table_depth").value;
+            document.getElementById("drzirr").value = wtd;
+            document.getElementById("drztot").value = Number(wtd) * 1.5 + "";
+            for (var i = 0; i < akcRow.cells.length; i++) {
+                var akcCell = document.getElementById("akc_row_" + i);
+                akcCell.contentEditable = !isDefault;
+                if (Number(akcCell.innerHTML) < 1 && isDefault) {
+                    akcCell.innerHTML = "1.0";
+                }
+            }
+            for (var i = 0; i < aldpRow.cells.length; i++) {
+                var adlpCell = document.getElementById("aldp_row_" + i);
+                adlpCell.contentEditable = false;
+                if (isDefault) {
+                    adlpCell.innerHTML = "0";
+                }
+            }
         }
         
         activeHGT();
@@ -79,6 +101,34 @@
         }
         document.getElementById("aldp_arr").value = JSON.stringify(arr);
         setDecoefLabels();
+    }
+    
+    function checkPerennialCropInfo() {
+        var akcRow = document.getElementById("akc_row");
+        var msg = "";
+        for (var i = 0; i < akcRow.cells.length; i++) {
+            var akcCell = document.getElementById("akc_row_" + i);
+            if (Number(akcCell.innerHTML) < 1) {
+                msg = "Crop water use coefficients >= 1\n";
+                break;
+            }
+        }
+
+        var aldpRow = document.getElementById("aldp_row");
+        for (var i = 0; i < aldpRow.cells.length; i++) {
+            var aldpCell = document.getElementById("aldp_row_" + i);
+            if (Number(aldpCell.innerHTML) !== 0) {
+                msg = msg + "Allowable soil water depletions = 0\n";
+                break;
+            }
+        }
+        
+        if (msg !== "") {
+            alert("Seepage irrigation requires:\n" + msg + "\nPlease use default value for auto-correction.");
+            return false;
+        }
+
+        return true;
     }
 </script>
 <div id="decoef_perennial">

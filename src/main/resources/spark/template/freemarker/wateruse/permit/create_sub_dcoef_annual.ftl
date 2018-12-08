@@ -20,6 +20,15 @@
 //          </#list>
             {}
         }
+        // Seepage irrigation
+        if (Number(getSelectedValue("irr_type")) === 6) {
+            if (Number(document.getElementById('akc3').value) < 1.0 && isDefault) {
+                document.getElementById('akc3').value = "1.0";
+            }
+            if (Number(document.getElementById('akc4').value) < 1.0 && isDefault) {
+                document.getElementById('akc4').value = "1.0";
+            }
+        }
         document.getElementById('dzn').disabled = isDefault;
         document.getElementById('dzx').disabled = isDefault;
         document.getElementById('akc3').disabled = isDefault;
@@ -45,6 +54,16 @@
             alert("The sum of Fraction of Growing Season for each stage must be 1!");
             return false;
         }
+
+        if (Number(getSelectedValue("irr_type")) === 6) {
+            var akc3 = Number(document.getElementById('akc3').value);
+            var akc4 = Number(document.getElementById('akc4').value);
+            if (akc3 < 1 || akc4 <1) {
+                alert("Crop water use coefficients could not be less than 1 for Seepage irrigation!");
+                return false;
+            }
+        }
+
         return true;
     }
 </script>

@@ -12,7 +12,7 @@
                 text-align: left;
             }
             th#descCol {
-                width: 400px;
+                width: 216px;
             }
             table#t01 {
                 width: 100%;
@@ -45,8 +45,9 @@
                     <tr>
                         <th>Permit ID</th>
                         <th>Crop</th>
-                        <th id="descCol">Location(ET/Rain)</th>
-                        <th>Option</th>
+                        <th>Irrigation</th>
+                        <th>Location(ET/Rain)</th>
+                        <th id="descCol">Option</th>
                     </tr>
                     <#list permits as permit>
                     <tr>
@@ -56,6 +57,7 @@
                         <td><a href='/wateruse/permit/find?permit_id=${permit["permit_id"]!}' data-toggle="tooltip" title="View/Edit this permit record">${permit["permit_id"]!}</a></td>
                         </#if>
                         <td>${permit["crop_name"]!}</td>
+                        <td>${irSysNameList[permit["irr_type"]?number]!}</td>
                         <td>${permit["et_loc"]!} / ${permit["rain_loc"]!}</td>
                         <#if currentUserRank?? && currentUserRank == "admin" >
                         <td>

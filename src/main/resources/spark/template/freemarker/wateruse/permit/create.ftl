@@ -154,7 +154,11 @@
                 if (document.getElementById("crop_type_annual").checked) {
                     return checkAnnualCropInfo();
                 } else if (document.getElementById("crop_type_perennial").checked) {
-                    savePerennialCropInfo();
+                    if (checkPerennialCropInfo()) {
+                        savePerennialCropInfo();
+                    } else {
+                        return false;
+                    }
                 }
                 return true;
             }
@@ -193,8 +197,9 @@
                     errTab = "SiteInfo";
                 }
                 if (errTab === "") {
-                    collectData();
-                    document.getElementById("createPermitForm").submit();
+                    if (collectData()) {
+                        document.getElementById("createPermitForm").submit();
+                    }
                 } else {
                     openTab(errTab);
                 }
