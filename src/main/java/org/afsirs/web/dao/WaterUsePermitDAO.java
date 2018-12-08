@@ -24,7 +24,7 @@ import org.eclipse.jetty.util.ConcurrentHashSet;
 public class WaterUsePermitDAO {
 
     private static final ConcurrentHashSet<WUPKey> permitIds = syncUserRecords();
-    private static final String[] listParams = {"user_id", "permit_id", "crop_name", "et_loc", "rain_loc"};
+    private static final String[] listParams = {"user_id", "permit_id", "crop_name", "irr_type", "et_loc", "rain_loc"};
 
     @Data
     public static class WUPKey {

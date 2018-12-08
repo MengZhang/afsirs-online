@@ -58,6 +58,7 @@ public class WaterUsePermitViewUtil {
         setCommonParam(request, attributes);
         setWaterUsePermitCommonParam(request, attributes);
         attributes.put("permits", WaterUsePermitDAO.list((String) attributes.get("currentUser")));
+        attributes.put("irSysNameList", DataUtil.getIRSysNameList());
         return new FreeMarkerEngine().render(new ModelAndView(attributes, Path.Template.WaterUse.LIST));
     }
     
