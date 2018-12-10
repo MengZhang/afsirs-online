@@ -32,6 +32,8 @@ import spark.Request;
  */
 @Data
 public class WaterUsePermit {
+    
+    private static final String IRR_SEEPAGE = "6";
 
     // Site Information
     private String permit_id;
@@ -330,10 +332,10 @@ public class WaterUsePermit {
         if ("default".equalsIgnoreCase(coeffType)) {
             if (cropType != null && !cropType.isEmpty()) {
                 if (cropType.equals("annual")) {
-                    CropData cropData = DataUtil.getCropDataAnnual().get(ret.getCrop_name()).cloneData();
+                    CropData cropData = DataUtil.getCropDataAnnual().get(ret.getCrop_name()).cloneData(ret);
                     ret.setCropData(cropData);
                 } else {
-                    CropData cropData = DataUtil.getCropDataPerennial().get(ret.getCrop_name()).cloneData();
+                    CropData cropData = DataUtil.getCropDataPerennial().get(ret.getCrop_name()).cloneData(ret);
                     ret.setCropData(cropData);
                     ret.setHgt(request.queryParams("hgt"));
                 }
@@ -630,36 +632,44 @@ public class WaterUsePermit {
         // Annual Decoefficient
         if (input.isPerennialCrop()) {
             CropDataPerennial crop = (CropDataPerennial) DataUtil.getCropDataPerennial().get(permit.getCrop_name());
-            if (input.getDRZIRR() != crop.getDRZIRR()) {
+            if ((input.getDRZIRR() != crop.getDRZIRR() && !permit.isSeepageIrr()) ||
+                    (input.getDRZIRR() != input.getDWT() && permit.isSeepageIrr())) {
                 input.addDeviation("Irrigated root zone depth", input.getDRZIRR() + "");
             }
-            if (input.getDRZTOT() != crop.getDRZTOT()) {
+            if ((input.getDRZTOT() != crop.getDRZTOT() && !permit.isSeepageIrr()) ||
+                    (input.getDRZTOT() != input.getDWT() * 1.5 && permit.isSeepageIrr())) {
                 input.addDeviation("Total crop root zone depth", input.getDRZTOT() + "");
             }
             if (input.getHGT() != crop.getHGT()) {
                 input.addDeviation("Height of Crown flood system", input.getHGT() + "");
             }
             for (int i = 0; i < 12; i++) {
-                if (input.getAKC()[i] != crop.getAKC()[i]) {
+                if ((input.getAKC()[i] != crop.getAKC()[i] && (!permit.isSeepageIrr() || crop.getAKC()[i] >= 1)) ||
+                    (input.getAKC()[i] != 1 && crop.getAKC()[i] < 1 && permit.isSeepageIrr())) {
                     input.addDeviation("Crop water use coefficients for " + Month.of(i + 1).name(), input.getAKC()[i] + "");
                 }
-                if (input.getALDP()[i] != crop.getALDP()[i]) {
+                if ((input.getALDP()[i] != crop.getALDP()[i] && !permit.isSeepageIrr()) ||
+                    (input.getALDP()[i] != 0 && permit.isSeepageIrr())) {
                     input.addDeviation("Allowable soil water depletions for " + Month.of(i + 1).name(), input.getALDP()[i] + "");
                 }
             }
 
         } else {
             CropDataAnnual crop = (CropDataAnnual) DataUtil.getCropDataAnnual().get(permit.getCrop_name());
-            if (input.getDZN() != crop.getDZN()) {
+            if ((input.getDZN() != crop.getDZN() && !permit.isSeepageIrr()) ||
+                    (input.getDZN() != input.getDWT() && permit.isSeepageIrr())) {
                 input.addDeviation("Intial Irrigated root zone depth", input.getDZN() + "");
             }
-            if (input.getDZX() != crop.getDZX()) {
+            if ((input.getDZX() != crop.getDZX() && !permit.isSeepageIrr()) ||
+                    (input.getDZX() != input.getDWT() && permit.isSeepageIrr())) {
                 input.addDeviation("Maximum Irrigated root zone depth", input.getDZX() + "");
             }
-            if (input.getAKC3() != crop.getAKC3()) {
+            if ((input.getAKC3() != crop.getAKC3() && (!permit.isSeepageIrr() || crop.getAKC3() >= 1)) ||
+                    (input.getAKC3() != 1 && crop.getAKC3() < 1 && permit.isSeepageIrr())) {
                 input.addDeviation("Crop water usage stage 3 coefficient", input.getAKC3() + "");
             }
-            if (input.getAKC4() != crop.getAKC4()) {
+            if ((input.getAKC4() != crop.getAKC4() && (!permit.isSeepageIrr() || crop.getAKC4() >= 1)) ||
+                    (input.getAKC4() != 1 && crop.getAKC4() < 1 && permit.isSeepageIrr())) {
                 input.addDeviation("Crop water usage stage 4 coefficient", input.getAKC4() + "");
             }
             for (int i = 0; i < 4; i++) {
@@ -690,6 +700,10 @@ public class WaterUsePermit {
         } else {
             return "";
         }
+    }
+    
+    public boolean isSeepageIrr() {
+        return irr_type != null && irr_type.equals(IRR_SEEPAGE);
     }
 
 //    private static String readIrDat(JSONObject data) {
