@@ -22,6 +22,9 @@
         }
         // Seepage irrigation
         if (Number(getSelectedValue("irr_type")) === 6) {
+            var wtd = document.getElementById("water_table_depth").value;
+            document.getElementById("dzn").value = wtd;
+            document.getElementById("dzx").value = wtd;
             if (Number(document.getElementById('akc3').value) < 1.0 && isDefault) {
                 document.getElementById('akc3').value = "1.0";
             }
@@ -29,8 +32,8 @@
                 document.getElementById('akc4').value = "1.0";
             }
         }
-        document.getElementById('dzn').disabled = isDefault;
-        document.getElementById('dzx').disabled = isDefault;
+        document.getElementById('dzn').disabled = isDefault || Number(getSelectedValue("irr_type")) === 6;
+        document.getElementById('dzx').disabled = isDefault || Number(getSelectedValue("irr_type")) === 6;
         document.getElementById('akc3').disabled = isDefault;
         document.getElementById('akc4').disabled = isDefault;
         document.getElementById('f1').disabled = isDefault;
