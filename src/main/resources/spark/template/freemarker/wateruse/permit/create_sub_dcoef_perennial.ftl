@@ -25,8 +25,6 @@
 
         // Seepage
         if (Number(getSelectedValue("irr_type")) !== 6) {
-            document.getElementById('drzirr').disabled = isDefault;
-            document.getElementById('drztot').disabled = isDefault;
             for (var i = 0; i < akcRow.cells.length; i++) {
                 document.getElementById("akc_row_" + i).contentEditable = !isDefault;
             }
@@ -34,8 +32,8 @@
                 document.getElementById("aldp_row_" + i).contentEditable = !isDefault;
             }
         } else {
-            document.getElementById('drzirr').disabled = true;
-            document.getElementById('drztot').disabled = true;
+            document.getElementById('drzirr').readOnly = true;
+            document.getElementById('drztot').readOnly = true;
             var wtd = document.getElementById("water_table_depth").value;
             document.getElementById("drzirr").value = wtd;
             document.getElementById("drztot").value = Number(wtd) * 1.5 + "";
@@ -55,6 +53,8 @@
             }
         }
         
+        document.getElementById('drzirr').disabled = isDefault;
+        document.getElementById('drztot').disabled = isDefault;
         activeHGT();
     }
     

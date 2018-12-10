@@ -32,8 +32,10 @@
                 document.getElementById('akc4').value = "1.0";
             }
         }
-        document.getElementById('dzn').disabled = isDefault || Number(getSelectedValue("irr_type")) === 6;
-        document.getElementById('dzx').disabled = isDefault || Number(getSelectedValue("irr_type")) === 6;
+        document.getElementById('dzn').readOnly = Number(getSelectedValue("irr_type")) === 6;
+        document.getElementById('dzx').readOnly = Number(getSelectedValue("irr_type")) === 6;
+        document.getElementById('dzn').disabled = isDefault;
+        document.getElementById('dzx').disabled = isDefault;
         document.getElementById('akc3').disabled = isDefault;
         document.getElementById('akc4').disabled = isDefault;
         document.getElementById('f1').disabled = isDefault;

@@ -28,6 +28,7 @@ import org.afsirs.module.util.JsonUtil;
 import org.afsirs.module.util.Util;
 import static org.afsirs.module.util.Util.round;
 import static org.afsirs.web.Main.LOG;
+import org.afsirs.web.dao.bean.WaterUsePermit;
 
 /**
  *
@@ -68,7 +69,7 @@ public class DataUtil {
 
     public interface CropData {
 
-        public CropData cloneData();
+        public CropData cloneData(WaterUsePermit permit);
     }
 
     @Data
@@ -92,12 +93,19 @@ public class DataUtil {
         }
 
         @Override
-        public CropDataAnnual cloneData() {
+        public CropDataAnnual cloneData(WaterUsePermit permit) {
             CropDataAnnual ret = new CropDataAnnual(cropName);
-            ret.setDZN(DZN);
-            ret.setDZX(DZX);
-            ret.setAKC3(AKC3);
-            ret.setAKC4(AKC4);
+            if (permit.isSeepageIrr()) {
+                ret.setDZN(Double.parseDouble(permit.getWater_table_depth()));
+                ret.setDZX(Double.parseDouble(permit.getWater_table_depth()));
+                ret.setAKC3(Math.max(AKC3, 1));
+                ret.setAKC4(Math.max(AKC4, 1));
+            } else {
+                ret.setDZN(DZN);
+                ret.setDZX(DZX);
+                ret.setAKC3(AKC3);
+                ret.setAKC4(AKC4);
+            }
             ret.setF(Arrays.copyOf(F, F.length));
             ret.setALD(Arrays.copyOf(ALD, ALD.length));
             return ret;
@@ -118,13 +126,24 @@ public class DataUtil {
         }
 
         @Override
-        public CropDataPerennial cloneData() {
+        public CropDataPerennial cloneData(WaterUsePermit permit) {
             CropDataPerennial ret = new CropDataPerennial(cropName);
-            ret.setDRZIRR(DRZIRR);
-            ret.setDRZTOT(DRZTOT);
+            if (permit.isSeepageIrr()) {
+                ret.setDRZIRR(Double.parseDouble(permit.getWater_table_depth()));
+                ret.setDRZTOT(Double.parseDouble(permit.getWater_table_depth()) * 1.5);
+                double[] akctmp = Arrays.copyOf(AKC, AKC.length);
+                for (int i = 0; i < akctmp.length; i++) {
+                    akctmp[i] = Math.max(akctmp[i], 1);
+                }
+                ret.setAKC(akctmp);
+                ret.setALDP(new double[]{0,0,0,0,0,0,0,0,0,0,0,0});
+            } else {
+                ret.setDRZIRR(DRZIRR);
+                ret.setDRZTOT(DRZTOT);
+                ret.setAKC(Arrays.copyOf(AKC, AKC.length));
+                ret.setALDP(Arrays.copyOf(ALDP, ALDP.length));
+            }
             ret.setHGT(HGT);
-            ret.setAKC(Arrays.copyOf(AKC, AKC.length));
-            ret.setALDP(Arrays.copyOf(ALDP, ALDP.length));
             return ret;
         }
     }
