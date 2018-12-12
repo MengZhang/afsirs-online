@@ -9,340 +9,147 @@
         <meta name="author" content="Meng Zhang@UF">
         <link rel="shortcut icon" href="/images/LOGO.png">
         <title>AFSIRS Weather Importer</title>
-        
+
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/handsontable-pro@latest/dist/handsontable.full.min.css">
-        <link rel="stylesheet" type="text/css" href="https://handsontable.com/static/css/main.css">
-        <script src="https://cdn.jsdelivr.net/npm/handsontable-pro@latest/dist/handsontable.full.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/handsontable@latest/dist/handsontable.full.min.js"></script>
     </head>
 
     <body>
 
-        <div class="container-fluid main-container">
-
-            <div id="table"></div>
-            
-            <script>
-                var dataObject = [
-                    {
-                      id: 1,
-                      flag: 'EUR',
-                      currencyCode: 'EUR',
-                      currency: 'Euro',
-                      level: 0.9033,
-                      units: 'EUR / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0026
-                    },
-                    {
-                      id: 2,
-                      flag: 'JPY',
-                      currencyCode: 'JPY',
-                      currency: 'Japanese Yen',
-                      level: 124.3870,
-                      units: 'JPY / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0001
-                    },
-                    {
-                      id: 3,
-                      flag: 'GBP',
-                      currencyCode: 'GBP',
-                      currency: 'Pound Sterling',
-                      level: 0.6396,
-                      units: 'GBP / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.00
-                    },
-                    {
-                      id: 4,
-                      flag: 'CHF',
-                      currencyCode: 'CHF',
-                      currency: 'Swiss Franc',
-                      level: 0.9775,
-                      units: 'CHF / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0008
-                    },
-                    {
-                      id: 5,
-                      flag: 'CAD',
-                      currencyCode: 'CAD',
-                      currency: 'Canadian Dollar',
-                      level: 1.3097,
-                      units: 'CAD / USD',
-                      asOf: '08/19/2018',
-                      onedChng: -0.0005
-                    },
-                    {
-                      id: 6,
-                      flag: 'AUD',
-                      currencyCode: 'AUD',
-                      currency: 'Australian Dollar',
-                      level: 1.3589,
-                      units: 'AUD / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0020
-                    },
-                    {
-                      id: 7,
-                      flag: 'NZD',
-                      currencyCode: 'NZD',
-                      currency: 'New Zealand Dollar',
-                      level: 1.5218,
-                      units: 'NZD / USD',
-                      asOf: '08/19/2018',
-                      onedChng: -0.0036
-                    },
-                    {
-                      id: 8,
-                      flag: 'SEK',
-                      currencyCode: 'SEK',
-                      currency: 'Swedish Krona',
-                      level: 8.5280,
-                      units: 'SEK / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0016
-                    },
-                    {
-                      id: 9,
-                      flag: 'NOK',
-                      currencyCode: 'NOK',
-                      currency: 'Norwegian Krone',
-                      level: 8.2433,
-                      units: 'NOK / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0008
-                    },
-                    {
-                      id: 10,
-                      flag: 'BRL',
-                      currencyCode: 'BRL',
-                      currency: 'Brazilian Real',
-                      level: 3.4806,
-                      units: 'BRL / USD',
-                      asOf: '08/19/2018',
-                      onedChng: -0.0009
-                    },
-                    {
-                      id: 11,
-                      flag: 'CNY',
-                      currencyCode: 'CNY',
-                      currency: 'Chinese Yuan',
-                      level: 6.3961,
-                      units: 'CNY / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0004
-                    },
-                    {
-                      id: 12,
-                      flag: 'RUB',
-                      currencyCode: 'RUB',
-                      currency: 'Russian Rouble',
-                      level: 65.5980,
-                      units: 'RUB / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0059
-                    },
-                    {
-                      id: 13,
-                      flag: 'INR',
-                      currencyCode: 'INR',
-                      currency: 'Indian Rupee',
-                      level: 65.3724,
-                      units: 'INR / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0026
-                    },
-                    {
-                      id: 14,
-                      flag: 'TRY',
-                      currencyCode: 'TRY',
-                      currency: 'New Turkish Lira',
-                      level: 2.8689,
-                      units: 'TRY / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0092
-                    },
-                    {
-                      id: 15,
-                      flag: 'THB',
-                      currencyCode: 'THB',
-                      currency: 'Thai Baht',
-                      level: 35.5029,
-                      units: 'THB / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0044
-                    },
-                    {
-                      id: 16,
-                      flag: 'IDR',
-                      currencyCode: 'IDR',
-                      currency: 'Indonesian Rupiah',
-                      level: 13.83,
-                      units: 'IDR / USD',
-                      asOf: '08/19/2018',
-                      onedChng: -0.0009
-                    },
-                    {
-                      id: 17,
-                      flag: 'MYR',
-                      currencyCode: 'MYR',
-                      currency: 'Malaysian Ringgit',
-                      level: 4.0949,
-                      units: 'MYR / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0010
-                    },
-                    {
-                      id: 18,
-                      flag: 'MXN',
-                      currencyCode: 'MXN',
-                      currency: 'Mexican New Peso',
-                      level: 16.4309,
-                      units: 'MXN / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0017
-                    },
-                    {
-                      id: 19,
-                      flag: 'ARS',
-                      currencyCode: 'ARS',
-                      currency: 'Argentinian Peso',
-                      level: 9.2534,
-                      units: 'ARS / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0011
-                    },
-                    {
-                      id: 20,
-                      flag: 'DKK',
-                      currencyCode: 'DKK',
-                      currency: 'Danish Krone',
-                      level: 6.7417,
-                      units: 'DKK / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0025
-                    },
-                    {
-                      id: 21,
-                      flag: 'ILS',
-                      currencyCode: 'ILS',
-                      currency: 'Israeli New Sheqel',
-                      level: 3.8262,
-                      units: 'ILS / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0084
-                    },
-                    {
-                      id: 22,
-                      flag: 'PHP',
-                      currencyCode: 'PHP',
-                      currency: 'Philippine Peso',
-                      level: 46.3108,
-                      units: 'PHP / USD',
-                      asOf: '08/19/2018',
-                      onedChng: 0.0012
-                    }
-                  ];
-                  var currencyCodes = ['EUR', 'JPY', 'GBP', 'CHF', 'CAD', 'AUD', 'NZD', 'SEK', 'NOK', 'BRL', 'CNY', 'RUB', 'INR', 'TRY', 'THB', 'IDR', 'MYR', 'MXN', 'ARS', 'DKK', 'ILS', 'PHP'];
-                  var flagRenderer = function (instance, td, row, col, prop, value, cellProperties) {
-                    var currencyCode = value;
-                    while (td.firstChild) {
-                      td.removeChild(td.firstChild);
-                    }
-                    if (currencyCodes.indexOf(currencyCode) > -1) {
-                      var flagElement = document.createElement('DIV');
-                      flagElement.className = 'flag ' + currencyCode.toLowerCase();
-                      td.appendChild(flagElement);
-                    } else {
-                      var textNode = document.createTextNode(value === null ? '' : value);
-
-                      td.appendChild(textNode);
-                    }
-                  };
-                  var hotElement = document.querySelector('#table');
-                  var hotElementContainer = hotElement.parentNode;
-                  var hotSettings = {
-                    data: dataObject,
-                    columns: [
-                      {
-                        data: 'id',
-                        type: 'numeric',
-                        width: 40
-                      },
-                      {
-                        data: 'flag',
-                                          renderer: flagRenderer
-                      },
-                      {
-                        data: 'currencyCode',
-                        type: 'text'
-                      },
-                      {
-                        data: 'currency',
-                        type: 'text'
-                      },
-                      {
-                        data: 'level',
-                        type: 'numeric',
-                        numericFormat: {
-                          pattern: '0.0000'
-                        }
-                      },
-                      {
-                        data: 'units',
-                        type: 'text'
-                      },
-                      {
-                        data: 'asOf',
-                        type: 'date',
-                        dateFormat: 'MM/DD/YYYY'
-                      },
-                      {
-                        data: 'onedChng',
-                        type: 'numeric',
-                        numericFormat: {
-                          pattern: '0.00%'
-                        }
-                      }
-                    ],
-                    stretchH: 'all',
-                    width: 805,
-                    autoWrapRow: true,
-                    height: 487,
-                    maxRows: 365,
-                    manualRowResize: true,
-                    manualColumnResize: true,
-                    rowHeaders: true,
-                    colHeaders: [
-                      'ID',
-                      'Country',
-                      'Code',
-                      'Currency',
-                      'Level',
-                      'Units',
-                      'Date',
-                      'Change'
-                    ],
-                    manualRowMove: true,
-                    manualColumnMove: true,
-                    contextMenu: true,
-                    filters: true,
-                    dropdownMenu: true
-                  };
-                  var hot = new Handsontable(hotElement, hotSettings);
-              </script>
-            
-            <hr/>
-            <div id="footer" class="footer text-center">
-                <p>
-                    Disclaimer
-                    | Privacy Policy
-                    |
-                    Copyright University of Florida
-                    &bull; All Rights Reserved
-                </p>
+        <#include "../nav.ftl">
+        
+        <div class="container">
+            <div class="row">
+                <div class="form-group">
+                    <label class="text-right col-sm-3">Evapotranspiration Location :</label>
+                    <label class="text-primary text-left col-sm-3">${et_loc!}</label>
+                    <label class="text-right col-sm-2">Rainfall Location :</label>
+                    <label class="text-primary text-left col-sm-3">${rain_loc!}</label>
+                </div>
+            </div>
+            <br/>
+            <div>
+                <div id="plot" ></div>
+            </div>
+            <div style="overflow-y: auto;min-height: 600px">
+                <div id="table" ></div>
             </div>
         </div>
+        
+        <#include "../footer.ftl">
     </body>
+    <script>
+        var dataObject = [
+            <#list wthData as daily>
+            {
+                date: "${daily['date']!}",
+                rain: ${daily['rain']!},
+                et: ${daily['et']!}
+            }<#sep>, </#sep>
+            </#list>
+        ];
+        var hotElement = document.querySelector('#table');
+//        var hotElementContainer = hotElement.parentNode;
+        var hotSettings = {
+            data: dataObject,
+            columns: [
+                {
+                    data: 'date',
+                    type: 'date',
+                    dateFormat: 'MM/DD/YYYY'
+                },
+                {
+                    data: 'et',
+                    type: 'numeric',
+                    numericFormat: {
+                        pattern: '0.000'
+                    }
+                },
+                {
+                    data: 'rain',
+                    type: 'numeric',
+                    numericFormat: {
+                        pattern: '0.000'
+                    }
+                }
+            ],
+            stretchH: 'all',
+//                    width: 500,
+            autoWrapRow: true,
+//                    height: 450,
+            maxRows: 365 * 30,
+            manualRowResize: true,
+            manualColumnResize: true,
+            rowHeaders: true,
+            colHeaders: [
+                'Date',
+                'ET (inches)',
+                'RAIN (inches)'
+            ],
+            manualRowMove: true,
+            manualColumnMove: true,
+            contextMenu: true,
+            filters: true,
+            dropdownMenu: true
+        };
+        var hot = new Handsontable(hotElement, hotSettings);
+    </script>
+    
+    <script>
+        function drawWthPlot() {
+            Highcharts.chart('plot', {
+                chart: {
+                    scrollablePlotArea: {
+                        minWidth: 700
+                    }
+                },
+                title: {
+                    text: 'Daily Weather Data'
+                },
+                subtitle: {
+                    text: 'Source: AFSIRS'
+                },
+                xAxis: {
+                    categories: [
+                        'Jan',
+                        'Feb',
+                        'Mar',
+                        'Apr',
+                        'May',
+                        'Jun',
+                        'Jul',
+                        'Aug',
+                        'Sep',
+                        'Oct',
+                        'Nov',
+                        'Dec'
+                    ],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Irrigation (inches)'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.1f} inches</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [
+                    
+                ]
+            });
+        }
+    </script>
 </html>

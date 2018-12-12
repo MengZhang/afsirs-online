@@ -74,7 +74,7 @@
                 hideComp("soilTypeSB");
                 if (document.getElementById("soil_source_db").checked) {
                     switchSoilSource('DB');
-                    var pcts = [<#if permit['plantedArea']??><#list permit['soils'] as soil>${soil['soilTypeArea'] / permit['plantedArea']?number * 100},</#list></#if>];
+                    var pcts = [<#if permit['plantedArea']??><#list permit['soils'] as soil>${soil['soilTypeArea'] / permit['plantedArea']?number * 100}<#sep>,</#sep></#list></#if>];
                     showDBSelection(pcts);
                 } else if (document.getElementById("soil_source_map").checked) {
                     switchSoilSource('MAP');

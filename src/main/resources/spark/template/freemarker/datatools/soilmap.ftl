@@ -182,7 +182,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div style="position:absolute; left:20px; bottom:10px; z-Index:999;">
+                                <div style="position:absolute; left:30px; bottom:10px; z-Index:999;">
                                     <div style="width:40px; height:40px; overflow:hidden;">
                                         <div id="HomeButton"></div>
                                     </div>
@@ -230,8 +230,8 @@
                     Copyright University of Florida
                     &bull; All Rights Reserved
                 </p>
+                </div>
             </div>
-        </div>
 
         <!-- Bootstrap core JavaScript
         ================================================== -->
