@@ -56,7 +56,7 @@
                 {
                     data: 'date',
                     type: 'date',
-                    dateFormat: 'MM/DD/YYYY'
+                    dateFormat: 'YYYY-MM-DD'
                 },
                 {
                     data: 'et',
