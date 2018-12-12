@@ -3,6 +3,7 @@ package org.afsirs.web.controller;
 import java.util.HashMap;
 import java.util.Map;
 import static org.afsirs.web.Main.LOG;
+import org.afsirs.web.util.DataUtil;
 import org.afsirs.web.util.Path;
 import org.afsirs.web.view.DataToolsViewUtil;
 import org.afsirs.web.view.ViewUtil;
@@ -43,6 +44,11 @@ public class DataToolsPageController {
             response.redirect(Path.Web.LOGIN);
             return ViewUtil.getLoginPage(request, attributes);
         }
+        String etLoc = request.queryParams("et_loc");
+        String rainLoc = request.queryParams("rain_loc");
+        attributes.put("wthData", DataUtil.getCombinedWeatherData(etLoc, rainLoc));
+        attributes.put("et_loc", etLoc);
+        attributes.put("rain_loc", rainLoc);
         return DataToolsViewUtil.getWthSheetPage(request, attributes);
     };
 }

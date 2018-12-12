@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -198,6 +199,32 @@ public class DataUtil {
 
     public static WeatherData getRainfallData(String rainLoc) {
         return RAINFALL_DATA_LIST.get(rainLoc).cloneData();
+    }
+    
+    public static ArrayList<HashMap> getCombinedWeatherData(String etLoc, String rainLoc) {
+        return getCombinedWeatherData(getClimateData(etLoc), getRainfallData(rainLoc));
+    }
+    
+    public static ArrayList<HashMap> getCombinedWeatherData(WeatherData et, WeatherData rain) {
+        int startYear = Math.max(et.getStartYear(), rain.getStartYear());
+        int endYear = Math.min(et.getEndYear(), rain.getEndYear());
+        ArrayList<HashMap> ret = new ArrayList();
+        SimpleDateFormat formatFrom = new SimpleDateFormat("yyyyDDD");
+        SimpleDateFormat formatTo = new SimpleDateFormat("yyyy-MM-dd");
+        for (int i = startYear, x = startYear - et.getStartYear(), y = startYear - rain.getStartYear(); i <= endYear; i++, x++, y++) {
+            for (int j = 0 ; j < 365; j++) {
+                HashMap daily = new HashMap();
+                try {
+                    daily.put("date", formatTo.format(formatFrom.parse(i + "" + (j + 1))));
+                } catch (ParseException ex) {
+                    daily.put("date", "N/A");
+                }
+                daily.put("et", et.getData()[x][j]);
+                daily.put("rain", rain.getData()[y][j]);
+                ret.add(daily);
+            }
+        }
+        return ret;
     }
 
     public static LinkedHashMap<String, CropData> getCropDataAnnual() {

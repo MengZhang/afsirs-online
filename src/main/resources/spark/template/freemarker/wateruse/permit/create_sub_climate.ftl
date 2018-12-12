@@ -128,6 +128,12 @@
             showError(comp.id, "", false);
         }
     }
+    
+    function openWeatherSheet() {
+        var etLoc = document.getElementById('et_loc').value;
+        var rainLoc = document.getElementById('rain_loc').value;
+        window.open("/datatools/wthsheet/?et_loc=" + etLoc + "&rain_loc=" + rainLoc);
+    }
 </script>
 <div class="subcontainer">
     <div class="row">
@@ -169,6 +175,11 @@
             <label class="control-label col-sm-3" for="rain_nearest_flg"></label>
             <div class="col-sm-6">
                 <label class="form-check-label"><input id="rain_nearest_flg" name="rain_nearest_flg" type="checkbox" value="true"  class="form-check-input" onchange="disableLocSB('rain', this);selectNearestLoc('rain', this);" <#if permit['rain_nearest_flg']?? && permit['rain_nearest_flg'] == "true">checked</#if>>&nbsp; &nbsp; Check to use nearest station</label>
+            </div>
+        </div>
+        <div class="text-center">
+            <div>
+                <button type="button" class="btn btn-primary text-right" onclick="openWeatherSheet();">View Data</button>
             </div>
         </div>
     </div>
