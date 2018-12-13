@@ -104,6 +104,9 @@
     }
     
     function checkPerennialCropInfo() {
+        if (Number(getSelectedValue("irr_type")) !== 6) {
+            return true;
+        }
         var akcRow = document.getElementById("akc_row");
         var msg = "";
         for (var i = 0; i < akcRow.cells.length; i++) {
