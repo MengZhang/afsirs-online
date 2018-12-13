@@ -32,6 +32,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-folder-close"></span> Document <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="#" onClick="window.open('/doc/afsirs/AFSIRS_Technical_Manual.pdf', 'AFSIRS Technical Manual')"><span class="glyphicon glyphicon-book"></span> AFSIRS Technical Manual</a></li>
+                    <li><a href="#" onClick="window.open('/doc/afsirs/AFSIRS_User_Guide.pdf', 'AFSIRS Technical Manual')"><span class="glyphicon glyphicon-book"></span> AFSIRS User Guide</a></li>
                 </ul>
             </li>
             <li class="dropdown">
