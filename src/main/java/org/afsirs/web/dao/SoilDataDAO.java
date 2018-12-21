@@ -9,7 +9,6 @@ import org.afsirs.web.util.DBUtil.AFSIRSCollection;
 import static org.afsirs.web.util.DBUtil.getConnection;
 import org.afsirs.web.util.MongoDBHandler;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 /**
@@ -109,37 +108,40 @@ public class SoilDataDAO {
         String json = AFSIRSModule.saveSoilDataJson(soil.toAFSIRSInputSoilData());
         if (json != null && !json.isEmpty()) {
             try {
+                String soilIdLoc = soil.getSoil_id();
+                String unitName = soil.getSoil_unit_name();
+                if (soilIdLoc != null && !soilIdLoc.isEmpty()) {
+                    ObjectId ret = getId(unitName, currentUser);
+                    if (ret != null && soilIdLoc.equals(ret.toString())) {
+                        return ret;
+                    }
+                }
                 HashCode hash = soil.getHash();
-                String unitName = soil.getSoil_unit_name().replaceAll("((?<!_)__\\(\\d+\\))?$", "");
+                unitName = unitName.replaceAll("((?<!_)__\\(\\d+\\))?$", "");
                 Document data = Document.parse(json);
                 data.put("user_id", currentUser);
                 data.put("data_hash", hash.toString());
-                MongoDBHandler.add(getConnection(AFSIRSCollection.SoilData), data);
-                ObjectId ret = getId(hash);
-                if (ret== null) {
-                    int count = 1;
-                    for (SoilData soilRet : list(currentUser)) {
-                        if (soilRet.getSoil_unit_name().matches("((?<!_)__\\(\\d+\\))?$") &&
-                                soilRet.getSoil_unit_name().startsWith(unitName)) {
-                            count++;
+                int count = 0;
+                while (!MongoDBHandler.add(getConnection(AFSIRSCollection.SoilData), data)) {
+                    if (count < 1) {
+                        count = 1;
+                        for (SoilData soilRet : list(currentUser)) {
+                            if (soilRet.getSoil_unit_name().matches("((?<!_)__\\(\\d+\\))?$") &&
+                                    soilRet.getSoil_unit_name().startsWith(unitName)) {
+                                count++;
+                            }
                         }
+                    } else if (count > 100) {
+                        break; // TODO
                     }
-                    while (ret == null) {
-                        if (count > 100) {
-                            break; // TODO
-                        }
-                        soil.setSoil_unit_name(unitName + "__(" + count + ")");
-                        count++;
-                        data.put("soil_unit_name", soil.getSoil_unit_name());
-                        hash = soil.getHash();
-                        data.put("data_hash", hash.toString());
-                        if (MongoDBHandler.add(getConnection(AFSIRSCollection.SoilData), data)) {
-                            ret = getId(hash);
-                        }
-                    }
+                    soil.setSoil_unit_name(unitName + "__(" + count + ")");
+                    count++;
+                    data.put("soil_unit_name", soil.getSoil_unit_name());
+                    hash = soil.getHash();
+                    data.put("data_hash", hash.toString());
                 }
                 
-                return ret;
+                return getId(hash);
             } catch (Exception ex) {
                 ex.printStackTrace(System.err);
                 return null;

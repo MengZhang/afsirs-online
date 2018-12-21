@@ -1,6 +1,7 @@
 package org.afsirs.web.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.MongoWriteException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import org.afsirs.web.dao.bean.User;
@@ -18,7 +19,7 @@ public class UserDAO {
         ConcurrentHashMap<String, User> ret = new ConcurrentHashMap();
         return ret;
     }
-    
+
     public static boolean isAdmin(String userId) {
         if (users.containsKey(userId)) {
             return users.get(userId).isAdmin();
@@ -60,12 +61,15 @@ public class UserDAO {
         }
         String salt = BCrypt.gensalt();
         String hashedPassword = BCrypt.hashpw(password, salt);
-        MongoDBHandler.add(getConnection(AFSIRSCollection.User),
-                new Document("userName", user.getUserName())
-                .append("salt", salt)
-                .append("hashedPassword", hashedPassword)
-                .append("userRank", "regular")); //TODO
-        return true;
+        try {
+            return MongoDBHandler.add(getConnection(AFSIRSCollection.User),
+                    new Document("userName", user.getUserName())
+                    .append("salt", salt)
+                    .append("hashedPassword", hashedPassword)
+                    .append("userRank", "regular")); //TODO
+        } catch (MongoWriteException ex) {
+            return false;
+        }
     }
 
     public static Collection<User> getAllUserNames() {

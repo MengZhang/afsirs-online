@@ -212,7 +212,7 @@
         <div class="form-group">
             <label class="control-label col-sm-3" for="permit_id">Permit ID :</label>
             <div class="col-sm-6">
-                <#if permit['permit_id']??>
+                <#if permit['permit_id']?? && operation_result != "Failed">
                 <input type="text" id="permitId" class="form-control" value="${permit['permit_id']!}" placeholder="Enter Permit ID" data-toggle="tooltip" title="Permit ID" onchange="revalidate(this)" label="Permit ID" disabled>
                 <input type="hidden" name="permit_id" value="${permit['permit_id']!}" >
                 <#else>

@@ -827,7 +827,7 @@ require([
         // if(isDeveloper){
         var geometry = editToolbar.getCurrentState().graphic.geometry;
         calculateGeometry([geometry], function (result) {
-            polyArea = result.areas[0].toFixed(3);
+            polyArea = result.areas[0];
             centroid = geometry.getCentroid();
             polyJSON = geometry.toJson();
             //console.log("The Polygon JSON " + JSON.stringify(polyJSON));
@@ -919,7 +919,7 @@ require([
                                         calculateGeometry(geometryArray, function areaCallback(result) {
                                             var obj = {
                                                 mukey: currentMukey,
-                                                polyarea: result.areas[0].toFixed(3),
+                                                polyarea: result.areas[0],
                                                 county: county
                                             }
                                             ////console.log("value : "+ JSON.stringify(obj));
@@ -1020,7 +1020,7 @@ require([
                             index++;
                         } else {
                             var tempArea = parseFloat(filteredresults[index].soilArea) + parseFloat(Attributes[i].soilArea);
-                            filteredresults[index].soilArea = tempArea.toFixed(3);
+                            filteredresults[index].soilArea = tempArea;
                             filteredresults[index].unitPct = filteredresults[index].unitPct + Attributes[i].unitPct;
                             ////console.log(filteredresults[index].soilArea, Attributes[i].soilArea);
                         }
@@ -1178,8 +1178,10 @@ require([
                 if (obj.mukey === record.mukey) {
                     record.componentList.forEach(function (cokeyObj) {
                         if (obj.cokeyArray.indexOf(cokeyObj.cokey) >= 0) {
-                            result.soils.push(cokeyObj);
-                            plantedArea += Number(cokeyObj.compArea);
+                            var tmpObj = JSON.parse(JSON.stringify(cokeyObj));
+                            tmpObj.compArea = tmpObj.compArea.toFixed(4);
+                            result.soils.push(tmpObj);
+                            plantedArea += cokeyObj.compArea;
                         }
                     });
                 }
@@ -1192,7 +1194,7 @@ require([
         array.push({
             "long": centroid.getLongitude(),
             "lat": centroid.getLatitude(),
-            "TotalArea": polyArea
+            "TotalArea": polyArea.toFixed(3)
         });
         //console.log("Array of lon lat "  + array.lat);
         array.forEach(function (position) {
@@ -1316,7 +1318,7 @@ require([
                         maxindex = i;
                         maxval = featureSet.features[i].attributes.comppct_r;
                     }
-                    var componentArea = ((attribute.soilArea * featureSet.features[i].attributes.comppct_r) / 100).toFixed(3);
+                    var componentArea = ((attribute.soilArea * featureSet.features[i].attributes.comppct_r) / 100);
                     //console.log("Componenet Area " + componentArea);
                     //console.log("Total Area " + polyArea);
                     var soilPercentage = (componentArea / polyArea) * 100;
@@ -1451,7 +1453,7 @@ require([
         //console.log("Attributes in show popup" +JSON.stringify(Attributes));
         getInputParams();
 
-        document.getElementById("site_area_lb").innerHTML = polyArea;
+        document.getElementById("site_area_lb").innerHTML = polyArea.toFixed(3);
         document.getElementById("queryRetTable").style.display = "block";
         var retTableDir = document.getElementById("tblBody");
         retTableDir.innerHTML = htmlString;
@@ -1475,7 +1477,7 @@ require([
                   data: getFinalJson(Attributes),
                   soil_unit_name: unit,
                   soil_source: "MAP",
-                  total_area: polyArea,
+                  total_area: polyArea.toFixed(3),
                   plantedArea: plantedArea.toFixed(3),
                   user_id: document.getElementById("user_id").value,
                   update_flg: document.getElementById("update_flg").value
@@ -1565,7 +1567,7 @@ require([
             var compHtmlStr = "";
             var ifOnlyWater = true;
             attribute.componentList.forEach(function (component) {
-                var areaStr = component.compArea;
+                var areaStr = component.compArea.toFixed(4);
                 if (Number(areaStr) === 0) {
                     areaStr = "<0.001";
                 }
@@ -1581,7 +1583,7 @@ require([
                     soilTypeHtml2 = soilTypeHtml2 + "<tr><td class=\"text-left\">" + component.soilName + "</td><td>" + component.comppct_r + "</td><td style=\"display:none;\">" + component.cokey + "</td></tr>";
                 }
             });
-            var areaStr = attribute.soilArea;
+            var areaStr = attribute.soilArea.toFixed(4);
             if (Number(areaStr) === 0) {
                 areaStr = "<0.001";
             }

@@ -147,10 +147,10 @@ public class SoilData {
         input.setUNIT(soil_unit_name);
         input.setSoils(soils);
         input.setSoilId(soil_id);
-        input.setMapArea(new BigDecimal(totalArea).doubleValue());
-        input.setPlantedAcres(new BigDecimal(plantedArea).doubleValue());
         input.setPolygonInfo(polygon_info);
         input.setPolygonLocInfo(polygon_loc_info);
+        input.setPlantedAcres(new BigDecimal(plantedArea).doubleValue());
+        input.setMapArea(new BigDecimal(totalArea).doubleValue());
 
         return input;
     }
@@ -158,21 +158,29 @@ public class SoilData {
     public HashCode getHash() {
         Hasher hasher = hf.newHasher();
         try {
-            for (Field field : this.getClass().getDeclaredFields()) {
-                String fieldName = field.getName();
-                if (field.getType().getName().equals(String.class.getName()) &&
-                        !fieldName.equalsIgnoreCase("soil_id") &&
-                        !fieldName.equalsIgnoreCase("zoom")) {
-                    String val = (String) this.getClass().getMethod("get" + fieldName.substring(0 ,1).toUpperCase() + fieldName.substring(1)).invoke(this);
-                    hasher.putBytes((fieldName + val).getBytes("UTF-8"));
-                }
-            }
+//            for (Field field : this.getClass().getDeclaredFields()) {
+//                String fieldName = field.getName();
+//                if (field.getType().getName().equals(String.class.getName()) &&
+//                        !fieldName.equalsIgnoreCase("soil_id") &&
+//                        !fieldName.equalsIgnoreCase("zoom")) {
+//                    String val = (String) this.getClass().getMethod("get" + fieldName.substring(0 ,1).toUpperCase() + fieldName.substring(1)).invoke(this);
+//                    hasher.putBytes((fieldName + val).getBytes("UTF-8"));
+//                }
+//            }
+            hasher.putBytes(("soil_source" + soil_source).getBytes("UTF-8"));
+            hasher.putBytes(("soil_unit_name" + soil_unit_name).getBytes("UTF-8"));
+            hasher.putBytes(("user_id" + user_id).getBytes("UTF-8"));
+            hasher.putBytes(("polygon_info" + polygon_info).getBytes("UTF-8"));
+            hasher.putBytes(("polygon_loc_info" + polygon_loc_info).getBytes("UTF-8"));
+            hasher.putBytes(("plantedArea" + plantedArea).getBytes("UTF-8"));
+            hasher.putBytes(("totalArea" + totalArea).getBytes("UTF-8"));
+
             if (soils != null) {
                 for (Soil soil : soils) {
                     hasher.putBytes((soil.getSNAME() + soil.getCOMPKEY()).getBytes());
                 }
             }
-        } catch (UnsupportedEncodingException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (UnsupportedEncodingException ex) {
             ex.printStackTrace(System.err);
         }
         return hasher.hash();

@@ -23,6 +23,7 @@ import org.afsirs.web.util.DataUtil.CropData;
 import org.afsirs.web.util.DataUtil.CropDataAnnual;
 import org.afsirs.web.util.DataUtil.CropDataPerennial;
 import org.afsirs.web.util.Path;
+import org.afsirs.web.view.ViewUtil;
 import org.bson.types.ObjectId;
 import spark.Request;
 
@@ -242,6 +243,7 @@ public class WaterUsePermit {
     public static WaterUsePermit readFromRequest(Request request) {
         WaterUsePermit ret = new WaterUsePermit();
         ret.setPermit_id(request.queryParams("permit_id"));
+        ret.setUser_id(ViewUtil.getUserID(request));
         ret.setOwner_name(request.queryParams("owner_name"));
         String cropType = request.queryParams("crop_type");
         ret.setCrop_type(cropType);
