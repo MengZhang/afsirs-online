@@ -104,15 +104,16 @@ public class MongoDBHandler {
         return ret;
     }
 
-    public static boolean add(MongoCollection<Document> collection, Document record) {
+    public static boolean add(MongoCollection<Document> collection, Document record) throws MongoWriteException {
         try {
             collection.insertOne(record);
             return true;
         } catch (MongoWriteException ex) {
-            if (!ex.getMessage().contains("duplicate key")) {
-                LOG.warn(ex.getMessage());
+            if (ex.getMessage().contains("duplicate key")) {
+                return false;
+            } else {
+                throw ex;
             }
-            return false;
         }
     }
 
