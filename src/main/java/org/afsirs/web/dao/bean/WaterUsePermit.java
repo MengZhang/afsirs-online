@@ -24,7 +24,6 @@ import org.afsirs.web.util.DataUtil.CropDataAnnual;
 import org.afsirs.web.util.DataUtil.CropDataPerennial;
 import org.afsirs.web.util.Path;
 import org.afsirs.web.view.ViewUtil;
-import org.bson.types.ObjectId;
 import spark.Request;
 
 /**
@@ -422,7 +421,9 @@ public class WaterUsePermit {
         ret.setWater_hold_capacity(data.getOrBlank("water_hold_capacity"));
         ret.setTotalArea(data.getOrBlank("total_area"));
         ret.setPlantedArea(data.getOrBlank("planted_area"));
-        ret.setSoil_json(data.getObjArr("soils").toJSONString());
+        JSONObject tmp = new JSONObject();
+        tmp.put("soils", data.getObjArr("soils"));
+        ret.setSoil_json(tmp.toJSONString());
         JSONArray polygonInfo = data.getObjArr("polygon");
         if (!polygonInfo.isEmpty()) {
             ret.setPolygon_info(polygonInfo.getObj(0).toJSONString());

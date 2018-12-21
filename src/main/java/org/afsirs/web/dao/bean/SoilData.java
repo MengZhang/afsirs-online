@@ -6,8 +6,6 @@ import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -407,7 +407,7 @@
                 <br/>
                 <input type="file" id="soil_file" name="soil_file" class="form-control" value="" accept=".json" onchange="readFile()" placeholder="Browse Soil File (.json)" data-toggle="tooltip" title="Browse Soil File (.json)" disabled>
                 <label class="form-check-label"><input id="soil_file_upload_flg" type="checkbox" value="true"  class="form-check-input" onchange="switchUploadSoilData(this);">&nbsp; &nbsp; Use exported soil data file (.json)</label>
-                <input type="hidden" id="soil_file_json" name="soil_file_json" value='{"soils":${permit["soil_json"]!"[]"}}'>
+                <input type="hidden" id="soil_file_json" name="soil_file_json" value='${permit["soil_json"]!"{\"soils\":[]}"}'>
             </div>
             <div class="col-sm-4">
                 <input type="hidden" id="soil_id" name="soil_id" value='${permit["soil_id"]!}'>
