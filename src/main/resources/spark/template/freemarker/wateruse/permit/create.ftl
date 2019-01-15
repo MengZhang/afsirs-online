@@ -81,14 +81,15 @@
                     <#if permit["latitude"]?? && permit["longitude"]??>
                     calcDistance(${permit["latitude"]!}, ${permit["longitude"]!});
                     </#if>
+                    document.getElementById('tblBody').innerHTML = toTableHtml(JSON.parse(document.getElementById('soil_file_json').value)["soils"]);
                 } else {
                     document.getElementById("soil_source_map").checked = true;
                     switchSoilSource('MAP');
                     document.getElementById("water_hold_capacity").selectedIndex = 1;
                     selectNeareast("et", true);
                     selectNeareast("rain", true);
+                    document.getElementById('tblBody').innerHTML = toTableHtml(JSON.parse(document.getElementById('soil_file_json').value)["soils"]);
                 }
-                document.getElementById('tblBody').innerHTML = toTableHtml(JSON.parse(document.getElementById('soil_file_json').value)["soils"]);
             }
 
             function openTab(tabName) {
