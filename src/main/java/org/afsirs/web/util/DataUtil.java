@@ -621,6 +621,7 @@ public class DataUtil {
         ArrayList<Soil> ret = new ArrayList();
         ArrayList<JSONObject> soilArr = data.getObjArr("soils");
         String soilVersion = data.getOrBlank("version");
+        String soilSource = data.getOrBlank("soil_source");
         for (JSONObject soilJS : soilArr) {
             JSONObject soilJ = new JSONObject(soilJS);
             String soilSeriesName = soilJ.getOrBlank("mukeyName");
@@ -662,8 +663,8 @@ public class DataUtil {
                 nl++;
             }
 
-            // skip soil type without layers
-            if (nl < 1) {
+            // skip soil type without layers except data from Soil DB
+            if (nl < 1 && !"DB".equalsIgnoreCase(soilSource)) {
                 continue;
             }
             Soil soil = new Soil(soilName, soilSeriesKey, compKey, soilSeriesName, soilSymbolNum, nl);
