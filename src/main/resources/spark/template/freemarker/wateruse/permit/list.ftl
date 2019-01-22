@@ -11,11 +11,10 @@
                 padding: 5px;
                 text-align: left;
             }
-            th#descCol {
-                width: 216px;
-            }
             table#t01 {
+                table-layout: fixed;
                 width: 100%;
+                word-wrap:break-word;
             }
             table#t01 tr:nth-child(even) {
                 background-color: #eee;
@@ -47,7 +46,7 @@
                         <th>Crop</th>
                         <th>Irrigation</th>
                         <th>Location(ET/Rain)</th>
-                        <th id="descCol">Option</th>
+                        <th>Option</th>
                     </tr>
                     <#list permits as permit>
                     <tr>
