@@ -17,7 +17,7 @@
 
             <h1>LOGIN PAGE</h1>
             <#if operation_result == "Failed" >
-            <p>LOGIN_AUTH_FAILED</p>
+            <div class="alert alert-warning">LOGIN_AUTH_FAILED</div>
             </#if>
             <form id="loginForm" method="post">
                 <table>

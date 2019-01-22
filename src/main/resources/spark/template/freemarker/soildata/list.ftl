@@ -33,7 +33,7 @@
             <fieldset>
                 <legend>Soil Data List</legend>
                 <#if operation_result == "Failed" >
-                <p>No Saved Soil Data Exists for current user</p>
+                <div class="alert alert-info">No Saved Soil Data Exists for current user</div>
                 <#else>
                 <table id="t01">
                     <tr>
