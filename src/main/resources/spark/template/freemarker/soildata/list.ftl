@@ -12,7 +12,9 @@
                 text-align: left;
             }
             table#t01 {
+                table-layout: fixed;
                 width: 100%;
+                word-wrap:break-word;
             }
             table#t01 tr:nth-child(even) {
                 background-color: #eee;
