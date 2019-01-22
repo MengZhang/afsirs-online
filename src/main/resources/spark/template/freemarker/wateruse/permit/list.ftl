@@ -2,31 +2,6 @@
 <html>
     <head>
         <#include "../../header.ftl">
-        <style>
-            table#t01, table#t01 th, table#t01 td {
-                border: 1px solid black;
-                border-collapse: collapse;
-            }
-            table#t01 th, table#t01 td {
-                padding: 5px;
-                text-align: left;
-            }
-            table#t01 {
-                table-layout: fixed;
-                width: 100%;
-                word-wrap:break-word;
-            }
-            table#t01 tr:nth-child(even) {
-                background-color: #eee;
-            }
-            table#t01 tr:nth-child(odd) {
-                background-color:#fff;
-            }
-            table#t01 th {
-                background-color: lightskyblue;
-                color: black;
-            }
-        </style>
     </head>
 
     <body>
