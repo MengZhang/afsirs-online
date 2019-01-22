@@ -22,15 +22,19 @@
             <form id="loginForm" method="post">
                 <div class="row">
                     <div class="form-group">
-                        <div class="col-sm-3"><label>User Name :</label></div>
-                        <div class="col-sm-9"><input type="text" name="username" placeholder="User Name" value="" required></div>
+                        <div class="col-sm-2"><label class="control-label">User Name :</label></div>
+                        <div class="col-sm-4"><input type="text" class="form-control" name="username" placeholder="User Name" value="" required></div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="form-group">
-                        <div class="col-sm-3"><label>Password :</label></div>
-                        <div class="col-sm-9"><input type="password" name="password" placeholder="Passowrd" value="" required></div>
+                        <div class="col-sm-2"><label class="control-label">Password :</label></div>
+                        <div class="col-sm-4"><input type="password" class="form-control" name="password" placeholder="Passowrd" value="" required></div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="form-group">
-                        <div class="col-sm-3"><input type="submit" value="Login"></div>
+                        <div class="col-sm-1"><input type="submit" class="btn" value="Login"></div>
                     </div>
                 </div>
             </form>
