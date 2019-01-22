@@ -13,7 +13,7 @@
             <fieldset>
                 <legend>Permit List</legend>
                 <#if operation_result == "Failed" >
-                <p>No Permit Exists for current user</p>
+                <div class="alert alert-info">No Permit Exists for current user</div>
                 <#else>
                 <table id="t01">
                     <tr>
