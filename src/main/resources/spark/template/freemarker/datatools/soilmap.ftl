@@ -19,45 +19,11 @@
         <link rel="stylesheet" href="/stylesheets/soilmap/afsirs.css" media="screen">
         <link rel="stylesheet" href="/stylesheets/soilmap/bootstrapmap.css">
 
-        <!-- File-saver-js -->
-        <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/FileSaver.js'></script>
-
         <style type="text/css">
             #mapDiv {
                 min-height: 50px;
             }
         </style>
-        
-        <script>
-            var climateLocs = [
-                <#list climateCityList as et_loc>
-                    <#if et_loc['lat']?? && et_loc['longi']??>
-                [${et_loc['longi']},${et_loc['lat']}]<#sep>,</#sep>
-                    </#if>
-                </#list>
-                ];
-            var climateLocNames = [
-                <#list climateCityList as et_loc>
-                    <#if et_loc['lat']?? && et_loc['longi']?? && et_loc['location']??>
-                    {"location":"${et_loc['location']}","lat":${et_loc['lat']},"longi":${et_loc['longi']}}<#sep>,</#sep>
-                    </#if>
-                </#list>
-                ];
-            var rainLocs = [
-                <#list rainfallCityList as rain_loc>
-                    <#if rain_loc['lat']?? && rain_loc['longi']??>
-                [${rain_loc['longi']},${rain_loc['lat']}]<#sep>,</#sep>
-                    </#if>
-                </#list>
-                ];
-            var rainLocNames = [
-                <#list rainfallCityList as rain_loc>
-                    <#if rain_loc['lat']?? && rain_loc['longi']?? && rain_loc['location']??>
-                {"location":"${rain_loc['location']}","lat":${rain_loc['lat']},"longi":${rain_loc['longi']}}<#sep>,</#sep>
-                    </#if>
-                </#list>
-                ];
-        </script>
     </head>
 
     <body class="claro">
@@ -256,7 +222,37 @@
         <script type="text/javascript" src="/js/soilmap/afsirs.js"></script>
         <script type="text/javascript" src="/js/soilmap/knn.js"></script>
         <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>-->
+        <!-- File-saver-js -->
+        <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/FileSaver.js'></script>
         <script>
+            var climateLocs = [
+                <#list climateCityList as et_loc>
+                    <#if et_loc['lat']?? && et_loc['longi']??>
+                [${et_loc['longi']},${et_loc['lat']}]<#sep>,</#sep>
+                    </#if>
+                </#list>
+                ];
+            var climateLocNames = [
+                <#list climateCityList as et_loc>
+                    <#if et_loc['lat']?? && et_loc['longi']?? && et_loc['location']??>
+                    {"location":"${et_loc['location']}","lat":${et_loc['lat']},"longi":${et_loc['longi']}}<#sep>,</#sep>
+                    </#if>
+                </#list>
+                ];
+            var rainLocs = [
+                <#list rainfallCityList as rain_loc>
+                    <#if rain_loc['lat']?? && rain_loc['longi']??>
+                [${rain_loc['longi']},${rain_loc['lat']}]<#sep>,</#sep>
+                    </#if>
+                </#list>
+                ];
+            var rainLocNames = [
+                <#list rainfallCityList as rain_loc>
+                    <#if rain_loc['lat']?? && rain_loc['longi']?? && rain_loc['location']??>
+                {"location":"${rain_loc['location']}","lat":${rain_loc['lat']},"longi":${rain_loc['longi']}}<#sep>,</#sep>
+                    </#if>
+                </#list>
+                ];
             $(document).ready(function () {
                 $('[data-toggle="tooltip"]').tooltip();
             });
