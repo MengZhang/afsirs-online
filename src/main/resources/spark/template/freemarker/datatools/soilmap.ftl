@@ -202,6 +202,8 @@
         <!-- Bootstrap core JavaScript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
+        <!-- File-saver-js -->
+        <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/FileSaver.js'></script>
         <!-- Bootstrap-map-js -->
         <script type="text/javascript">
 //            var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
@@ -222,8 +224,6 @@
         <script type="text/javascript" src="/js/soilmap/afsirs.js"></script>
         <script type="text/javascript" src="/js/soilmap/knn.js"></script>
         <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>-->
-        <!-- File-saver-js -->
-        <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/FileSaver.js'></script>
         <script>
             var climateLocs = [
                 <#list climateCityList as et_loc>
