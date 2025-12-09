@@ -37,7 +37,7 @@ public class DBUtil {
     
     public static MongoClientURI getDBURI() {
         // Give your DB path here
-        String dbPath = "mongodb://mikecomic:Mike0105@cluster0-shard-00-00-upixo.mongodb.net:27017,cluster0-shard-00-01-upixo.mongodb.net:27017,cluster0-shard-00-02-upixo.mongodb.net:27017/mydb?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin";
+        String dbPath = "mongodb+srv://mikecomic:Mike0105@cluster0.bjkpfew.mongodb.net/?appName=Cluster0"; //"mongodb://mikecomic:Mike0105@cluster0-shard-00-00-upixo.mongodb.net:27017,cluster0-shard-00-01-upixo.mongodb.net:27017,cluster0-shard-00-02-upixo.mongodb.net:27017/mydb?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin";
         MongoClientURI uri = new MongoClientURI(dbPath);
         return uri;
     }
